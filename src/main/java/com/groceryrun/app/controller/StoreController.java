@@ -1,6 +1,8 @@
 package com.groceryrun.app.controller;
 
-import com.groceryrun.app.entities.Store;
+import com.groceryrun.app.dto.NewStoreDTO;
+import com.groceryrun.app.dto.StoreDTO;
+import com.groceryrun.app.dto.StoreNameChangeDTO;
 import com.groceryrun.app.services.StoreService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,18 +19,18 @@ public class StoreController {
     }
 
     @GetMapping
-    public List<Store> getAllStores() {
+    public List<StoreDTO> getAllStores() {
         return storeService.getAllStores();
     }
 
     @GetMapping("{id}")
-    public Store getStore(@PathVariable Integer id) {
+    public StoreDTO getStore(@PathVariable Integer id) {
         return storeService.getStoreById(id);
     }
 
     @PostMapping
-    public void addNewStore(@RequestBody Store store) {
-        storeService.addStore(store);
+    public void addNewStore(@ModelAttribute NewStoreDTO newStoreDTO) {
+        storeService.addStore(newStoreDTO);
     }
 
     @DeleteMapping("{id}")
@@ -37,8 +39,8 @@ public class StoreController {
     }
 
     @PutMapping("{id}/name")
-    public void updateStoreName(@PathVariable Integer id, @RequestBody Store store) {
-        storeService.updateStoreName(id, store.getName());
+    public void updateStoreName(@PathVariable Integer id, @ModelAttribute StoreNameChangeDTO storeNameChangeDTO) {
+        storeService.updateStoreName(id, storeNameChangeDTO);
     }
 
 }

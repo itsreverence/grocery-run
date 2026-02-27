@@ -15,6 +15,10 @@ public class Store {
 
     public Store() {}
 
+    public Store(String name) {
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }
