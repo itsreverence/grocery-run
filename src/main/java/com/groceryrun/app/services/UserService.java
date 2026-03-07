@@ -1,6 +1,6 @@
 package com.groceryrun.app.services;
 
-import com.groceryrun.app.dto.*;
+import com.groceryrun.app.dto.user.*;
 import com.groceryrun.app.entities.User;
 import com.groceryrun.app.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
