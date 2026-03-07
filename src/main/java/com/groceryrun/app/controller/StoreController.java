@@ -1,8 +1,8 @@
 package com.groceryrun.app.controller;
 
-import com.groceryrun.app.dto.NewStoreDTO;
-import com.groceryrun.app.dto.StoreDTO;
-import com.groceryrun.app.dto.StoreNameChangeDTO;
+import com.groceryrun.app.dto.store.NewStoreDTO;
+import com.groceryrun.app.dto.store.StoreDTO;
+import com.groceryrun.app.dto.store.StoreNameChangeDTO;
 import com.groceryrun.app.services.StoreService;
 import org.springframework.web.bind.annotation.*;
 

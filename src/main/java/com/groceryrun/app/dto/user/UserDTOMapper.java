@@ -1,4 +1,4 @@
-package com.groceryrun.app.dto;
+package com.groceryrun.app.dto.user;
 
 import com.groceryrun.app.entities.User;
 import org.springframework.stereotype.Service;

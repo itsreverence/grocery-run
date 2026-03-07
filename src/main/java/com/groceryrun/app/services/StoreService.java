@@ -1,9 +1,9 @@
 package com.groceryrun.app.services;
 
-import com.groceryrun.app.dto.NewStoreDTO;
-import com.groceryrun.app.dto.StoreDTO;
-import com.groceryrun.app.dto.StoreDTOMapper;
-import com.groceryrun.app.dto.StoreNameChangeDTO;
+import com.groceryrun.app.dto.store.NewStoreDTO;
+import com.groceryrun.app.dto.store.StoreDTO;
+import com.groceryrun.app.dto.store.StoreDTOMapper;
+import com.groceryrun.app.dto.store.StoreNameChangeDTO;
 import com.groceryrun.app.entities.Store;
 import com.groceryrun.app.repositories.StoreRepository;
 import org.springframework.stereotype.Service;

@@ -1,3 +1,3 @@
-package com.groceryrun.app.dto;
+package com.groceryrun.app.dto.user;
 
 public record RegisterDTO(String username, String password) {}
