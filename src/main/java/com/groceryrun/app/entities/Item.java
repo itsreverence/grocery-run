@@ -1,5 +1,8 @@
 package com.groceryrun.app.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,12 +15,16 @@ public class Item {
     @Column(nullable = false)
     private String name;
 
+    @ManyToMany(mappedBy = "groceryListItems")
+    private List<GroceryList> groceryLists;
+
     public Item() {
 
     }
 
     public Item(String name) {
         this.name = name;
+        this.groceryLists = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -28,7 +35,15 @@ public class Item {
         return name;
     }
 
+    public List<GroceryList> getGroceryLists() {
+        return groceryLists;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setGroceryLists(List<GroceryList> groceryLists) {
+        this.groceryLists = groceryLists;
     }
 }

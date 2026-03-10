@@ -62,4 +62,22 @@ public class GroceryListService {
         groceryList.setListRoute(groceryListRouteChangeDTO.newRoute());
         groceryListRepository.save(groceryList);
     }
+
+    public void updateGroceryListItems(Integer id, GroceryListItemsChangeDTO groceryListItemsChangeDTO) {
+        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        groceryList.setGroceryListItems(groceryListItemsChangeDTO.newGroceryListItems());
+        groceryListRepository.save(groceryList);
+    }
+
+    public void updateGroceryListItemsQuantities(Integer id, GroceryListItemsQuantitiesChangeDTO groceryListItemsQuantitiesChangeDTO) {
+        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        groceryList.setGroceryListItemsQuantities(groceryListItemsQuantitiesChangeDTO.newGroceryListItemsQuantities());
+        groceryListRepository.save(groceryList);
+    }
+
+    public void updateGroceryListItemsFoundStatus(Integer id, GroceryListItemsFoundStatusChangeDTO groceryListItemsFoundStatusChangeDTO) {
+        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        groceryList.setGroceryListItemsFoundStatus(groceryListItemsFoundStatusChangeDTO.newGroceryListItemsFoundStatus());
+        groceryListRepository.save(groceryList);
+    }
 }

@@ -1,4 +1,8 @@
 package com.groceryrun.app.dto.item;
 
-public record ItemDTO(Integer id, String name) {
+import java.util.List;
+
+import com.groceryrun.app.entities.GroceryList;
+
+public record ItemDTO(Integer id, String name, List<GroceryList> groceryLists) {
 }
