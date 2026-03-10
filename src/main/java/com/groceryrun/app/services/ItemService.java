@@ -2,6 +2,7 @@ package com.groceryrun.app.services;
 
 import com.groceryrun.app.dto.item.ItemDTO;
 import com.groceryrun.app.dto.item.ItemDTOMapper;
+import com.groceryrun.app.dto.item.ItemGroceryListsChangeDTO;
 import com.groceryrun.app.dto.item.ItemNameChangeDTO;
 import com.groceryrun.app.dto.item.NewItemDTO;
 import com.groceryrun.app.entities.Item;
@@ -45,6 +46,12 @@ public class ItemService {
     public void updateItemName(Integer id, ItemNameChangeDTO itemNameChangeDTO) {
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         item.setName(itemNameChangeDTO.newName());
+        itemRepository.save(item);
+    }
+
+    public void updateItemGroceryLists(Integer id, ItemGroceryListsChangeDTO itemGroceryListsChangeDTO) {
+        Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        item.setGroceryLists(itemGroceryListsChangeDTO.newGroceryLists());
         itemRepository.save(item);
     }
 }
