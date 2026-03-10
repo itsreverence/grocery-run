@@ -1,9 +1,6 @@
 package com.groceryrun.app.services;
 
-import com.groceryrun.app.dto.grocerylist.GroceryListDTO;
-import com.groceryrun.app.dto.grocerylist.GroceryListDTOMapper;
-import com.groceryrun.app.dto.grocerylist.GroceryListNameChangeDTO;
-import com.groceryrun.app.dto.grocerylist.NewGroceryListDTO;
+import com.groceryrun.app.dto.grocerylist.*;
 import com.groceryrun.app.entities.GroceryList;
 import com.groceryrun.app.repositories.GroceryListRepository;
 import org.springframework.stereotype.Service;
@@ -30,7 +27,7 @@ public class GroceryListService {
     }
 
     public void addGroceryList(NewGroceryListDTO newGroceryListDTO) {
-        GroceryList groceryList = new GroceryList(newGroceryListDTO.groceryListName());
+        GroceryList groceryList = new GroceryList(newGroceryListDTO.groceryListName(), newGroceryListDTO.groceryListOwner());
         groceryListRepository.save(groceryList);
     }
 
@@ -45,6 +42,12 @@ public class GroceryListService {
     public void updateGroceryListName(Integer id, GroceryListNameChangeDTO groceryListNameChangeDTO) {
         GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         groceryList.setName(groceryListNameChangeDTO.newName());
+        groceryListRepository.save(groceryList);
+    }
+
+    public void updateGroceryListOwner(Integer id, GroceryListOwnerChangeDTO groceryListOwnerChangeDTO) {
+        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        groceryList.setGroceryListOwner(groceryListOwnerChangeDTO.newGroceryListOwner());
         groceryListRepository.save(groceryList);
     }
 }

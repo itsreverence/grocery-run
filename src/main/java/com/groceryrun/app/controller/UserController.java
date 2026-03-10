@@ -56,4 +56,9 @@ public class UserController {
     public void updateRole(@PathVariable Integer id, @RequestBody RoleChangeDTO roleChangeDTO) {
         userService.updateUserRole(id, roleChangeDTO);
     }
+
+    @PutMapping("{id}/grocery-lists")
+    public void updateGroceryLists(@PathVariable Integer id, @RequestBody GroceryListsChangeDTO groceryListsChangeDTO) {
+        userService.updateUserGroceryLists(id, groceryListsChangeDTO);
+    }
 }

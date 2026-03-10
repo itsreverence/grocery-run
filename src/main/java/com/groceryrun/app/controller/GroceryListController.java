@@ -2,6 +2,7 @@ package com.groceryrun.app.controller;
 
 import com.groceryrun.app.dto.grocerylist.GroceryListDTO;
 import com.groceryrun.app.dto.grocerylist.GroceryListNameChangeDTO;
+import com.groceryrun.app.dto.grocerylist.GroceryListOwnerChangeDTO;
 import com.groceryrun.app.dto.grocerylist.NewGroceryListDTO;
 import com.groceryrun.app.services.GroceryListService;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +42,10 @@ public class GroceryListController {
     @PutMapping("{id}/name")
     public void updateGroceryListName(@PathVariable Integer id, @ModelAttribute GroceryListNameChangeDTO groceryListNameChangeDTO) {
         groceryListService.updateGroceryListName(id, groceryListNameChangeDTO);
+    }
+
+    @PutMapping("{id}/owner")
+    public void updateGroceryListOwner(@PathVariable Integer id, @ModelAttribute GroceryListOwnerChangeDTO groceryListOwnerChangeDTO) {
+        groceryListService.updateGroceryListOwner(id, groceryListOwnerChangeDTO);
     }
  }

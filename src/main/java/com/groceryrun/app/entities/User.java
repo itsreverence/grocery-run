@@ -3,6 +3,8 @@ package com.groceryrun.app.entities;
 import com.groceryrun.app.enums.Role;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -20,11 +22,15 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+    @OneToMany(mappedBy = "groceryListOwner")
+    private List<GroceryList> groceryLists;
+
     public User() {}
 
-    public User(String username, String passwordHash) {
+    public User(String username, String passwordHash, List<GroceryList> groceryLists) {
         this.username = username;
         this.passwordHash = passwordHash;
+        this.groceryLists = groceryLists;
     }
 
     public Integer getId() {
@@ -43,6 +49,10 @@ public class User {
         return passwordHash;
     }
 
+    public List<GroceryList> getGroceryLists() {
+        return groceryLists;
+    }
+
     public void setRole(Role role) {
         this.role = role;
     }
@@ -53,5 +63,9 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public void setGroceryLists(List<GroceryList> groceryLists) {
+        this.groceryLists = groceryLists;
     }
 }

@@ -1,4 +1,6 @@
 package com.groceryrun.app.dto.grocerylist;
 
-public record NewGroceryListDTO(String groceryListName) {
+import com.groceryrun.app.entities.User;
+
+public record NewGroceryListDTO(String groceryListName, User groceryListOwner) {
 }
