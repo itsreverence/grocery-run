@@ -9,6 +9,6 @@ import java.util.function.Function;
 public class AisleDTOMapper implements Function<Aisle, AisleDTO> {
     @Override
     public AisleDTO apply(Aisle aisle) {
-        return new AisleDTO(aisle.getId(), aisle.getLabel());
+        return new AisleDTO(aisle.getId(), aisle.getLabel(), aisle.getAisleStore());
     }
 }
