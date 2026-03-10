@@ -4,5 +4,5 @@ import com.groceryrun.app.entities.GroceryList;
 
 import java.util.List;
 
-public record StoreDTO(Integer id, String name, List<GroceryList> groceryLists) {
+public record StoreGroceryListsChangeDTO(List<GroceryList> newGroceryLists) {
 }

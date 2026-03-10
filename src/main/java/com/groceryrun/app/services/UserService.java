@@ -32,7 +32,7 @@ public class UserService {
             throw new IllegalStateException(registerDTO.username() + " already exists");
         }
         String passwordHash = passwordEncoder.encode(registerDTO.password());
-        User user = new User(registerDTO.username(), passwordHash, registerDTO.groceryLists());
+        User user = new User(registerDTO.username(), passwordHash);
         userRepository.save(user);
     }
 

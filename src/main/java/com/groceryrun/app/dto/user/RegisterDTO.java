@@ -1,7 +1,3 @@
 package com.groceryrun.app.dto.user;
 
-import com.groceryrun.app.entities.GroceryList;
-
-import java.util.List;
-
-public record RegisterDTO(String username, String password, List<GroceryList> groceryLists) {}
+public record RegisterDTO(String username, String password) {}

@@ -1,9 +1,6 @@
 package com.groceryrun.app.services;
 
-import com.groceryrun.app.dto.store.NewStoreDTO;
-import com.groceryrun.app.dto.store.StoreDTO;
-import com.groceryrun.app.dto.store.StoreDTOMapper;
-import com.groceryrun.app.dto.store.StoreNameChangeDTO;
+import com.groceryrun.app.dto.store.*;
 import com.groceryrun.app.entities.Store;
 import com.groceryrun.app.repositories.StoreRepository;
 import org.springframework.stereotype.Service;
@@ -46,6 +43,12 @@ public class StoreService {
     public void updateStoreName(Integer id, StoreNameChangeDTO storeNameChangeDTO) {
         Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         store.setName(storeNameChangeDTO.newName());
+        storeRepository.save(store);
+    }
+
+    public void updateStoreGroceryLists(Integer id, StoreGroceryListsChangeDTO storeGroceryListsChangeDTO) {
+        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        store.setGroceryLists(storeGroceryListsChangeDTO.newGroceryLists());
         storeRepository.save(store);
     }
 }
