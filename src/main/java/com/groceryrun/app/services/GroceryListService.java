@@ -50,4 +50,10 @@ public class GroceryListService {
         groceryList.setGroceryListOwner(groceryListOwnerChangeDTO.newGroceryListOwner());
         groceryListRepository.save(groceryList);
     }
+
+    public void updateGroceryListStore(Integer id, GroceryListStoreChangeDTO groceryListStoreChangeDTO) {
+        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        groceryList.setGroceryListStore(groceryListStoreChangeDTO.newStore());
+        groceryListRepository.save(groceryList);
+    }
 }

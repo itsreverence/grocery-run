@@ -16,6 +16,10 @@ public class GroceryList {
     @JoinColumn(name = "owner_id")
     private User groceryListOwner;
 
+    @ManyToOne
+    @JoinColumn(name = "list_store")
+    private Store groceryListStore;
+
     public GroceryList() {}
 
     public GroceryList(String name, User groceryListOwner) {
@@ -35,11 +39,19 @@ public class GroceryList {
         return groceryListOwner;
     }
 
+    public Store getGroceryListStore() {
+        return groceryListStore;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
     public void setGroceryListOwner(User groceryListOwner) {
         this.groceryListOwner = groceryListOwner;
+    }
+
+    public void setGroceryListStore(Store groceryListStore) {
+        this.groceryListStore = groceryListStore;
     }
 }
