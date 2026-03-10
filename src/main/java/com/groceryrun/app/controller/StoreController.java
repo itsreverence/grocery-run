@@ -4,6 +4,7 @@ import com.groceryrun.app.dto.store.NewStoreDTO;
 import com.groceryrun.app.dto.store.StoreDTO;
 import com.groceryrun.app.dto.store.StoreGroceryListsChangeDTO;
 import com.groceryrun.app.dto.store.StoreNameChangeDTO;
+import com.groceryrun.app.dto.store.StoreLocationChangeDTO;
 import com.groceryrun.app.services.StoreService;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +48,10 @@ public class StoreController {
     @PutMapping("{id}/grocery-lists")
     public void updateStoreGroceryLists(@PathVariable Integer id, @ModelAttribute StoreGroceryListsChangeDTO storeGroceryListsChangeDTO) {
         storeService.updateStoreGroceryLists(id, storeGroceryListsChangeDTO);
+    }
+
+    @PutMapping("{id}/location")
+    public void updateStoreLocation(@PathVariable Integer id, @ModelAttribute StoreLocationChangeDTO storeLocationChangeDTO) {
+        storeService.updateStoreLocation(id, storeLocationChangeDTO);
     }
 }

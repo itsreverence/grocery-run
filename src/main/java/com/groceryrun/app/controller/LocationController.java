@@ -54,4 +54,9 @@ public class LocationController {
     public void updateLocationZip(@PathVariable Integer id, @ModelAttribute LocationZipChangeDTO locationZipChangeDTO) {
         locationService.updateLocationZip(id, locationZipChangeDTO);
     }
+
+    @PutMapping("{id}/store")
+    public void updateLocationStore(@PathVariable Integer id, @ModelAttribute LocationStoreChangeDTO locationStoreChangeDTO) {
+        locationService.updateLocationStore(id, locationStoreChangeDTO);
+    }
 }

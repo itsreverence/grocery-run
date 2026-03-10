@@ -19,11 +19,16 @@ public class Store {
     @OneToMany(mappedBy = "groceryListStore")
     private List<GroceryList> groceryLists;
 
+    @OneToOne
+    @JoinColumn(name = "store_location")
+    private Location storeLocation;
+
     public Store() {}
 
-    public Store(String name) {
+    public Store(String name, Location storeLocation) {
         this.name = name;
         this.groceryLists = new ArrayList<>();
+        this.storeLocation = storeLocation;
     }
 
     public Integer getId() {
@@ -32,6 +37,10 @@ public class Store {
 
     public String getName() {
         return name;
+    }
+
+    public Location getStoreLocation() {
+        return storeLocation;
     }
 
     public List<GroceryList> getGroceryLists() {
@@ -44,5 +53,9 @@ public class Store {
 
     public void setGroceryLists(List<GroceryList> groceryLists) {
         this.groceryLists = groceryLists;
+    }
+
+    public void setStoreLocation(Location storeLocation) {
+        this.storeLocation = storeLocation;
     }
 }
