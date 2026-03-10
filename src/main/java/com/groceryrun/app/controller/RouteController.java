@@ -2,6 +2,7 @@ package com.groceryrun.app.controller;
 
 import com.groceryrun.app.dto.route.NewRouteDTO;
 import com.groceryrun.app.dto.route.RouteDTO;
+import com.groceryrun.app.dto.route.RouteGroceryListChangeDTO;
 import com.groceryrun.app.services.RouteService;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +36,10 @@ public class RouteController {
     @DeleteMapping("{id}")
     public void deleteRoute(@PathVariable Integer id) {
         routeService.deleteRoute(id);
+    }
+
+    @PutMapping("{id}/grocery-list")
+    public void updateRouteGroceryList(@PathVariable Integer id, @ModelAttribute RouteGroceryListChangeDTO routeGroceryListChangeDTO) {
+        routeService.updateRouteGroceryList(id, routeGroceryListChangeDTO);
     }
 }

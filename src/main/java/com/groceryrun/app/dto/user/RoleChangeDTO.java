@@ -1,5 +1,5 @@
 package com.groceryrun.app.dto.user;
 
-import com.groceryrun.app.enums.Role;
+import com.groceryrun.app.enums.AccountRole;
 
-public record RoleChangeDTO(Role newRole) {}
+public record RoleChangeDTO(AccountRole newAccountRole) {}

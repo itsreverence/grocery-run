@@ -2,5 +2,5 @@ package com.groceryrun.app.dto.route;
 
 import com.groceryrun.app.entities.GroceryList;
 
-public record NewRouteDTO(GroceryList routeGroceryList) {
+public record RouteGroceryListChangeDTO(GroceryList newRouteGroceryList) {
 }
