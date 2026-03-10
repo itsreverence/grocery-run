@@ -1,5 +1,6 @@
 package com.groceryrun.app.controller;
 
+import com.groceryrun.app.dto.aisle.AisleCategoriesChangeDTO;
 import com.groceryrun.app.dto.aisle.AisleDTO;
 import com.groceryrun.app.dto.aisle.AisleLabelChangeDTO;
 import com.groceryrun.app.dto.aisle.AisleStoreChangeDTO;
@@ -47,5 +48,10 @@ public class AisleController {
     @PutMapping("{id}/store")
     public void updateAisleStore(@PathVariable Integer id, @ModelAttribute AisleStoreChangeDTO aisleStoreChangeDTO) {
         aisleService.updateAisleStore(id, aisleStoreChangeDTO);
+    }
+
+    @PutMapping("{id}/categories")
+    public void updateAisleCategories(@PathVariable Integer id, @ModelAttribute AisleCategoriesChangeDTO aisleCategoriesChangeDTO) {
+        aisleService.updateAisleCategories(id, aisleCategoriesChangeDTO);
     }
 }

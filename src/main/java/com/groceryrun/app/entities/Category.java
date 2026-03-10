@@ -12,12 +12,17 @@ public class Category {
     @Column(nullable = false)
     private String label;
 
+    @ManyToOne
+    @JoinColumn(name = "category_aisle")
+    private Aisle categoryAisle;
+
     public Category() {
 
     }
 
-    public Category(String label) {
+    public Category(String label, Aisle categoryAisle) {
         this.label = label;
+        this.categoryAisle = categoryAisle;
     }
 
     public Integer getId() {
@@ -28,7 +33,15 @@ public class Category {
         return label;
     }
 
+    public Aisle getCategoryAisle() {
+        return categoryAisle;
+    }
+
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public void setCategoryAisle(Aisle categoryAisle) {
+        this.categoryAisle = categoryAisle;
     }
 }

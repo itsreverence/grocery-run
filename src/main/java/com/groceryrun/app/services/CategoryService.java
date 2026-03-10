@@ -1,5 +1,6 @@
 package com.groceryrun.app.services;
 
+import com.groceryrun.app.dto.category.CategoryAisleChangeDTO;
 import com.groceryrun.app.dto.category.CategoryDTO;
 import com.groceryrun.app.dto.category.CategoryDTOMapper;
 import com.groceryrun.app.dto.category.CategoryLabelChangeDTO;
@@ -30,7 +31,7 @@ public class CategoryService {
     }
 
     public void addCategory(NewCategoryDTO newCategoryDTO) {
-        Category category = new Category(newCategoryDTO.label());
+        Category category = new Category(newCategoryDTO.label(), newCategoryDTO.categoryAisle());
         categoryRepository.save(category);
     }
 
@@ -45,6 +46,12 @@ public class CategoryService {
     public void updateCategoryLabel(Integer id, CategoryLabelChangeDTO categoryLabelChangeDTO) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         category.setLabel(categoryLabelChangeDTO.newLabel());
+        categoryRepository.save(category);
+    }
+
+    public void updateCategoryAisle(Integer id, CategoryAisleChangeDTO categoryAisleChangeDTO) {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        category.setCategoryAisle(categoryAisleChangeDTO.newCategoryAisle());
         categoryRepository.save(category);
     }
 }

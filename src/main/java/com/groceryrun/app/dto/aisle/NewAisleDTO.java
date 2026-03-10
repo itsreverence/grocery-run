@@ -1,4 +1,6 @@
 package com.groceryrun.app.dto.aisle;
 
-public record NewAisleDTO(String label) {
+import com.groceryrun.app.entities.Store;
+
+public record NewAisleDTO(String label, Store aisleStore) {
 }
