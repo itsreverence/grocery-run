@@ -1,6 +1,6 @@
 package com.groceryrun.app.entities;
 
-import com.groceryrun.app.enums.Role;
+import com.groceryrun.app.enums.AccountRole;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role = Role.USER;
+    private AccountRole accountRole = AccountRole.USER;
 
     @Column(unique = true, nullable = false, length = 100)
     private String username;
@@ -38,8 +38,8 @@ public class User {
         return id;
     }
 
-    public Role getRole() {
-        return role;
+    public AccountRole getRole() {
+        return accountRole;
     }
 
     public String getUsername() {
@@ -54,8 +54,8 @@ public class User {
         return groceryLists;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(AccountRole accountRole) {
+        this.accountRole = accountRole;
     }
 
     public void setUsername(String username) {

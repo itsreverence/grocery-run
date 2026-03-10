@@ -9,6 +9,6 @@ import java.util.function.Function;
 public class RouteDTOMapper implements Function<Route, RouteDTO> {
     @Override
     public RouteDTO apply(Route route) {
-        return new RouteDTO(route.getId());
+        return new RouteDTO(route.getId(), route.getRouteGroceryList());
     }
 }

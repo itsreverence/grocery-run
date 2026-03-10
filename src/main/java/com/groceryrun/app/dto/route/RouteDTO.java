@@ -1,4 +1,6 @@
 package com.groceryrun.app.dto.route;
 
-public record RouteDTO(Integer id) {
+import com.groceryrun.app.entities.GroceryList;
+
+public record RouteDTO(Integer id, GroceryList routeGroceryList) {
 }

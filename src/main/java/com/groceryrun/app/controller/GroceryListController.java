@@ -50,4 +50,9 @@ public class GroceryListController {
     public void updateGroceryListStore(@PathVariable Integer id, @ModelAttribute GroceryListStoreChangeDTO groceryListStoreChangeDTO) {
         groceryListService.updateGroceryListStore(id, groceryListStoreChangeDTO);
     }
+
+    @PutMapping("{id}/route")
+    public void updateGroceryListRoute(@PathVariable Integer id, @ModelAttribute GroceryListRouteChangeDTO groceryListRouteChangeDTO) {
+        groceryListService.updateGroceryListRoute(id, groceryListRouteChangeDTO);
+    }
  }

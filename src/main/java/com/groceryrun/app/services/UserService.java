@@ -76,7 +76,7 @@ public class UserService {
 
     public void updateUserRole(Integer id, RoleChangeDTO roleChangeDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        user.setRole(roleChangeDTO.newRole());
+        user.setRole(roleChangeDTO.newAccountRole());
         userRepository.save(user);
     }
 

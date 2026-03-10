@@ -13,18 +13,23 @@ public class GroceryList {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "list_owner")
     private User groceryListOwner;
 
     @ManyToOne
     @JoinColumn(name = "list_store")
     private Store groceryListStore;
 
+    @OneToOne
+    @JoinColumn(name = "list_route")
+    private Route listRoute;
+
     public GroceryList() {}
 
     public GroceryList(String name, User groceryListOwner) {
         this.name = name;
         this.groceryListOwner = groceryListOwner;
+        this.listRoute = new Route(this);
     }
 
     public Integer getId() {
@@ -43,6 +48,10 @@ public class GroceryList {
         return groceryListStore;
     }
 
+    public Route getListRoute() {
+        return listRoute;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -53,5 +62,9 @@ public class GroceryList {
 
     public void setGroceryListStore(Store groceryListStore) {
         this.groceryListStore = groceryListStore;
+    }
+
+    public void setListRoute(Route listRoute) {
+        this.listRoute = listRoute;
     }
 }

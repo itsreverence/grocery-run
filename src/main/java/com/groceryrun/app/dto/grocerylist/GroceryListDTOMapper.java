@@ -9,6 +9,6 @@ import java.util.function.Function;
 public class GroceryListDTOMapper implements Function<GroceryList, GroceryListDTO> {
     @Override
     public GroceryListDTO apply(GroceryList groceryList) {
-        return new GroceryListDTO(groceryList.getId(), groceryList.getName(), groceryList.getGroceryListOwner(), groceryList.getGroceryListStore());
+        return new GroceryListDTO(groceryList.getId(), groceryList.getName(), groceryList.getGroceryListOwner(), groceryList.getGroceryListStore(), groceryList.getListRoute());
     }
 }

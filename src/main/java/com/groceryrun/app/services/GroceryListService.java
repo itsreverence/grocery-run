@@ -56,4 +56,10 @@ public class GroceryListService {
         groceryList.setGroceryListStore(groceryListStoreChangeDTO.newStore());
         groceryListRepository.save(groceryList);
     }
+
+    public void updateGroceryListRoute(Integer id, GroceryListRouteChangeDTO groceryListRouteChangeDTO) {
+        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        groceryList.setListRoute(groceryListRouteChangeDTO.newRoute());
+        groceryListRepository.save(groceryList);
+    }
 }
