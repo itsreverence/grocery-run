@@ -24,7 +24,7 @@ public class StoreService {
     }
 
     public void addStore(NewStoreDTO newStoreDTO) {
-        Store store = new Store(newStoreDTO.storeName());
+        Store store = new Store(newStoreDTO.storeName(), newStoreDTO.storeLocation());
         storeRepository.save(store);
     }
 
@@ -49,6 +49,12 @@ public class StoreService {
     public void updateStoreGroceryLists(Integer id, StoreGroceryListsChangeDTO storeGroceryListsChangeDTO) {
         Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         store.setGroceryLists(storeGroceryListsChangeDTO.newGroceryLists());
+        storeRepository.save(store);
+    }
+
+    public void updateStoreLocation(Integer id, StoreLocationChangeDTO storeLocationChangeDTO) {
+        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        store.setStoreLocation(storeLocationChangeDTO.newStoreLocation());
         storeRepository.save(store);
     }
 }

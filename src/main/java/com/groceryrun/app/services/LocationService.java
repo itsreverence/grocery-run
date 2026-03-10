@@ -24,7 +24,7 @@ public class LocationService {
     }
 
     public void addLocation(NewLocationDTO newLocationDTO) {
-        Location location = new Location(newLocationDTO.state(), newLocationDTO.city(), newLocationDTO.state(), newLocationDTO.zip());
+        Location location = new Location(newLocationDTO.state(), newLocationDTO.city(), newLocationDTO.state(), newLocationDTO.zip(), newLocationDTO.store());
         locationRepository.save(location);
     }
 
@@ -61,6 +61,12 @@ public class LocationService {
     public void updateLocationZip(Integer id, LocationZipChangeDTO locationZipChangeDTO) {
         Location location = locationRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         location.setZip(locationZipChangeDTO.newZip());
+        locationRepository.save(location);
+    }
+
+    public void updateLocationStore(Integer id, LocationStoreChangeDTO locationStoreChangeDTO) {
+        Location location = locationRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        location.setStore(locationStoreChangeDTO.newStore());
         locationRepository.save(location);
     }
 }

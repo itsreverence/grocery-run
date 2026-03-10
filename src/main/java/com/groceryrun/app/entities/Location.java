@@ -21,13 +21,17 @@ public class Location {
     @Column(nullable = false)
     private String zip;
 
+    @OneToOne(mappedBy = "storeLocation")
+    private Store store;
+
     public Location() {}
 
-    public Location(String street, String city, String state, String zip) {
+    public Location(String street, String city, String state, String zip, Store store) {
         this.street = street;
         this.city = city;
         this.state = state;
         this.zip = zip;
+        this.store = store;
     }
 
     public Integer getId() {
@@ -50,6 +54,10 @@ public class Location {
         return zip;
     }
 
+    public Store getStore() {
+        return store;
+    }
+
     public void setStreet(String street) {
         this.street = street;
     }
@@ -64,5 +72,9 @@ public class Location {
 
     public void setZip(String zip) {
         this.zip = zip;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 }
