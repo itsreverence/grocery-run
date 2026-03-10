@@ -2,5 +2,5 @@ package com.groceryrun.app.dto.grocerylist;
 
 import com.groceryrun.app.entities.User;
 
-public record GroceryListDTO(Integer id, String name, User groceryListOwner) {
+public record GroceryListOwnerChangeDTO(User newGroceryListOwner) {
 }

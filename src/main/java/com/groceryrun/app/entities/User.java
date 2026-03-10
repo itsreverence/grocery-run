@@ -22,7 +22,7 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
-    @Column(nullable = false)
+    @OneToMany(mappedBy = "groceryListOwner")
     private List<GroceryList> groceryLists;
 
     public User() {}

@@ -12,10 +12,15 @@ public class GroceryList {
     @Column(nullable = false)
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User groceryListOwner;
+
     public GroceryList() {}
 
-    public GroceryList(String name) {
+    public GroceryList(String name, User groceryListOwner) {
         this.name = name;
+        this.groceryListOwner = groceryListOwner;
     }
 
     public Integer getId() {
@@ -26,7 +31,15 @@ public class GroceryList {
         return name;
     }
 
+    public User getGroceryListOwner() {
+        return groceryListOwner;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setGroceryListOwner(User groceryListOwner) {
+        this.groceryListOwner = groceryListOwner;
     }
 }
