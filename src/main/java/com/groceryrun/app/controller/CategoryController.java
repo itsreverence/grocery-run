@@ -5,6 +5,8 @@ import com.groceryrun.app.dto.category.NewCategoryDTO;
 import com.groceryrun.app.services.CategoryService;
 import com.groceryrun.app.dto.category.CategoryAisleChangeDTO;
 import com.groceryrun.app.dto.category.CategoryDTO;
+import com.groceryrun.app.dto.category.CategoryItemsChangeDTO;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,5 +49,10 @@ public class CategoryController {
     @PutMapping("{id}/aisle")
     public void updateCategoryAisle(@PathVariable Integer id, @ModelAttribute CategoryAisleChangeDTO categoryAisleChangeDTO) {
         categoryService.updateCategoryAisle(id, categoryAisleChangeDTO);
+    }
+
+    @PutMapping("{id}/items")
+    public void updateCategoryItems(@PathVariable Integer id, @ModelAttribute CategoryItemsChangeDTO categoryItemsChangeDTO) {
+        categoryService.updateCategoryItems(id, categoryItemsChangeDTO);
     }
 }

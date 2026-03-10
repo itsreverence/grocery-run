@@ -1,5 +1,6 @@
 package com.groceryrun.app.services;
 
+import com.groceryrun.app.dto.item.ItemCategoryChangeDTO;
 import com.groceryrun.app.dto.item.ItemDTO;
 import com.groceryrun.app.dto.item.ItemDTOMapper;
 import com.groceryrun.app.dto.item.ItemGroceryListsChangeDTO;
@@ -31,7 +32,7 @@ public class ItemService {
     }
 
     public void addItem(NewItemDTO newItemDTO) {
-        Item item = new Item(newItemDTO.name());
+        Item item = new Item(newItemDTO.name(), newItemDTO.itemCategory());
         itemRepository.save(item);
     }
 
@@ -52,6 +53,12 @@ public class ItemService {
     public void updateItemGroceryLists(Integer id, ItemGroceryListsChangeDTO itemGroceryListsChangeDTO) {
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         item.setGroceryLists(itemGroceryListsChangeDTO.newGroceryLists());
+        itemRepository.save(item);
+    }
+
+    public void updateItemCategory(Integer id, ItemCategoryChangeDTO itemCategoryChangeDTO) {
+        Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        item.setItemCategory(itemCategoryChangeDTO.newItemCategory());
         itemRepository.save(item);
     }
 }

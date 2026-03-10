@@ -1,4 +1,6 @@
 package com.groceryrun.app.dto.item;
 
-public record NewItemDTO(String name) {
+import com.groceryrun.app.entities.Category;
+
+public record NewItemDTO(String name, Category itemCategory) {
 }

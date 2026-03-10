@@ -18,13 +18,18 @@ public class Item {
     @ManyToMany(mappedBy = "groceryListItems")
     private List<GroceryList> groceryLists;
 
+    @ManyToOne
+    @JoinColumn(name = "item_category")
+    private Category itemCategory;
+
     public Item() {
 
     }
 
-    public Item(String name) {
+    public Item(String name, Category itemCategory) {
         this.name = name;
         this.groceryLists = new ArrayList<>();
+        this.itemCategory = itemCategory;
     }
 
     public Integer getId() {
@@ -39,11 +44,19 @@ public class Item {
         return groceryLists;
     }
 
+    public Category getItemCategory() {
+        return itemCategory;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
     public void setGroceryLists(List<GroceryList> groceryLists) {
         this.groceryLists = groceryLists;
+    }
+
+    public void setItemCategory(Category itemCategory) {
+        this.itemCategory = itemCategory;
     }
 }
