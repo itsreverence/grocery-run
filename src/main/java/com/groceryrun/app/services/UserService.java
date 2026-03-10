@@ -32,7 +32,7 @@ public class UserService {
             throw new IllegalStateException(registerDTO.username() + " already exists");
         }
         String passwordHash = passwordEncoder.encode(registerDTO.password());
-        User user = new User(registerDTO.username(), passwordHash);
+        User user = new User(registerDTO.username(), passwordHash, registerDTO.groceryLists());
         userRepository.save(user);
     }
 
@@ -77,6 +77,12 @@ public class UserService {
     public void updateUserRole(Integer id, RoleChangeDTO roleChangeDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         user.setRole(roleChangeDTO.newRole());
+        userRepository.save(user);
+    }
+
+    public void updateUserGroceryLists(Integer id, GroceryListsChangeDTO groceryListsChangeDTO) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        user.setGroceryLists(groceryListsChangeDTO.newGroceryLists());
         userRepository.save(user);
     }
 }
