@@ -3,6 +3,7 @@ package com.groceryrun.app.services;
 import com.groceryrun.app.dto.aisle.AisleDTO;
 import com.groceryrun.app.dto.aisle.AisleDTOMapper;
 import com.groceryrun.app.dto.aisle.AisleLabelChangeDTO;
+import com.groceryrun.app.dto.aisle.AisleStoreChangeDTO;
 import com.groceryrun.app.dto.aisle.NewAisleDTO;
 import com.groceryrun.app.entities.Aisle;
 import com.groceryrun.app.repositories.AisleRepository;
@@ -45,6 +46,12 @@ public class AisleService {
     public void updateAisleLabel(Integer id, AisleLabelChangeDTO aisleLabelChangeDTO) {
         Aisle aisle = aisleRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         aisle.setLabel(aisleLabelChangeDTO.newLabel());
+        aisleRepository.save(aisle);
+    }
+
+    public void updateAisleStore(Integer id, AisleStoreChangeDTO aisleStoreChangeDTO) {
+        Aisle aisle = aisleRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        aisle.setAisleStore(aisleStoreChangeDTO.newAisleStore());
         aisleRepository.save(aisle);
     }
 }

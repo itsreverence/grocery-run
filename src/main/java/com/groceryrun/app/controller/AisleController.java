@@ -2,6 +2,7 @@ package com.groceryrun.app.controller;
 
 import com.groceryrun.app.dto.aisle.AisleDTO;
 import com.groceryrun.app.dto.aisle.AisleLabelChangeDTO;
+import com.groceryrun.app.dto.aisle.AisleStoreChangeDTO;
 import com.groceryrun.app.dto.aisle.NewAisleDTO;
 import com.groceryrun.app.services.AisleService;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +42,10 @@ public class AisleController {
     @PutMapping("{id}/label")
     public void updateAisleLabel(@PathVariable Integer id, @ModelAttribute AisleLabelChangeDTO aisleLabelChangeDTO) {
         aisleService.updateAisleLabel(id, aisleLabelChangeDTO);
+    }
+
+    @PutMapping("{id}/store")
+    public void updateAisleStore(@PathVariable Integer id, @ModelAttribute AisleStoreChangeDTO aisleStoreChangeDTO) {
+        aisleService.updateAisleStore(id, aisleStoreChangeDTO);
     }
 }

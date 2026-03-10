@@ -57,4 +57,10 @@ public class StoreService {
         store.setStoreLocation(storeLocationChangeDTO.newStoreLocation());
         storeRepository.save(store);
     }
+
+    public void updateStoreAisles(Integer id, StoresAislesChangeDTO storesAislesChangeDTO) {
+        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        store.setAisles(storesAislesChangeDTO.newAisles());
+        storeRepository.save(store);
+    }
 }

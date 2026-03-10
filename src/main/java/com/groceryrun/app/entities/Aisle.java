@@ -12,6 +12,10 @@ public class Aisle {
     @Column(nullable = false)
     private String label;
 
+    @ManyToOne
+    @JoinColumn(name = "aisle_store")
+    private Store aisleStore;
+
     public Aisle() {
 
     }
@@ -28,7 +32,15 @@ public class Aisle {
         return label;
     }
 
+    public Store getAisleStore() {
+        return aisleStore;
+    }
+
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public void setAisleStore(Store aisleStore) {
+        this.aisleStore = aisleStore;
     }
 }

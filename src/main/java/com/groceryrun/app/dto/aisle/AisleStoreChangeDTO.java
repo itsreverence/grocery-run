@@ -2,5 +2,6 @@ package com.groceryrun.app.dto.aisle;
 
 import com.groceryrun.app.entities.Store;
 
-public record AisleDTO(Integer id, String label, Store aisleStore) {
+public record AisleStoreChangeDTO(Store newAisleStore) {
+    
 }
