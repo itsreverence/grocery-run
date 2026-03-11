@@ -1,6 +1,9 @@
 package com.groceryrun.app.dto.category;
 
-import com.groceryrun.app.entities.Aisle;
+import java.util.List;
 
-public record CategoryDTO(Integer id, String label, Aisle categoryAisle) {
+import com.groceryrun.app.entities.Aisle;
+import com.groceryrun.app.entities.Item;
+
+public record CategoryDTO(Integer id, String label, Aisle categoryAisle, List<Item> categoryItems) {
 }

@@ -1,5 +1,6 @@
 package com.groceryrun.app.controller;
 
+import com.groceryrun.app.dto.item.ItemCategoryChangeDTO;
 import com.groceryrun.app.dto.item.ItemDTO;
 import com.groceryrun.app.dto.item.ItemGroceryListsChangeDTO;
 import com.groceryrun.app.dto.item.ItemNameChangeDTO;
@@ -47,5 +48,10 @@ public class ItemController {
     @PutMapping("{id}/grocery-lists")
     public void updateItemGroceryLists(@PathVariable Integer id, @ModelAttribute ItemGroceryListsChangeDTO itemGroceryListsChangeDTO) {
         itemService.updateItemGroceryLists(id, itemGroceryListsChangeDTO);
+    }
+
+    @PutMapping("{id}/category")
+    public void updateItemCategory(@PathVariable Integer id, @ModelAttribute ItemCategoryChangeDTO itemCategoryChangeDTO) {
+        itemService.updateItemCategory(id, itemCategoryChangeDTO);
     }
 }
