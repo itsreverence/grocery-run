@@ -58,7 +58,7 @@ public class ItemService {
 
     public void updateItemCategory(Integer id, ItemCategoryChangeDTO itemCategoryChangeDTO) {
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        item.setItemCategory(itemCategoryChangeDTO.newItemCategory());
+        item.setCategory(itemCategoryChangeDTO.newItemCategory());
         itemRepository.save(item);
     }
 }

@@ -52,13 +52,13 @@ public class AisleService {
 
     public void updateAisleStore(Integer id, AisleStoreChangeDTO aisleStoreChangeDTO) {
         Aisle aisle = aisleRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        aisle.setAisleStore(aisleStoreChangeDTO.newAisleStore());
+        aisle.setStore(aisleStoreChangeDTO.newAisleStore());
         aisleRepository.save(aisle);
     }
 
     public void updateAisleCategories(Integer id, AisleCategoriesChangeDTO aisleCategoriesChangeDTO) {
         Aisle aisle = aisleRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        aisle.setAisleCategories(aisleCategoriesChangeDTO.newAisleCategories());
+        aisle.setCategories(aisleCategoriesChangeDTO.newAisleCategories());
         aisleRepository.save(aisle);
     }
 }
