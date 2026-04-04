@@ -61,4 +61,9 @@ public class UserController {
     public void updateGroceryLists(@PathVariable Integer id, @RequestBody GroceryListsChangeDTO groceryListsChangeDTO) {
         userService.updateUserGroceryLists(id, groceryListsChangeDTO);
     }
+
+    @PutMapping("{id}/stores")
+    public void updateStores(@PathVariable Integer id, @RequestBody UserStoresChangeDTO userStoresChangeDTO) {
+        userService.updateUserStores(id, userStoresChangeDTO);
+    }
 }
