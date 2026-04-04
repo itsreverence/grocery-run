@@ -16,20 +16,20 @@ public class Aisle {
     private String label;
 
     @ManyToOne
-    @JoinColumn(name = "aisle_store")
-    private Store aisleStore;
+    @JoinColumn(name = "store_aisle")
+    private Store store;
 
-    @OneToMany(mappedBy = "categoryAisle")
-    private List<Category> aisleCategories;
+    @OneToMany(mappedBy = "aisle_category")
+    private List<Category> categories;
 
     public Aisle() {
 
     }
 
-    public Aisle(String label, Store aisleStore) {
+    public Aisle(String label, Store store) {
         this.label = label;
-        this.aisleStore = aisleStore;
-        this.aisleCategories = new ArrayList<>();
+        this.store = store;
+        this.categories = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -40,23 +40,23 @@ public class Aisle {
         return label;
     }
 
-    public Store getAisleStore() {
-        return aisleStore;
+    public Store getStore() {
+        return store;
     }
 
-    public List<Category> getAisleCategories() {
-        return aisleCategories;
+    public List<Category> getCategories() {
+        return categories;
     }
 
     public void setLabel(String label) {
         this.label = label;
     }
 
-    public void setAisleStore(Store aisleStore) {
-        this.aisleStore = aisleStore;
+    public void setStore(Store store) {
+        this.store = store;
     }
 
-    public void setAisleCategories(List<Category> aisleCategories) {
-        this.aisleCategories = aisleCategories;
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

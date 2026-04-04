@@ -1,6 +1,6 @@
 package com.groceryrun.app.enums;
 
-public enum AccountRole {
+public enum Role {
     USER,
     ADMIN
 }

@@ -15,21 +15,21 @@ public class Item {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "groceryListItems")
+    @ManyToMany(mappedBy = "grocery_list_items")
     private List<GroceryList> groceryLists;
 
     @ManyToOne
-    @JoinColumn(name = "item_category")
-    private Category itemCategory;
+    @JoinColumn(name = "category_item")
+    private Category category;
 
     public Item() {
 
     }
 
-    public Item(String name, Category itemCategory) {
+    public Item(String name, Category category) {
         this.name = name;
         this.groceryLists = new ArrayList<>();
-        this.itemCategory = itemCategory;
+        this.category = category;
     }
 
     public Integer getId() {
@@ -44,8 +44,8 @@ public class Item {
         return groceryLists;
     }
 
-    public Category getItemCategory() {
-        return itemCategory;
+    public Category getCategory() {
+        return category;
     }
 
     public void setName(String name) {
@@ -56,7 +56,7 @@ public class Item {
         this.groceryLists = groceryLists;
     }
 
-    public void setItemCategory(Category itemCategory) {
-        this.itemCategory = itemCategory;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

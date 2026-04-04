@@ -16,22 +16,22 @@ public class Store {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "groceryListStore")
-    private List<GroceryList> groceryLists;
+    @ManyToMany(mappedBy = "user_stores")
+    private List<User> owners;
 
     @OneToOne
     @JoinColumn(name = "store_location")
-    private Location storeLocation;
+    private Location location;
 
-    @OneToMany(mappedBy = "aisleStore")
+    @OneToMany(mappedBy = "store_aisle")
     private List<Aisle> aisles;
 
     public Store() {}
 
-    public Store(String name, Location storeLocation) {
+    public Store(String name, Location location, List<User> owners) {
         this.name = name;
-        this.groceryLists = new ArrayList<>();
-        this.storeLocation = storeLocation;
+        this.location = location;
+        this.owners = owners;
         this.aisles = new ArrayList<>();
     }
 
@@ -43,12 +43,12 @@ public class Store {
         return name;
     }
 
-    public Location getStoreLocation() {
-        return storeLocation;
+    public Location getLocation() {
+        return location;
     }
 
-    public List<GroceryList> getGroceryLists() {
-        return groceryLists;
+    public List<User> getOwners() {
+        return owners;
     }
 
     public List<Aisle> getAisles() {
@@ -59,12 +59,12 @@ public class Store {
         this.name = name;
     }
 
-    public void setGroceryLists(List<GroceryList> groceryLists) {
-        this.groceryLists = groceryLists;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
-    public void setStoreLocation(Location storeLocation) {
-        this.storeLocation = storeLocation;
+    public void setOwners(List<User> owners) {
+        this.owners = owners;
     }
 
     public void setAisles(List<Aisle> aisles) {
