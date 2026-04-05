@@ -21,7 +21,7 @@ public class Location {
     @Column(nullable = false)
     private String zip;
 
-    @OneToOne(mappedBy = "storeLocation")
+    @OneToOne(mappedBy = "location")
     private Store store;
 
     public Location() {}

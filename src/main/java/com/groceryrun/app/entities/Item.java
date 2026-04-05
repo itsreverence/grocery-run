@@ -15,7 +15,7 @@ public class Item {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "grocery_list_items")
+    @ManyToMany(mappedBy = "items")
     private List<GroceryList> groceryLists;
 
     @ManyToOne

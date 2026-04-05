@@ -16,14 +16,14 @@ public class Store {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "user_stores")
+    @ManyToMany(mappedBy = "stores")
     private List<User> owners;
 
     @OneToOne
     @JoinColumn(name = "store_location")
     private Location location;
 
-    @OneToMany(mappedBy = "store_aisle")
+    @OneToMany(mappedBy = "store")
     private List<Aisle> aisles;
 
     public Store() {}

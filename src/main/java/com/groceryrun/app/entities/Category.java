@@ -19,7 +19,7 @@ public class Category {
     @JoinColumn(name = "aisle_category")
     private Aisle aisle;
 
-    @OneToMany(mappedBy = "category_item")
+    @OneToMany(mappedBy = "category")
     private List<Item> items;
 
     public Category() {
