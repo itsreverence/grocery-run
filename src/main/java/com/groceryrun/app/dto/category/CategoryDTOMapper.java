@@ -9,6 +9,6 @@ import java.util.function.Function;
 public class CategoryDTOMapper implements Function<Category, CategoryDTO> {
     @Override
     public CategoryDTO apply(Category category) {
-        return new CategoryDTO(category.getId(), category.getLabel(), category.getCategoryAisle(), category.getCategoryItems());
+        return new CategoryDTO(category.getId(), category.getLabel(), category.getAisle(), category.getItems());
     }
 }
