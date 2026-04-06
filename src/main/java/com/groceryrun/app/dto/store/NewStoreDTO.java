@@ -1,6 +1,9 @@
 package com.groceryrun.app.dto.store;
 
-import com.groceryrun.app.entities.Location;
+import java.util.List;
 
-public record NewStoreDTO(String storeName, Location storeLocation) {
+import com.groceryrun.app.entities.Location;
+import com.groceryrun.app.entities.User;
+
+public record NewStoreDTO(String storeName, Location storeLocation, List<User> owners) {
 }

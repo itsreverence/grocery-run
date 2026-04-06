@@ -16,20 +16,20 @@ public class Category {
     private String label;
 
     @ManyToOne
-    @JoinColumn(name = "category_aisle")
-    private Aisle categoryAisle;
+    @JoinColumn(name = "aisle_category")
+    private Aisle aisle;
 
-    @OneToMany(mappedBy = "itemCategory")
-    private List<Item> categoryItems;
+    @OneToMany(mappedBy = "category")
+    private List<Item> items;
 
     public Category() {
 
     }
 
-    public Category(String label, Aisle categoryAisle) {
+    public Category(String label, Aisle aisle) {
         this.label = label;
-        this.categoryAisle = categoryAisle;
-        this.categoryItems = new ArrayList<>();
+        this.aisle = aisle;
+        this.items = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -40,23 +40,23 @@ public class Category {
         return label;
     }
 
-    public Aisle getCategoryAisle() {
-        return categoryAisle;
+    public Aisle getAisle() {
+        return aisle;
     }
 
-    public List<Item> getCategoryItems() {
-        return categoryItems;
+    public List<Item> getItems() {
+        return items;
     }
 
     public void setLabel(String label) {
         this.label = label;
     }
 
-    public void setCategoryAisle(Aisle categoryAisle) {
-        this.categoryAisle = categoryAisle;
+    public void setAisle(Aisle aisle) {
+        this.aisle = aisle;
     }
 
-    public void setCategoryItems(List<Item> categoryItems) {
-        this.categoryItems = categoryItems;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }

@@ -76,13 +76,19 @@ public class UserService {
 
     public void updateUserRole(Integer id, RoleChangeDTO roleChangeDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        user.setRole(roleChangeDTO.newAccountRole());
+        user.setRole(roleChangeDTO.newRole());
         userRepository.save(user);
     }
 
     public void updateUserGroceryLists(Integer id, GroceryListsChangeDTO groceryListsChangeDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         user.setGroceryLists(groceryListsChangeDTO.newGroceryLists());
+        userRepository.save(user);
+    }
+
+    public void updateUserStores(Integer id, UserStoresChangeDTO userStoresChangeDTO) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        user.setStores(userStoresChangeDTO.newStores());
         userRepository.save(user);
     }
 }

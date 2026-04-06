@@ -47,37 +47,13 @@ public class GroceryListService {
 
     public void updateGroceryListOwner(Integer id, GroceryListOwnerChangeDTO groceryListOwnerChangeDTO) {
         GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        groceryList.setGroceryListOwner(groceryListOwnerChangeDTO.newGroceryListOwner());
-        groceryListRepository.save(groceryList);
-    }
-
-    public void updateGroceryListStore(Integer id, GroceryListStoreChangeDTO groceryListStoreChangeDTO) {
-        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        groceryList.setGroceryListStore(groceryListStoreChangeDTO.newStore());
-        groceryListRepository.save(groceryList);
-    }
-
-    public void updateGroceryListRoute(Integer id, GroceryListRouteChangeDTO groceryListRouteChangeDTO) {
-        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        groceryList.setListRoute(groceryListRouteChangeDTO.newRoute());
+        groceryList.setOwner(groceryListOwnerChangeDTO.newGroceryListOwner());
         groceryListRepository.save(groceryList);
     }
 
     public void updateGroceryListItems(Integer id, GroceryListItemsChangeDTO groceryListItemsChangeDTO) {
         GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        groceryList.setGroceryListItems(groceryListItemsChangeDTO.newGroceryListItems());
-        groceryListRepository.save(groceryList);
-    }
-
-    public void updateGroceryListItemsQuantities(Integer id, GroceryListItemsQuantitiesChangeDTO groceryListItemsQuantitiesChangeDTO) {
-        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        groceryList.setGroceryListItemsQuantities(groceryListItemsQuantitiesChangeDTO.newGroceryListItemsQuantities());
-        groceryListRepository.save(groceryList);
-    }
-
-    public void updateGroceryListItemsFoundStatus(Integer id, GroceryListItemsFoundStatusChangeDTO groceryListItemsFoundStatusChangeDTO) {
-        GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        groceryList.setGroceryListItemsFoundStatus(groceryListItemsFoundStatusChangeDTO.newGroceryListItemsFoundStatus());
+        groceryList.setItems(groceryListItemsChangeDTO.newGroceryListItems());
         groceryListRepository.save(groceryList);
     }
 }

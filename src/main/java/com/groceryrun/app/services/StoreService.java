@@ -24,7 +24,7 @@ public class StoreService {
     }
 
     public void addStore(NewStoreDTO newStoreDTO) {
-        Store store = new Store(newStoreDTO.storeName(), newStoreDTO.storeLocation());
+        Store store = new Store(newStoreDTO.storeName(), newStoreDTO.storeLocation(), newStoreDTO.owners());
         storeRepository.save(store);
     }
 
@@ -46,21 +46,21 @@ public class StoreService {
         storeRepository.save(store);
     }
 
-    public void updateStoreGroceryLists(Integer id, StoreGroceryListsChangeDTO storeGroceryListsChangeDTO) {
-        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        store.setGroceryLists(storeGroceryListsChangeDTO.newGroceryLists());
-        storeRepository.save(store);
-    }
-
     public void updateStoreLocation(Integer id, StoreLocationChangeDTO storeLocationChangeDTO) {
         Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        store.setStoreLocation(storeLocationChangeDTO.newStoreLocation());
+        store.setLocation(storeLocationChangeDTO.newStoreLocation());
         storeRepository.save(store);
     }
 
     public void updateStoreAisles(Integer id, StoresAislesChangeDTO storesAislesChangeDTO) {
         Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         store.setAisles(storesAislesChangeDTO.newAisles());
+        storeRepository.save(store);
+    }
+
+    public void updateStoreOwners(Integer id, StoreOwnersChangeDTO storeOwnersChangeDTO) {
+        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        store.setOwners(storeOwnersChangeDTO.newOwners());
         storeRepository.save(store);
     }
 }

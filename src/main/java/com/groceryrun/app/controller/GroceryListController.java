@@ -46,28 +46,8 @@ public class GroceryListController {
         groceryListService.updateGroceryListOwner(id, groceryListOwnerChangeDTO);
     }
 
-    @PutMapping("{id}/store")
-    public void updateGroceryListStore(@PathVariable Integer id, @ModelAttribute GroceryListStoreChangeDTO groceryListStoreChangeDTO) {
-        groceryListService.updateGroceryListStore(id, groceryListStoreChangeDTO);
-    }
-
-    @PutMapping("{id}/route")
-    public void updateGroceryListRoute(@PathVariable Integer id, @ModelAttribute GroceryListRouteChangeDTO groceryListRouteChangeDTO) {
-        groceryListService.updateGroceryListRoute(id, groceryListRouteChangeDTO);
-    }
-
     @PutMapping("{id}/items")
     public void updateGroceryListItems(@PathVariable Integer id, @ModelAttribute GroceryListItemsChangeDTO groceryListItemsChangeDTO) {
         groceryListService.updateGroceryListItems(id, groceryListItemsChangeDTO);
-    }
-
-    @PutMapping("{id}/items/quantities")
-    public void updateGroceryListItemsQuantities(@PathVariable Integer id, @ModelAttribute GroceryListItemsQuantitiesChangeDTO groceryListItemsQuantitiesChangeDTO) {
-        groceryListService.updateGroceryListItemsQuantities(id, groceryListItemsQuantitiesChangeDTO);
-    }
-
-    @PutMapping("{id}/items/found-status")
-    public void updateGroceryListItemsFoundStatus(@PathVariable Integer id, @ModelAttribute GroceryListItemsFoundStatusChangeDTO groceryListItemsFoundStatusChangeDTO) {
-        groceryListService.updateGroceryListItemsFoundStatus(id, groceryListItemsFoundStatusChangeDTO);
     }
  }

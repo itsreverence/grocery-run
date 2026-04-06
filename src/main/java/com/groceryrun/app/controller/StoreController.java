@@ -4,6 +4,7 @@ import com.groceryrun.app.dto.store.NewStoreDTO;
 import com.groceryrun.app.dto.store.StoreDTO;
 import com.groceryrun.app.dto.store.StoreGroceryListsChangeDTO;
 import com.groceryrun.app.dto.store.StoreNameChangeDTO;
+import com.groceryrun.app.dto.store.StoreOwnersChangeDTO;
 import com.groceryrun.app.dto.store.StoresAislesChangeDTO;
 import com.groceryrun.app.dto.store.StoreLocationChangeDTO;
 import com.groceryrun.app.services.StoreService;
@@ -46,11 +47,6 @@ public class StoreController {
         storeService.updateStoreName(id, storeNameChangeDTO);
     }
 
-    @PutMapping("{id}/grocery-lists")
-    public void updateStoreGroceryLists(@PathVariable Integer id, @ModelAttribute StoreGroceryListsChangeDTO storeGroceryListsChangeDTO) {
-        storeService.updateStoreGroceryLists(id, storeGroceryListsChangeDTO);
-    }
-
     @PutMapping("{id}/location")
     public void updateStoreLocation(@PathVariable Integer id, @ModelAttribute StoreLocationChangeDTO storeLocationChangeDTO) {
         storeService.updateStoreLocation(id, storeLocationChangeDTO);
@@ -59,5 +55,10 @@ public class StoreController {
     @PutMapping("{id}/aisles")
     public void updateStoreAisles(@PathVariable Integer id, @ModelAttribute StoresAislesChangeDTO storesAislesChangeDTO) {
         storeService.updateStoreAisles(id, storesAislesChangeDTO);
+    }
+
+    @PutMapping("{id}/owners")
+    public void updateStoreOwners(@PathVariable Integer id, @ModelAttribute StoreOwnersChangeDTO storeOwnersChangeDTO) {
+        storeService.updateStoreOwners(id, storeOwnersChangeDTO);
     }
 }

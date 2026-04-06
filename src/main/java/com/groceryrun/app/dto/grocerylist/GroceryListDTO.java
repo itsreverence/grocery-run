@@ -3,9 +3,7 @@ package com.groceryrun.app.dto.grocerylist;
 import java.util.List;
 
 import com.groceryrun.app.entities.Item;
-import com.groceryrun.app.entities.Route;
-import com.groceryrun.app.entities.Store;
 import com.groceryrun.app.entities.User;
 
-public record GroceryListDTO(Integer id, String name, User groceryListOwner, Store groceryListStore, Route listRoute, List<Item> groceryListItems, List<Integer> groceryListItemsQuantities, List<Boolean> groceryListItemsFoundStatus) {
+public record GroceryListDTO(Integer id, String name, User groceryListOwner, List<Item> groceryListItems) {
 }
