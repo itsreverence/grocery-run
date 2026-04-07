@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Run</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
+</head>
+<body class="gr-landing-page">
+<main class="gr-page gr-landing">
+    <header class="gr-header">
+        <div class="gr-brand"><a th:href="@{/}">Grocery Run</a></div>
+        <nav class="gr-nav" aria-label="Primary">
+            <a th:href="@{/login}">Sign in</a>
+            <a th:href="@{/signup}">Create account</a>
+        </nav>
+    </header>
+
+    <section class="gr-hero gr-landing-hero">
+        <article class="gr-card">
+            <p class="gr-eyebrow">Plan less. Shop better.</p>
+            <h1 class="gr-h1">Walk in knowing what you need.</h1>
+            <p class="gr-prose">
+                Fewer last-minute loops through the aisles, fewer “I forgot the milk” moments. Grocery Run keeps your lists and stores within reach—before you pick up a cart.
+            </p>
+            <div class="gr-actions">
+                <a class="gr-btn gr-btn--primary" th:href="@{/signup}">Get started</a>
+                <a class="gr-btn gr-btn--ghost" th:href="@{/login}">I already have an account</a>
+            </div>
+        </article>
+        <article class="gr-card">
+            <p class="gr-landing-aside-label">Example list</p>
+            <figure class="gr-landing-preview">
+                <figcaption class="gr-landing-preview-caption">Saturday morning run</figcaption>
+                <ul>
+                    <li>Whole milk, 2%</li>
+                    <li>Sourdough loaf</li>
+                    <li>Leafy greens</li>
+                    <li>Coffee beans</li>
+                    <li>Dish soap</li>
+                </ul>
+            </figure>
+        </article>
+    </section>
+
+    <section class="gr-grid-3 gr-landing-features">
+        <article class="gr-card">
+            <span class="gr-landing-feature-num">01</span>
+            <h2>Lists that stick with you</h2>
+            <p>
+                Capture what you need when you think of it—produce, pantry, freezer—so Thursday’s quick trip doesn’t turn into three forgotten items and a second run.
+            </p>
+        </article>
+        <article class="gr-card">
+            <span class="gr-landing-feature-num">02</span>
+            <h2>Stores you recognize</h2>
+            <p>
+                Keep the places you shop and where they sit in your week. Less mental overhead when you’re planning errands or splitting a run across two stops.
+            </p>
+        </article>
+        <article class="gr-card">
+            <span class="gr-landing-feature-num">03</span>
+            <h2>A lighter weekly rhythm</h2>
+            <p>
+                You’re not here to manage software—you’re here to eat well without the stress. We keep paths short and the interface quiet so planning stays in the background.
+            </p>
+        </article>
+    </section>
+</main>
+</body>
+</html>

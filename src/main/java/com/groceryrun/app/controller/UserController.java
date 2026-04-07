@@ -2,6 +2,7 @@ package com.groceryrun.app.controller;
 
 
 import com.groceryrun.app.dto.user.*;
+import com.groceryrun.app.dto.shared.GroceryListsChangeDTO;
 import com.groceryrun.app.services.UserService;
 import org.springframework.web.bind.annotation.*;
 

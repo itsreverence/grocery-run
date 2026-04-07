@@ -23,8 +23,11 @@ class WebSecurityConfig {
         // @formatter:off
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/signup").permitAll()
+                        .requestMatchers("/", "/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                        .requestMatchers("/css/**").permitAll()
+                        .requestMatchers("/stores", "/dashboard", "/aisles/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/stores/admin/**", "/api/v1/aisles/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form

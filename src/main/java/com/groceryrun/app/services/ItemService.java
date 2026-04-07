@@ -3,8 +3,8 @@ package com.groceryrun.app.services;
 import com.groceryrun.app.dto.item.ItemCategoryChangeDTO;
 import com.groceryrun.app.dto.item.ItemDTO;
 import com.groceryrun.app.dto.item.ItemDTOMapper;
-import com.groceryrun.app.dto.item.ItemGroceryListsChangeDTO;
-import com.groceryrun.app.dto.item.ItemNameChangeDTO;
+import com.groceryrun.app.dto.shared.GroceryListsChangeDTO;
+import com.groceryrun.app.dto.shared.NameChangeDTO;
 import com.groceryrun.app.dto.item.NewItemDTO;
 import com.groceryrun.app.entities.Item;
 import com.groceryrun.app.repositories.ItemRepository;
@@ -44,15 +44,15 @@ public class ItemService {
         itemRepository.deleteById(id);
     }
 
-    public void updateItemName(Integer id, ItemNameChangeDTO itemNameChangeDTO) {
+    public void updateItemName(Integer id, NameChangeDTO nameChangeDTO) {
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        item.setName(itemNameChangeDTO.newName());
+        item.setName(nameChangeDTO.newName());
         itemRepository.save(item);
     }
 
-    public void updateItemGroceryLists(Integer id, ItemGroceryListsChangeDTO itemGroceryListsChangeDTO) {
+    public void updateItemGroceryLists(Integer id, GroceryListsChangeDTO groceryListsChangeDTO) {
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        item.setGroceryLists(itemGroceryListsChangeDTO.newGroceryLists());
+        item.setGroceryLists(groceryListsChangeDTO.newGroceryLists());
         itemRepository.save(item);
     }
 

@@ -1,7 +1,7 @@
 package com.groceryrun.app.dto.store;
 
-import com.groceryrun.app.entities.Location;
+import com.groceryrun.app.dto.location.NewLocationDTO;
 
-public record StoreLocationChangeDTO(Location newStoreLocation) {
+public record StoreLocationChangeDTO(NewLocationDTO newLocationDTO) {
     
 }

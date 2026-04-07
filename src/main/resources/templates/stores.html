@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>Stores · Grocery Run</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
+    <style>
+        .gr-store-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            flex-wrap: wrap;
+            margin-top: 0.25rem;
+        }
+
+        .gr-store-rename {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 0.4rem;
+            padding: 0.95rem;
+            border: 1px solid var(--gr-border);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .gr-store-rename[hidden] {
+            display: none;
+        }
+
+        .gr-store-rename .gr-form-row {
+            margin-top: 0;
+        }
+
+        .gr-store-rename .gr-input {
+            min-width: min(100%, 18rem);
+        }
+
+        .gr-store-inline-status {
+            margin-top: 0;
+        }
+
+        .gr-store-secondary {
+            font-size: 0.875rem;
+            color: var(--gr-muted);
+            line-height: 1.45;
+        }
+
+        .gr-store-owner-editor {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 0.4rem;
+            padding: 0.95rem;
+            border: 1px solid var(--gr-border);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .gr-store-owner-editor[hidden] {
+            display: none;
+        }
+
+        .gr-store-location-editor {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 0.4rem;
+            padding: 0.95rem;
+            border: 1px solid var(--gr-border);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .gr-store-location-editor[hidden] {
+            display: none;
+        }
+
+        .gr-store-location-editor .gr-form-row {
+            margin-top: 0;
+        }
+
+        .gr-store-aisle-editor {
+            display: grid;
+            gap: 0.85rem;
+            margin-top: 0.4rem;
+            padding: 0.95rem;
+            border: 1px solid var(--gr-border);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .gr-store-aisle-editor[hidden] {
+            display: none;
+        }
+
+        .gr-owner-list {
+            display: grid;
+            gap: 0.55rem;
+        }
+
+        .gr-owner-option {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--gr-text);
+            font-size: 0.9375rem;
+        }
+
+        .gr-owner-option input {
+            margin: 0;
+        }
+
+        .gr-owner-help {
+            font-size: 0.875rem;
+            color: var(--gr-muted);
+        }
+
+        .gr-aisle-list {
+            display: grid;
+            gap: 0.65rem;
+        }
+
+        .gr-aisle-chip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.75rem 0.85rem;
+            border: 1px solid rgba(31, 28, 23, 0.1);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(248, 243, 234, 0.82);
+        }
+
+        .gr-aisle-label {
+            font-size: 0.95rem;
+            color: var(--gr-text);
+        }
+
+        .gr-aisle-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .gr-aisle-empty {
+            font-size: 0.875rem;
+            color: var(--gr-muted);
+        }
+    </style>
+</head>
+<body>
+<main class="gr-page">
+    <header class="gr-header">
+        <div class="gr-brand"><a th:href="@{/dashboard}">Grocery Run</a></div>
+        <div class="gr-header-actions">
+            <nav class="gr-nav" aria-label="Workspace">
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <form class="gr-inline-form" th:action="@{/logout}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button class="gr-btn gr-btn--link" type="submit">Sign out</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <section class="gr-hero-block gr-stores-intro">
+        <p class="gr-eyebrow">Store management</p>
+        <h1 class="gr-h1">Your stores, one screen.</h1>
+        <p class="gr-prose">
+            Review locations you manage, add new stores, and keep addresses up to date—list and form stay side by side below.
+        </p>
+    </section>
+
+    <section class="gr-section-grid">
+        <article class="gr-card">
+            <span class="gr-tag">List</span>
+            <h2>Managed stores</h2>
+            <p>
+                Everything assigned to your admin account appears here.
+            </p>
+            <div class="gr-stores-list-panel">
+                <div id="stores-status" class="gr-status">Loading your stores…</div>
+                <ul id="managed-stores-list" class="gr-managed-stores" hidden></ul>
+            </div>
+        </article>
+
+        <article class="gr-card">
+            <span class="gr-tag">New</span>
+            <h2>Add a store</h2>
+            <p>
+                Name and address; after you save, it shows in the list on the left.
+            </p>
+            <div class="gr-stores-form-body">
+                <form id="create-store-form">
+                    <div class="gr-form-grid">
+                        <div class="gr-field gr-field--full">
+                            <label for="store-name">Store name</label>
+                            <input class="gr-input" id="store-name" name="storeName" type="text" required maxlength="100" />
+                        </div>
+
+                        <div class="gr-field gr-field--full">
+                            <label for="store-street">Street</label>
+                            <input class="gr-input" id="store-street" name="street" type="text" required />
+                        </div>
+
+                        <div class="gr-field">
+                            <label for="store-city">City</label>
+                            <input class="gr-input" id="store-city" name="city" type="text" required />
+                        </div>
+
+                        <div class="gr-field">
+                            <label for="store-state">State</label>
+                            <input class="gr-input" id="store-state" name="state" type="text" required />
+                        </div>
+
+                        <div class="gr-field">
+                            <label for="store-zip">ZIP</label>
+                            <input class="gr-input" id="store-zip" name="zip" type="text" required />
+                        </div>
+                    </div>
+
+                    <div class="gr-form-row">
+                        <button id="create-store-button" class="gr-btn gr-btn--primary" type="submit">Create store</button>
+                        <span class="gr-form-note">New stores attach to your admin account automatically.</span>
+                    </div>
+                </form>
+                <div id="create-store-status" class="gr-form-status" hidden></div>
+            </div>
+        </article>
+    </section>
+</main>
+<script>
+    const storesStatus = document.getElementById("stores-status");
+    const managedStoresList = document.getElementById("managed-stores-list");
+    const createStoreForm = document.getElementById("create-store-form");
+    const createStoreButton = document.getElementById("create-store-button");
+    const createStoreStatus = document.getElementById("create-store-status");
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    let adminUsers = [];
+    let adminUsersLoadFailed = false;
+
+    const secureHeaders = (headers = {}) => ({
+        ...headers,
+        ...(csrfToken && csrfHeader ? { [csrfHeader]: csrfToken } : {})
+    });
+
+    const formatLocation = (store) => {
+        const location = store.storeLocation;
+        if (!location) {
+            return "No location added yet.";
+        }
+
+        const parts = [location.street, location.city, location.state, location.zip]
+            .filter(Boolean);
+
+        return parts.length > 0 ? parts.join(", ") : "No location added yet.";
+    };
+
+    const buildStat = (label, value) => {
+        const stat = document.createElement("span");
+        stat.className = "gr-store-stat";
+        stat.textContent = value + " " + label;
+        return stat;
+    };
+
+    const formatOwners = (store) => {
+        if (!Array.isArray(store.owners) || store.owners.length === 0) {
+            return "No owners assigned.";
+        }
+
+        return store.owners
+            .map((owner) => owner.username)
+            .filter(Boolean)
+            .join(", ");
+    };
+
+    const setInlineStatus = (statusNode, message, state) => {
+        statusNode.hidden = false;
+        statusNode.textContent = message;
+        if (state) {
+            statusNode.dataset.state = state;
+        } else {
+            delete statusNode.dataset.state;
+        }
+    };
+
+    const renderStore = (store) => {
+        const item = document.createElement("li");
+        item.className = "gr-store-item";
+
+        const header = document.createElement("div");
+        header.className = "gr-store-row";
+
+        const name = document.createElement("h3");
+        name.className = "gr-store-name";
+        name.textContent = store.name || "Unnamed store";
+
+        const id = document.createElement("span");
+        id.className = "gr-store-id";
+        id.textContent = "Store #" + (store.id ?? "N/A");
+
+        header.append(name, id);
+
+        const meta = document.createElement("div");
+        meta.className = "gr-store-meta";
+        meta.textContent = formatLocation(store);
+
+        const ownerSummary = document.createElement("div");
+        ownerSummary.className = "gr-store-secondary";
+        ownerSummary.textContent = "Owners: " + formatOwners(store);
+
+        const stats = document.createElement("div");
+        stats.className = "gr-store-stats";
+        stats.append(
+            buildStat("owners", Array.isArray(store.owners) ? store.owners.length : 0),
+            buildStat("aisles", Array.isArray(store.aisles) ? store.aisles.length : 0)
+        );
+
+        const actions = document.createElement("div");
+        actions.className = "gr-store-actions";
+
+        const editButton = document.createElement("button");
+        editButton.className = "gr-btn gr-btn--ghost";
+        editButton.type = "button";
+        editButton.textContent = "Rename";
+
+        const ownersButton = document.createElement("button");
+        ownersButton.className = "gr-btn gr-btn--ghost";
+        ownersButton.type = "button";
+        ownersButton.textContent = "Owners";
+        ownersButton.disabled = adminUsersLoadFailed;
+
+        const locationButton = document.createElement("button");
+        locationButton.className = "gr-btn gr-btn--ghost";
+        locationButton.type = "button";
+        locationButton.textContent = "Location";
+
+        const aislesButton = document.createElement("button");
+        aislesButton.className = "gr-btn gr-btn--ghost";
+        aislesButton.type = "button";
+        aislesButton.textContent = "Aisles";
+
+        const renameForm = document.createElement("form");
+        renameForm.className = "gr-store-rename";
+        renameForm.hidden = true;
+
+        const renameField = document.createElement("div");
+        renameField.className = "gr-field";
+
+        const renameLabel = document.createElement("label");
+        renameLabel.htmlFor = "rename-store-" + store.id;
+        renameLabel.textContent = "Store name";
+
+        const renameInput = document.createElement("input");
+        renameInput.className = "gr-input";
+        renameInput.id = "rename-store-" + store.id;
+        renameInput.name = "newName";
+        renameInput.type = "text";
+        renameInput.required = true;
+        renameInput.maxLength = 100;
+        renameInput.value = store.name || "";
+
+        renameField.append(renameLabel, renameInput);
+
+        const renameActions = document.createElement("div");
+        renameActions.className = "gr-form-row";
+
+        const renameSaveButton = document.createElement("button");
+        renameSaveButton.className = "gr-btn gr-btn--primary";
+        renameSaveButton.type = "submit";
+        renameSaveButton.textContent = "Save name";
+
+        const renameCancelButton = document.createElement("button");
+        renameCancelButton.className = "gr-btn gr-btn--ghost";
+        renameCancelButton.type = "button";
+        renameCancelButton.textContent = "Cancel";
+
+        renameActions.append(renameSaveButton, renameCancelButton);
+
+        const renameStatus = document.createElement("div");
+        renameStatus.className = "gr-form-status gr-store-inline-status";
+        renameStatus.hidden = true;
+
+        renameForm.append(renameField, renameActions, renameStatus);
+
+        const ownersForm = document.createElement("form");
+        ownersForm.className = "gr-store-owner-editor";
+        ownersForm.hidden = true;
+
+        const locationForm = document.createElement("form");
+        locationForm.className = "gr-store-location-editor";
+        locationForm.hidden = true;
+
+        const aislesEditor = document.createElement("section");
+        aislesEditor.className = "gr-store-aisle-editor";
+        aislesEditor.hidden = true;
+
+        const ownersHelp = document.createElement("div");
+        ownersHelp.className = "gr-owner-help";
+        ownersHelp.textContent = adminUsersLoadFailed
+            ? "Admin users could not be loaded right now."
+            : "Choose which admin accounts manage this store.";
+
+        const ownersList = document.createElement("div");
+        ownersList.className = "gr-owner-list";
+
+        const currentOwnerIds = new Set(
+            Array.isArray(store.owners) ? store.owners.map((owner) => owner.id) : []
+        );
+
+        adminUsers.forEach((user) => {
+            const option = document.createElement("label");
+            option.className = "gr-owner-option";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = "ownerIds";
+            checkbox.value = String(user.id);
+            checkbox.checked = currentOwnerIds.has(user.id);
+
+            const text = document.createElement("span");
+            text.textContent = user.username;
+
+            option.append(checkbox, text);
+            ownersList.append(option);
+        });
+
+        const ownersActions = document.createElement("div");
+        ownersActions.className = "gr-form-row";
+
+        const ownersSaveButton = document.createElement("button");
+        ownersSaveButton.className = "gr-btn gr-btn--primary";
+        ownersSaveButton.type = "submit";
+        ownersSaveButton.textContent = "Save owners";
+        ownersSaveButton.disabled = adminUsersLoadFailed;
+
+        const ownersCancelButton = document.createElement("button");
+        ownersCancelButton.className = "gr-btn gr-btn--ghost";
+        ownersCancelButton.type = "button";
+        ownersCancelButton.textContent = "Cancel";
+
+        ownersActions.append(ownersSaveButton, ownersCancelButton);
+
+        const ownersStatus = document.createElement("div");
+        ownersStatus.className = "gr-form-status gr-store-inline-status";
+        ownersStatus.hidden = true;
+
+        ownersForm.append(ownersHelp, ownersList, ownersActions, ownersStatus);
+
+        const locationFields = document.createElement("div");
+        locationFields.className = "gr-form-grid";
+
+        const location = store.storeLocation || {};
+
+        const buildLocationField = (key, labelText, value, fullWidth = false) => {
+            const field = document.createElement("div");
+            field.className = "gr-field" + (fullWidth ? " gr-field--full" : "");
+
+            const label = document.createElement("label");
+            label.htmlFor = "location-" + key + "-" + store.id;
+            label.textContent = labelText;
+
+            const input = document.createElement("input");
+            input.className = "gr-input";
+            input.id = "location-" + key + "-" + store.id;
+            input.name = key;
+            input.type = "text";
+            input.required = true;
+            input.value = value || "";
+
+            field.append(label, input);
+            return { field, input };
+        };
+
+        const streetField = buildLocationField("street", "Street", location.street, true);
+        const cityField = buildLocationField("city", "City", location.city);
+        const stateField = buildLocationField("state", "State", location.state);
+        const zipField = buildLocationField("zip", "ZIP", location.zip);
+
+        locationFields.append(streetField.field, cityField.field, stateField.field, zipField.field);
+
+        const locationActions = document.createElement("div");
+        locationActions.className = "gr-form-row";
+
+        const locationSaveButton = document.createElement("button");
+        locationSaveButton.className = "gr-btn gr-btn--primary";
+        locationSaveButton.type = "submit";
+        locationSaveButton.textContent = "Save location";
+
+        const locationCancelButton = document.createElement("button");
+        locationCancelButton.className = "gr-btn gr-btn--ghost";
+        locationCancelButton.type = "button";
+        locationCancelButton.textContent = "Cancel";
+
+        locationActions.append(locationSaveButton, locationCancelButton);
+
+        const locationStatus = document.createElement("div");
+        locationStatus.className = "gr-form-status gr-store-inline-status";
+        locationStatus.hidden = true;
+
+        locationForm.append(locationFields, locationActions, locationStatus);
+
+        const aisleHelp = document.createElement("div");
+        aisleHelp.className = "gr-owner-help";
+        aisleHelp.textContent = "Add aisles one at a time or remove the ones this store no longer uses.";
+
+        const aisleList = document.createElement("div");
+        aisleList.className = "gr-aisle-list";
+
+        const currentAisles = Array.isArray(store.aisles) ? store.aisles : [];
+
+        if (currentAisles.length === 0) {
+            const emptyAisles = document.createElement("div");
+            emptyAisles.className = "gr-aisle-empty";
+            emptyAisles.textContent = "No aisles have been added yet.";
+            aisleList.append(emptyAisles);
+        } else {
+            currentAisles.forEach((aisle) => {
+                const aisleRow = document.createElement("div");
+                aisleRow.className = "gr-aisle-chip";
+
+                const aisleLabel = document.createElement("span");
+                aisleLabel.className = "gr-aisle-label";
+                aisleLabel.textContent = aisle.label || "Untitled aisle";
+
+                const aisleActions = document.createElement("div");
+                aisleActions.className = "gr-aisle-actions";
+
+                const aisleManageLink = document.createElement("a");
+                aisleManageLink.className = "gr-btn gr-btn--ghost";
+                aisleManageLink.href = "/aisles/" + aisle.id;
+                aisleManageLink.textContent = "Manage";
+
+                const aisleRemoveButton = document.createElement("button");
+                aisleRemoveButton.className = "gr-btn gr-btn--ghost";
+                aisleRemoveButton.type = "button";
+                aisleRemoveButton.textContent = "Remove";
+
+                aisleRemoveButton.addEventListener("click", async () => {
+                    aisleRemoveButton.disabled = true;
+                    setInlineStatus(aislesStatus, "Removing aisle...", "");
+
+                    try {
+                        const response = await fetch("/api/v1/stores/admin/" + store.id + "/aisles/" + aisle.id, {
+                            method: "DELETE",
+                            headers: secureHeaders({
+                                "Accept": "application/json"
+                            })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error("Request failed with status " + response.status);
+                        }
+
+                        setInlineStatus(aislesStatus, "Aisle removed.", "success");
+                        await loadManagedStores();
+                    } catch (error) {
+                        aisleRemoveButton.disabled = false;
+                        setInlineStatus(aislesStatus, "Could not remove the aisle right now.", "error");
+                        console.error("Failed to remove aisle", error);
+                    }
+                });
+
+                aisleActions.append(aisleManageLink, aisleRemoveButton);
+                aisleRow.append(aisleLabel, aisleActions);
+                aisleList.append(aisleRow);
+            });
+        }
+
+        const aisleCreateForm = document.createElement("form");
+        aisleCreateForm.className = "gr-store-rename";
+
+        const aisleField = document.createElement("div");
+        aisleField.className = "gr-field";
+
+        const aisleFieldLabel = document.createElement("label");
+        aisleFieldLabel.htmlFor = "new-aisle-" + store.id;
+        aisleFieldLabel.textContent = "New aisle label";
+
+        const aisleInput = document.createElement("input");
+        aisleInput.className = "gr-input";
+        aisleInput.id = "new-aisle-" + store.id;
+        aisleInput.name = "label";
+        aisleInput.type = "text";
+        aisleInput.required = true;
+        aisleInput.maxLength = 100;
+        aisleInput.placeholder = "Produce, Frozen, Bakery...";
+
+        aisleField.append(aisleFieldLabel, aisleInput);
+
+        const aisleCreateActions = document.createElement("div");
+        aisleCreateActions.className = "gr-form-row";
+
+        const aisleCreateButton = document.createElement("button");
+        aisleCreateButton.className = "gr-btn gr-btn--primary";
+        aisleCreateButton.type = "submit";
+        aisleCreateButton.textContent = "Add aisle";
+
+        const aisleCancelButton = document.createElement("button");
+        aisleCancelButton.className = "gr-btn gr-btn--ghost";
+        aisleCancelButton.type = "button";
+        aisleCancelButton.textContent = "Close";
+
+        aisleCreateActions.append(aisleCreateButton, aisleCancelButton);
+
+        const aislesStatus = document.createElement("div");
+        aislesStatus.className = "gr-form-status gr-store-inline-status";
+        aislesStatus.hidden = true;
+
+        aisleCreateForm.append(aisleField, aisleCreateActions);
+        aislesEditor.append(aisleHelp, aisleList, aisleCreateForm, aislesStatus);
+
+        editButton.addEventListener("click", () => {
+            renameForm.hidden = false;
+            ownersForm.hidden = true;
+            locationForm.hidden = true;
+            aislesEditor.hidden = true;
+            renameInput.focus();
+            renameInput.select();
+            renameStatus.hidden = true;
+        });
+
+        renameCancelButton.addEventListener("click", () => {
+            renameForm.hidden = true;
+            renameInput.value = store.name || "";
+            renameStatus.hidden = true;
+        });
+
+        ownersButton.addEventListener("click", () => {
+            ownersForm.hidden = false;
+            renameForm.hidden = true;
+            locationForm.hidden = true;
+            aislesEditor.hidden = true;
+            ownersStatus.hidden = true;
+        });
+
+        ownersCancelButton.addEventListener("click", () => {
+            ownersForm.hidden = true;
+            ownersStatus.hidden = true;
+        });
+
+        locationButton.addEventListener("click", () => {
+            locationForm.hidden = false;
+            renameForm.hidden = true;
+            ownersForm.hidden = true;
+            aislesEditor.hidden = true;
+            locationStatus.hidden = true;
+            streetField.input.focus();
+        });
+
+        locationCancelButton.addEventListener("click", () => {
+            locationForm.hidden = true;
+            locationStatus.hidden = true;
+            streetField.input.value = location.street || "";
+            cityField.input.value = location.city || "";
+            stateField.input.value = location.state || "";
+            zipField.input.value = location.zip || "";
+        });
+
+        aislesButton.addEventListener("click", () => {
+            aislesEditor.hidden = false;
+            renameForm.hidden = true;
+            ownersForm.hidden = true;
+            locationForm.hidden = true;
+            aislesStatus.hidden = true;
+            aisleInput.focus();
+        });
+
+        aisleCancelButton.addEventListener("click", () => {
+            aislesEditor.hidden = true;
+            aislesStatus.hidden = true;
+            aisleInput.value = "";
+        });
+
+        renameForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const nextName = renameInput.value.trim();
+            if (!nextName) {
+                setInlineStatus(renameStatus, "Store name is required.", "error");
+                return;
+            }
+
+            renameSaveButton.disabled = true;
+            renameCancelButton.disabled = true;
+            setInlineStatus(renameStatus, "Saving name...", "");
+
+            try {
+                const response = await fetch("/api/v1/stores/admin/" + store.id + "/name", {
+                    method: "PUT",
+                    headers: secureHeaders({
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }),
+                    body: JSON.stringify({ newName: nextName })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                setInlineStatus(renameStatus, "Store name updated.", "success");
+                await loadManagedStores();
+            } catch (error) {
+                setInlineStatus(renameStatus, "Could not update the store name right now.", "error");
+                console.error("Failed to update store name", error);
+            } finally {
+                renameSaveButton.disabled = false;
+                renameCancelButton.disabled = false;
+            }
+        });
+
+        ownersForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const selectedOwnerIds = Array.from(
+                ownersForm.querySelectorAll('input[name="ownerIds"]:checked')
+            ).map((input) => Number(input.value));
+
+            if (selectedOwnerIds.length === 0) {
+                setInlineStatus(ownersStatus, "Select at least one owner.", "error");
+                return;
+            }
+
+            ownersSaveButton.disabled = true;
+            ownersCancelButton.disabled = true;
+            setInlineStatus(ownersStatus, "Saving owners...", "");
+
+            try {
+                const response = await fetch("/api/v1/stores/admin/" + store.id + "/owners", {
+                    method: "PUT",
+                    headers: secureHeaders({
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }),
+                    body: JSON.stringify({ newOwnerIds: selectedOwnerIds })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                setInlineStatus(ownersStatus, "Store owners updated.", "success");
+                await loadManagedStores();
+            } catch (error) {
+                setInlineStatus(ownersStatus, "Could not update store owners right now.", "error");
+                console.error("Failed to update store owners", error);
+            } finally {
+                ownersSaveButton.disabled = false;
+                ownersCancelButton.disabled = false;
+            }
+        });
+
+        locationForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const nextLocation = {
+                street: streetField.input.value.trim(),
+                city: cityField.input.value.trim(),
+                state: stateField.input.value.trim(),
+                zip: zipField.input.value.trim()
+            };
+
+            if (!nextLocation.street || !nextLocation.city || !nextLocation.state || !nextLocation.zip) {
+                setInlineStatus(locationStatus, "All location fields are required.", "error");
+                return;
+            }
+
+            locationSaveButton.disabled = true;
+            locationCancelButton.disabled = true;
+            setInlineStatus(locationStatus, "Saving location...", "");
+
+            try {
+                const response = await fetch("/api/v1/stores/admin/" + store.id + "/location", {
+                    method: "PUT",
+                    headers: secureHeaders({
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }),
+                    body: JSON.stringify({ newLocationDTO: nextLocation })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                setInlineStatus(locationStatus, "Store location updated.", "success");
+                await loadManagedStores();
+            } catch (error) {
+                setInlineStatus(locationStatus, "Could not update the store location right now.", "error");
+                console.error("Failed to update store location", error);
+            } finally {
+                locationSaveButton.disabled = false;
+                locationCancelButton.disabled = false;
+            }
+        });
+
+        aisleCreateForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const nextLabel = aisleInput.value.trim();
+            if (!nextLabel) {
+                setInlineStatus(aislesStatus, "Aisle label is required.", "error");
+                return;
+            }
+
+            aisleCreateButton.disabled = true;
+            aisleCancelButton.disabled = true;
+            setInlineStatus(aislesStatus, "Adding aisle...", "");
+
+            try {
+                const response = await fetch("/api/v1/stores/admin/" + store.id + "/aisles", {
+                    method: "POST",
+                    headers: secureHeaders({
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }),
+                    body: JSON.stringify({ label: nextLabel })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                aisleInput.value = "";
+                setInlineStatus(aislesStatus, "Aisle added.", "success");
+                await loadManagedStores();
+            } catch (error) {
+                setInlineStatus(aislesStatus, "Could not add the aisle right now.", "error");
+                console.error("Failed to add aisle", error);
+            } finally {
+                aisleCreateButton.disabled = false;
+                aisleCancelButton.disabled = false;
+            }
+        });
+
+        actions.append(editButton, ownersButton, locationButton, aislesButton);
+        item.append(header, meta, ownerSummary, stats, actions, renameForm, ownersForm, locationForm, aislesEditor);
+        return item;
+    };
+
+    const loadAdminUsers = async () => {
+        try {
+            const response = await fetch("/api/v1/users", {
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            const users = await response.json();
+            adminUsers = Array.isArray(users)
+                ? users.filter((user) => user.role === "ADMIN")
+                : [];
+            adminUsersLoadFailed = false;
+        } catch (error) {
+            adminUsers = [];
+            adminUsersLoadFailed = true;
+            console.error("Failed to load admin users", error);
+        }
+    };
+
+    const loadManagedStores = async () => {
+        try {
+            const response = await fetch("/api/v1/stores/admin/owned", {
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            const stores = await response.json();
+
+            if (!Array.isArray(stores) || stores.length === 0) {
+                managedStoresList.innerHTML = "";
+                managedStoresList.hidden = true;
+                storesStatus.textContent = "You are not assigned to any stores yet.";
+                storesStatus.dataset.state = "empty";
+                return;
+            }
+
+            storesStatus.textContent = "Showing " + stores.length + " managed store" + (stores.length === 1 ? "" : "s") + ".";
+            storesStatus.dataset.state = "loaded";
+
+            managedStoresList.innerHTML = "";
+            stores.forEach((store) => {
+                managedStoresList.appendChild(renderStore(store));
+            });
+
+            managedStoresList.hidden = false;
+        } catch (error) {
+            managedStoresList.innerHTML = "";
+            managedStoresList.hidden = true;
+            storesStatus.textContent = "Could not load managed stores right now.";
+            storesStatus.dataset.state = "error";
+            console.error("Failed to load managed stores", error);
+        }
+    };
+
+    const setCreateStoreStatus = (message, state) => {
+        createStoreStatus.hidden = false;
+        createStoreStatus.textContent = message;
+        if (state) {
+            createStoreStatus.dataset.state = state;
+        } else {
+            delete createStoreStatus.dataset.state;
+        }
+    };
+
+    const buildCreatePayload = (formData) => {
+        return {
+            storeName: formData.get("storeName")?.toString().trim(),
+            storeLocation: {
+                street: formData.get("street")?.toString().trim(),
+                city: formData.get("city")?.toString().trim(),
+                state: formData.get("state")?.toString().trim(),
+                zip: formData.get("zip")?.toString().trim()
+            }
+        };
+    };
+
+    createStoreForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(createStoreForm);
+        const payload = buildCreatePayload(formData);
+
+        createStoreButton.disabled = true;
+        setCreateStoreStatus("Creating store...", "");
+
+        try {
+            const response = await fetch("/api/v1/stores/admin", {
+                method: "POST",
+                headers: secureHeaders({
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                }),
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            createStoreForm.reset();
+            setCreateStoreStatus("Store created successfully.", "success");
+            await loadManagedStores();
+        } catch (error) {
+            setCreateStoreStatus("Could not create the store right now.", "error");
+            console.error("Failed to create store", error);
+        } finally {
+            createStoreButton.disabled = false;
+        }
+    });
+
+    const initializeStoresPage = async () => {
+        await loadAdminUsers();
+        await loadManagedStores();
+    };
+
+    initializeStoresPage();
+</script>
+</body>
+</html>
