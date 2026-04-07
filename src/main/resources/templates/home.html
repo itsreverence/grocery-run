@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
+    <style>
+        .gr-home-grid {
+            display: grid;
+            gap: 1.25rem;
+        }
+    </style>
 </head>
 <body>
 <main class="gr-page">
@@ -31,15 +37,31 @@
         </p>
     </section>
 
-    <article class="gr-card gr-panel">
-        <div class="gr-panel-head">
-            <h2>Grocery lists</h2>
-            <span class="gr-pill">Soon</span>
-        </div>
-        <p>
-            Soon you’ll be able to build lists, tick items off, and keep your usual shop in one place. Nothing to do here yet—we’re working on it.
-        </p>
-    </article>
+    <section class="gr-home-grid">
+        <article class="gr-card gr-panel" sec:authorize="hasRole('ADMIN')">
+            <div class="gr-panel-head">
+                <h2>Admin tools</h2>
+                <span class="gr-pill">Admin</span>
+            </div>
+            <p>
+                Open the admin workspace to manage stores, aisle structure, and the rest of the operational setup for the app.
+            </p>
+            <div class="gr-actions gr-actions--compact">
+                <a class="gr-btn gr-btn--primary" th:href="@{/dashboard}">Open dashboard</a>
+                <a class="gr-btn gr-btn--ghost" th:href="@{/stores}">Manage stores</a>
+            </div>
+        </article>
+
+        <article class="gr-card gr-panel">
+            <div class="gr-panel-head">
+                <h2>Grocery lists</h2>
+                <span class="gr-pill">Soon</span>
+            </div>
+            <p>
+                Soon you’ll be able to build lists, tick items off, and keep your usual shop in one place. Nothing to do here yet—we’re working on it.
+            </p>
+        </article>
+    </section>
 </main>
 </body>
 </html>
