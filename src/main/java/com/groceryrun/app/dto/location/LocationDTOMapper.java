@@ -9,6 +9,6 @@ import java.util.function.Function;
 public class LocationDTOMapper implements Function<Location, LocationDTO> {
     @Override
     public LocationDTO apply(Location location) {
-        return new LocationDTO(location.getId(), location.getStreet(), location.getCity(), location.getState(), location.getZip(), location.getStore());
+        return new LocationDTO(location.getId(), location.getStreet(), location.getCity(), location.getState(), location.getZip());
     }
 }

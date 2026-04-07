@@ -2,8 +2,7 @@ package com.groceryrun.app.dto.category;
 
 import java.util.List;
 
-import com.groceryrun.app.entities.Aisle;
-import com.groceryrun.app.entities.Item;
+import com.groceryrun.app.dto.item.ItemDTO;
 
-public record CategoryDTO(Integer id, String label, Aisle categoryAisle, List<Item> categoryItems) {
+public record CategoryDTO(Integer id, String label, List<ItemDTO> categoryItems) {
 }

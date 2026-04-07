@@ -3,9 +3,8 @@ package com.groceryrun.app.services;
 import com.groceryrun.app.dto.aisle.AisleCategoriesChangeDTO;
 import com.groceryrun.app.dto.aisle.AisleDTO;
 import com.groceryrun.app.dto.aisle.AisleDTOMapper;
-import com.groceryrun.app.dto.aisle.AisleLabelChangeDTO;
 import com.groceryrun.app.dto.aisle.AisleStoreChangeDTO;
-import com.groceryrun.app.dto.aisle.NewAisleDTO;
+import com.groceryrun.app.dto.shared.LabelChangeDTO;
 import com.groceryrun.app.entities.Aisle;
 import com.groceryrun.app.repositories.AisleRepository;
 import org.springframework.stereotype.Service;
@@ -31,22 +30,9 @@ public class AisleService {
         return aisleRepository.findById(id).map(aisleDTOMapper).orElseThrow(() -> new IllegalStateException(id + " not found"));
     }
 
-    public void addAisle(NewAisleDTO newAisleDTO) {
-        Aisle aisle = new Aisle(newAisleDTO.label(), newAisleDTO.aisleStore());
-        aisleRepository.save(aisle);
-    }
-
-    public void deleteAisle(Integer id) {
-        boolean exists = aisleRepository.existsById(id);
-        if (!exists) {
-            throw new IllegalStateException(id + " not found");
-        }
-        aisleRepository.deleteById(id);
-    }
-
-    public void updateAisleLabel(Integer id, AisleLabelChangeDTO aisleLabelChangeDTO) {
+    public void updateAisleLabel(Integer id, LabelChangeDTO labelChangeDTO) {
         Aisle aisle = aisleRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        aisle.setLabel(aisleLabelChangeDTO.newLabel());
+        aisle.setLabel(labelChangeDTO.newLabel());
         aisleRepository.save(aisle);
     }
 

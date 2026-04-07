@@ -1,19 +1,53 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Spring Security Example </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in · Grocery Run</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
 </head>
-<body>
-<div th:if="${param.error}">
-    Invalid username and password.
-</div>
-<div th:if="${param.logout}">
-    You have been logged out.
-</div>
-<form th:action="@{/login}" method="post">
-    <div><label> User Name : <input type="text" name="username"/> </label></div>
-    <div><label> Password: <input type="password" name="password"/> </label></div>
-    <div><input type="submit" value="Sign In"/></div>
-</form>
+<body class="gr-auth">
+<header class="gr-header gr-header--auth gr-page--auth">
+    <div class="gr-brand"><a th:href="@{/}">Grocery Run</a></div>
+</header>
+
+<main class="gr-auth-main">
+    <div class="gr-page--auth">
+        <div class="gr-auth-card">
+            <h1>Sign in</h1>
+            <p class="gr-auth-lede">Use the account you registered with.</p>
+
+            <div th:if="${param.error}" class="gr-alert gr-alert--error" role="alert">
+                Invalid username or password.
+            </div>
+            <div th:if="${param.logout}" class="gr-alert gr-alert--success" role="status">
+                You have been signed out.
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="gr-field">
+                    <label for="username">Username</label>
+                    <input class="gr-input" id="username" type="text" name="username" autocomplete="username" required autofocus>
+                </div>
+                <div class="gr-field">
+                    <label for="password">Password</label>
+                    <input class="gr-input" id="password" type="password" name="password" autocomplete="current-password" required>
+                </div>
+                <div class="gr-form-actions">
+                    <button class="gr-btn gr-btn--primary gr-btn--block" type="submit">Sign in</button>
+                </div>
+            </form>
+
+            <div class="gr-footer-links">
+                No account?
+                <a th:href="@{/signup}">Create one</a>
+            </div>
+        </div>
+    </div>
+</main>
 </body>
 </html>

@@ -1,11 +1,11 @@
 package com.groceryrun.app.controller;
 
-import com.groceryrun.app.dto.category.CategoryLabelChangeDTO;
 import com.groceryrun.app.dto.category.NewCategoryDTO;
 import com.groceryrun.app.services.CategoryService;
 import com.groceryrun.app.dto.category.CategoryAisleChangeDTO;
 import com.groceryrun.app.dto.category.CategoryDTO;
 import com.groceryrun.app.dto.category.CategoryItemsChangeDTO;
+import com.groceryrun.app.dto.shared.LabelChangeDTO;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -42,8 +42,8 @@ public class CategoryController {
     }
 
     @PutMapping("{id}/label")
-    public void updateCategoryLabel(@PathVariable Integer id, @ModelAttribute CategoryLabelChangeDTO categoryLabelChangeDTO) {
-        categoryService.updateCategoryLabel(id, categoryLabelChangeDTO);
+    public void updateCategoryLabel(@PathVariable Integer id, @ModelAttribute LabelChangeDTO labelChangeDTO) {
+        categoryService.updateCategoryLabel(id, labelChangeDTO);
     }
 
     @PutMapping("{id}/aisle")
