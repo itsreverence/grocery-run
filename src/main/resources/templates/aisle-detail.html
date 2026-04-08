@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Aisle Detail · Grocery Run</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,6 +56,7 @@
         }
 
         .gr-aisle-row strong {
+            display: block;
             font-size: 0.97rem;
             color: var(--gr-text);
         }
@@ -67,6 +70,42 @@
             font-size: 0.92rem;
             color: var(--gr-muted);
             line-height: 1.55;
+        }
+
+        .gr-aisle-placeholder {
+            font-size: 0.92rem;
+            color: var(--gr-muted);
+            padding: 1rem;
+            border: 1px dashed rgba(31, 28, 23, 0.14);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.52);
+        }
+
+        .gr-category-editor {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(31, 28, 23, 0.08);
+        }
+
+        .gr-category-editor[hidden] {
+            display: none;
+        }
+
+        .gr-category-editor .gr-form-row {
+            margin-top: 0;
+        }
+
+        .gr-aisle-status {
+            margin-top: 0;
+        }
+
+        .gr-category-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         @media (max-width: 900px) {
@@ -90,9 +129,9 @@
 
     <section class="gr-hero-block">
         <p class="gr-eyebrow">Aisle detail</p>
-        <h1 class="gr-h1" th:text="${aisleName} ?: 'Aisle workspace'">Aisle workspace</h1>
+        <h1 id="aisle-page-title" class="gr-h1">Aisle workspace</h1>
         <p class="gr-prose">
-            This page is the focused editor for a single aisle. It gives us room for label changes, category management, and any future aisle-specific setup without crowding the store screen.
+            This page is the focused editor for a single aisle. It gives us room for category management and later aisle-specific setup without crowding the store screen.
         </p>
     </section>
 
@@ -100,11 +139,11 @@
         <article class="gr-card gr-aisle-header">
             <div class="gr-aisle-meta">
                 <span class="gr-tag">Aisle</span>
-                <span class="gr-tag" th:text="${storeName} ?: 'Linked store pending'">Linked store pending</span>
+                <span id="aisle-store-tag" class="gr-tag">Store context pending</span>
             </div>
-            <h2 th:text="${aisleName} ?: 'Aisle label pending'">Aisle label pending</h2>
-            <p class="gr-aisle-note">
-                For now this is a frontend foundation only. When you wire the route later, this page can load the real aisle label, the parent store, and the full category list.
+            <h2 id="aisle-heading">Loading aisle…</h2>
+            <p id="aisle-summary" class="gr-aisle-note">
+                Category data for this aisle will load here.
             </p>
         </article>
 
@@ -113,40 +152,37 @@
                 <span class="gr-tag">Categories</span>
                 <h2>Category structure</h2>
                 <p class="gr-aisle-note">
-                    This section will become the working list of categories assigned to the aisle, along with create, rename, and remove controls.
+                    Rename the categories already assigned to this aisle. Create and remove can slot into the same structure later.
                 </p>
-                <div class="gr-aisle-list">
-                    <div class="gr-aisle-row">
-                        <div>
-                            <strong>Produce prep</strong>
-                            <span>Example placeholder category</span>
-                        </div>
-                        <button class="gr-btn gr-btn--ghost" type="button">Future action</button>
+                <form id="create-category-form" class="gr-store-rename">
+                    <div class="gr-field">
+                        <label for="new-category-label">New category label</label>
+                        <input class="gr-input" id="new-category-label" name="label" type="text" maxlength="100" required>
                     </div>
-                    <div class="gr-aisle-row">
-                        <div>
-                            <strong>Seasonal rotation</strong>
-                            <span>Placeholder for a second category group</span>
-                        </div>
-                        <button class="gr-btn gr-btn--ghost" type="button">Future action</button>
+                    <div class="gr-form-row">
+                        <button id="create-category-button" class="gr-btn gr-btn--primary" type="submit">Add category</button>
+                        <span class="gr-form-note">New categories will be attached to this aisle.</span>
                     </div>
-                </div>
+                </form>
+                <div id="create-category-status" class="gr-form-status" hidden></div>
+                <div id="categories-status" class="gr-aisle-placeholder">Loading aisle categories…</div>
+                <div id="categories-list" class="gr-aisle-list" hidden></div>
             </article>
 
             <article class="gr-card gr-aisle-block">
                 <span class="gr-tag">Setup</span>
-                <h2>Aisle controls</h2>
+                <h2>Aisle context</h2>
                 <p class="gr-aisle-note">
-                    This side panel is reserved for aisle-level edits like renaming the aisle, creating categories, and any rules or metadata you decide to attach later.
+                    This side panel shows the aisle information available from the current API. When you’re ready, aisle label editing and category creation can be added here.
                 </p>
                 <div class="gr-form-grid">
                     <div class="gr-field gr-field--full">
                         <label for="aisle-label-preview">Aisle label</label>
-                        <input class="gr-input" id="aisle-label-preview" type="text" value="Aisle label placeholder" disabled>
+                        <input class="gr-input" id="aisle-label-preview" type="text" value="Loading aisle..." disabled>
                     </div>
                     <div class="gr-field gr-field--full">
                         <label for="aisle-store-preview">Store</label>
-                        <input class="gr-input" id="aisle-store-preview" type="text" value="Store context placeholder" disabled>
+                        <input class="gr-input" id="aisle-store-preview" type="text" value="Store context not available from this API yet" disabled>
                     </div>
                 </div>
                 <div class="gr-form-row">
@@ -156,5 +192,297 @@
         </section>
     </section>
 </main>
+<script>
+    const pageTitle = document.getElementById("aisle-page-title");
+    const aisleHeading = document.getElementById("aisle-heading");
+    const aisleSummary = document.getElementById("aisle-summary");
+    const aisleStoreTag = document.getElementById("aisle-store-tag");
+    const aisleLabelPreview = document.getElementById("aisle-label-preview");
+    const aisleStorePreview = document.getElementById("aisle-store-preview");
+    const categoriesStatus = document.getElementById("categories-status");
+    const categoriesList = document.getElementById("categories-list");
+    const createCategoryForm = document.getElementById("create-category-form");
+    const createCategoryButton = document.getElementById("create-category-button");
+    const createCategoryStatus = document.getElementById("create-category-status");
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    const aisleId = window.location.pathname.split("/").filter(Boolean).pop();
+
+    const secureHeaders = (headers = {}) => ({
+        ...headers,
+        ...(csrfToken && csrfHeader ? { [csrfHeader]: csrfToken } : {})
+    });
+
+    const setStatus = (node, message, state) => {
+        node.hidden = false;
+        node.textContent = message;
+        if (state) {
+            node.dataset.state = state;
+        } else {
+            delete node.dataset.state;
+        }
+    };
+
+    const createCategoryRow = (category) => {
+        const wrapper = document.createElement("div");
+
+        const row = document.createElement("div");
+        row.className = "gr-aisle-row";
+
+        const details = document.createElement("div");
+
+        const title = document.createElement("strong");
+        title.textContent = category.label || "Untitled category";
+
+        const subtitle = document.createElement("span");
+        const itemCount = Array.isArray(category.categoryItems) ? category.categoryItems.length : 0;
+        subtitle.textContent = itemCount + " item" + (itemCount === 1 ? "" : "s");
+
+        details.append(title, subtitle);
+
+        const renameButton = document.createElement("button");
+        renameButton.className = "gr-btn gr-btn--ghost";
+        renameButton.type = "button";
+        renameButton.textContent = "Rename";
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "gr-btn gr-btn--ghost";
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+
+        const editor = document.createElement("form");
+        editor.className = "gr-category-editor";
+        editor.hidden = true;
+
+        const field = document.createElement("div");
+        field.className = "gr-field";
+
+        const label = document.createElement("label");
+        label.htmlFor = "category-label-" + category.id;
+        label.textContent = "Category label";
+
+        const input = document.createElement("input");
+        input.className = "gr-input";
+        input.id = "category-label-" + category.id;
+        input.name = "newLabel";
+        input.type = "text";
+        input.required = true;
+        input.maxLength = 100;
+        input.value = category.label || "";
+
+        field.append(label, input);
+
+        const actions = document.createElement("div");
+        actions.className = "gr-form-row";
+
+        const saveButton = document.createElement("button");
+        saveButton.className = "gr-btn gr-btn--primary";
+        saveButton.type = "submit";
+        saveButton.textContent = "Save label";
+
+        const cancelButton = document.createElement("button");
+        cancelButton.className = "gr-btn gr-btn--ghost";
+        cancelButton.type = "button";
+        cancelButton.textContent = "Cancel";
+
+        actions.append(saveButton, cancelButton);
+
+        const status = document.createElement("div");
+        status.className = "gr-form-status gr-aisle-status";
+        status.hidden = true;
+
+        editor.append(field, actions, status);
+
+        const buttonGroup = document.createElement("div");
+        buttonGroup.className = "gr-category-actions";
+        buttonGroup.append(renameButton, removeButton);
+
+        renameButton.addEventListener("click", () => {
+            editor.hidden = false;
+            status.hidden = true;
+            input.focus();
+            input.select();
+        });
+
+        removeButton.addEventListener("click", async () => {
+            removeButton.disabled = true;
+            renameButton.disabled = true;
+            setStatus(status, "Removing category...", "");
+
+            try {
+                const response = await fetch("/api/v1/aisles/admin/" + aisleId + "/categories/" + category.id, {
+                    method: "DELETE",
+                    headers: secureHeaders({
+                        "Accept": "application/json"
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                setStatus(status, "Category removed.", "success");
+                await loadAisle();
+            } catch (error) {
+                setStatus(status, "Could not remove the category right now.", "error");
+                console.error("Failed to remove category", error);
+            } finally {
+                removeButton.disabled = false;
+                renameButton.disabled = false;
+            }
+        });
+
+        cancelButton.addEventListener("click", () => {
+            editor.hidden = true;
+            input.value = category.label || "";
+            status.hidden = true;
+        });
+
+        editor.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const nextLabel = input.value.trim();
+            if (!nextLabel) {
+                setStatus(status, "Category label is required.", "error");
+                return;
+            }
+
+            saveButton.disabled = true;
+            cancelButton.disabled = true;
+            setStatus(status, "Saving label...", "");
+
+            try {
+                const response = await fetch("/api/v1/categories/" + category.id + "/label", {
+                    method: "PUT",
+                    headers: secureHeaders({
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }),
+                    body: JSON.stringify({ newLabel: nextLabel })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                setStatus(status, "Category updated.", "success");
+                await loadAisle();
+            } catch (error) {
+                setStatus(status, "Could not update the category label right now.", "error");
+                console.error("Failed to update category label", error);
+            } finally {
+                saveButton.disabled = false;
+                cancelButton.disabled = false;
+            }
+        });
+
+        row.append(details, buttonGroup);
+        wrapper.append(row, editor);
+        return wrapper;
+    };
+
+    const renderAisle = (aisle) => {
+        const categories = Array.isArray(aisle.aisleCategories) ? aisle.aisleCategories : [];
+
+        pageTitle.textContent = aisle.label || "Aisle workspace";
+        aisleHeading.textContent = aisle.label || "Aisle";
+        aisleLabelPreview.value = aisle.label || "";
+        aisleStoreTag.textContent = "Store context pending";
+        aisleStorePreview.value = "Store context not available from this API yet";
+        aisleSummary.textContent = categories.length + " categor" + (categories.length === 1 ? "y" : "ies") + " currently assigned to this aisle.";
+
+        if (categories.length === 0) {
+            categoriesList.innerHTML = "";
+            categoriesList.hidden = true;
+            setStatus(categoriesStatus, "This aisle does not have any categories yet.", "empty");
+            return;
+        }
+
+        categoriesStatus.hidden = true;
+        categoriesList.innerHTML = "";
+        categories.forEach((category) => {
+            categoriesList.appendChild(createCategoryRow(category));
+        });
+        categoriesList.hidden = false;
+    };
+
+    async function loadAisle() {
+        if (!aisleId) {
+            setStatus(categoriesStatus, "No aisle ID was found in the URL.", "error");
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/v1/aisles/" + aisleId, {
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            const aisle = await response.json();
+            renderAisle(aisle);
+        } catch (error) {
+            categoriesList.innerHTML = "";
+            categoriesList.hidden = true;
+            setStatus(categoriesStatus, "Could not load this aisle right now.", "error");
+            console.error("Failed to load aisle", error);
+        }
+    }
+
+    const setCreateCategoryStatus = (message, state) => {
+        createCategoryStatus.hidden = false;
+        createCategoryStatus.textContent = message;
+        if (state) {
+            createCategoryStatus.dataset.state = state;
+        } else {
+            delete createCategoryStatus.dataset.state;
+        }
+    };
+
+    createCategoryForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(createCategoryForm);
+        const label = formData.get("label")?.toString().trim();
+
+        if (!label) {
+            setCreateCategoryStatus("Category label is required.", "error");
+            return;
+        }
+
+        createCategoryButton.disabled = true;
+        setCreateCategoryStatus("Adding category...", "");
+
+        try {
+            const response = await fetch("/api/v1/aisles/admin/" + aisleId + "/categories", {
+                method: "POST",
+                headers: secureHeaders({
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify({ label })
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            createCategoryForm.reset();
+            setCreateCategoryStatus("Category added.", "success");
+            await loadAisle();
+        } catch (error) {
+            setCreateCategoryStatus("Could not add the category right now.", "error");
+            console.error("Failed to add category", error);
+        } finally {
+            createCategoryButton.disabled = false;
+        }
+    });
+
+    loadAisle();
+</script>
 </body>
 </html>

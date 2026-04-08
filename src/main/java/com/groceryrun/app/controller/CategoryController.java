@@ -31,18 +31,8 @@ public class CategoryController {
         return categoryService.getCategoryById(id);
     }
 
-    @PostMapping
-    public void addCategory(@ModelAttribute NewCategoryDTO newCategoryDTO) {
-        categoryService.addCategory(newCategoryDTO);
-    }
-
-    @DeleteMapping("{id}")
-    public void deleteCategory(@PathVariable Integer id) {
-        categoryService.deleteCategory(id);
-    }
-
     @PutMapping("{id}/label")
-    public void updateCategoryLabel(@PathVariable Integer id, @ModelAttribute LabelChangeDTO labelChangeDTO) {
+    public void updateCategoryLabel(@PathVariable Integer id, @RequestBody LabelChangeDTO labelChangeDTO) {
         categoryService.updateCategoryLabel(id, labelChangeDTO);
     }
 

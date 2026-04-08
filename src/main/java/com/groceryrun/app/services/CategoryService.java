@@ -31,19 +31,6 @@ public class CategoryService {
         return categoryRepository.findById(id).map(categoryDTOMapper).orElseThrow(() -> new IllegalStateException(id + " not found"));
     }
 
-    public void addCategory(NewCategoryDTO newCategoryDTO) {
-        Category category = new Category(newCategoryDTO.label(), newCategoryDTO.categoryAisle());
-        categoryRepository.save(category);
-    }
-
-    public void deleteCategory(Integer id) {
-        boolean exists = categoryRepository.existsById(id);
-        if (!exists) {
-            throw new IllegalStateException(id + " not found");
-        }
-        categoryRepository.deleteById(id);
-    }
-
     public void updateCategoryLabel(Integer id, LabelChangeDTO labelChangeDTO) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         category.setLabel(labelChangeDTO.newLabel());
