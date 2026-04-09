@@ -30,18 +30,18 @@ public class ItemController {
         return itemService.getItemById(id);
     }
 
-    @PostMapping
-    public void addItem(@ModelAttribute NewItemDTO newItemDTO) {
-        itemService.addItem(newItemDTO);
+    @PostMapping("admin/{categoryId}/items")
+    public void addItem(@PathVariable Integer categoryId, @RequestBody NewItemDTO newItemDTO) {
+        itemService.addItem(categoryId, newItemDTO);
     }
 
-    @DeleteMapping("{id}")
-    public void deleteItem(@PathVariable Integer id) {
-        itemService.deleteItem(id);
+    @DeleteMapping("admin/{categoryId}/items/{itemId}")
+    public void deleteItem(@PathVariable Integer categoryId, @PathVariable Integer itemId) {
+        itemService.deleteItem(itemId, categoryId);
     }
 
     @PutMapping("{id}/name")
-    public void updateItemName(@PathVariable Integer id, @ModelAttribute NameChangeDTO nameChangeDTO) {
+    public void updateItemName(@PathVariable Integer id, @RequestBody NameChangeDTO nameChangeDTO) {
         itemService.updateItemName(id, nameChangeDTO);
     }
 

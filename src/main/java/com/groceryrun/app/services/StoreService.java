@@ -52,14 +52,6 @@ public class StoreService {
         userRepository.save(owner);
     }
 
-    public void addAislesToStore(Integer id, NewAisleDTO newAisleDTO) {
-        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        Aisle aisle = new Aisle(newAisleDTO.label(), store);
-        aisleRepository.save(aisle);
-        store.getAisles().add(aisle);
-        storeRepository.save(store);
-    }
-
     public StoreDTO getStoreById(Integer id) {
         return storeRepository.findById(id).map(storeDTOMapper).orElseThrow(() -> new IllegalStateException(id + " not found"));
     }
@@ -70,16 +62,6 @@ public class StoreService {
             throw new IllegalStateException(id + " not found");
         }
         storeRepository.deleteById(id);
-    }
-
-    public void deleteAisleFromStore(Integer id, Integer aisleId) {
-        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        Aisle aisle = aisleRepository.findById(aisleId).orElseThrow(() -> new IllegalStateException(aisleId + " not found"));
-        if (store.getAisles().contains(aisle)) {
-            store.getAisles().remove(aisle);
-            storeRepository.save(store);
-            aisleRepository.delete(aisle);
-        }
     }
 
     public void updateStoreName(Integer id, NameChangeDTO nameChangeDTO) {

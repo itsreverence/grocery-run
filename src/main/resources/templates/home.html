@@ -21,6 +21,7 @@
         <div class="gr-brand"><a th:href="@{/home}">Grocery Run</a></div>
         <div class="gr-header-actions">
             <nav class="gr-nav" aria-label="Account">
+                <a th:href="@{/account}">Account</a>
                 <form class="gr-inline-form" th:action="@{/logout}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <button class="gr-btn gr-btn--link" type="submit">Sign out</button>
@@ -49,6 +50,7 @@
             <div class="gr-actions gr-actions--compact">
                 <a class="gr-btn gr-btn--primary" th:href="@{/dashboard}">Open dashboard</a>
                 <a class="gr-btn gr-btn--ghost" th:href="@{/stores}">Manage stores</a>
+                <a class="gr-btn gr-btn--ghost" th:href="@{/users}">Manage users</a>
             </div>
         </article>
 

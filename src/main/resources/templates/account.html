@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>Account · Grocery Run</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
+    <style>
+        .gr-account-grid {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: 1.1fr 0.9fr;
+        }
+
+        .gr-account-card {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .gr-account-note {
+            font-size: 0.92rem;
+            color: var(--gr-muted);
+            line-height: 1.55;
+        }
+
+        .gr-account-status {
+            margin-top: 0;
+        }
+
+        @media (max-width: 900px) {
+            .gr-account-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="gr-page">
+    <header class="gr-header">
+        <div class="gr-brand"><a th:href="@{/home}">Grocery Run</a></div>
+        <div class="gr-header-actions">
+            <nav class="gr-nav" aria-label="Account">
+                <a th:href="@{/home}">Home</a>
+                <form class="gr-inline-form" th:action="@{/logout}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button class="gr-btn gr-btn--link" type="submit">Sign out</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <section class="gr-hero-block">
+        <p class="gr-eyebrow">Account</p>
+        <h1 class="gr-h1">Keep your login details current.</h1>
+        <p class="gr-prose">
+            Update the username and password tied to your account. Username changes will sign you out so your next session uses the new login name.
+        </p>
+    </section>
+
+    <section class="gr-account-grid">
+        <article class="gr-card gr-account-card">
+            <span class="gr-tag">Username</span>
+            <h2>Change username</h2>
+            <p class="gr-account-note">
+                After a successful username change, this page will sign you out and send you back to the login screen.
+            </p>
+            <form id="username-form">
+                <div class="gr-form-grid">
+                    <div class="gr-field gr-field--full">
+                        <label for="new-username">New username</label>
+                        <input class="gr-input" id="new-username" name="newUsername" type="text" maxlength="100" required>
+                    </div>
+                </div>
+                <div class="gr-form-row">
+                    <button id="username-submit" class="gr-btn gr-btn--primary" type="submit">Save username</button>
+                </div>
+            </form>
+            <div id="username-status" class="gr-form-status gr-account-status" hidden></div>
+        </article>
+
+        <article class="gr-card gr-account-card">
+            <span class="gr-tag">Password</span>
+            <h2>Change password</h2>
+            <p class="gr-account-note">
+                Enter your current password first, then choose a new one. Use the new password the next time you sign in.
+            </p>
+            <form id="password-form">
+                <div class="gr-form-grid">
+                    <div class="gr-field gr-field--full">
+                        <label for="current-password">Current password</label>
+                        <input class="gr-input" id="current-password" name="currentPassword" type="password" required>
+                    </div>
+                    <div class="gr-field gr-field--full">
+                        <label for="new-password">New password</label>
+                        <input class="gr-input" id="new-password" name="newPassword" type="password" required>
+                    </div>
+                </div>
+                <div class="gr-form-row">
+                    <button id="password-submit" class="gr-btn gr-btn--primary" type="submit">Update password</button>
+                </div>
+            </form>
+            <div id="password-status" class="gr-form-status gr-account-status" hidden></div>
+        </article>
+    </section>
+</main>
+<script>
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    const usernameForm = document.getElementById("username-form");
+    const usernameSubmit = document.getElementById("username-submit");
+    const usernameStatus = document.getElementById("username-status");
+    const passwordForm = document.getElementById("password-form");
+    const passwordSubmit = document.getElementById("password-submit");
+    const passwordStatus = document.getElementById("password-status");
+
+    const secureHeaders = (headers = {}) => ({
+        ...headers,
+        ...(csrfToken && csrfHeader ? { [csrfHeader]: csrfToken } : {})
+    });
+
+    const setStatus = (node, message, state) => {
+        node.hidden = false;
+        node.textContent = message;
+        if (state) {
+            node.dataset.state = state;
+        } else {
+            delete node.dataset.state;
+        }
+    };
+
+    usernameForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(usernameForm);
+        const newUsername = formData.get("newUsername")?.toString().trim();
+
+        if (!newUsername) {
+            setStatus(usernameStatus, "A new username is required.", "error");
+            return;
+        }
+
+        usernameSubmit.disabled = true;
+        setStatus(usernameStatus, "Saving username...", "");
+
+        try {
+            const response = await fetch("/api/v1/users/username", {
+                method: "PUT",
+                headers: secureHeaders({
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify({ newUsername })
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            setStatus(usernameStatus, "Username updated. Redirecting to sign in...", "success");
+
+            const logoutForm = document.createElement("form");
+            logoutForm.method = "post";
+            logoutForm.action = "/logout";
+
+            if (csrfToken) {
+                const csrfInput = document.createElement("input");
+                csrfInput.type = "hidden";
+                csrfInput.name = "_csrf";
+                csrfInput.value = csrfToken;
+                logoutForm.appendChild(csrfInput);
+            }
+
+            document.body.appendChild(logoutForm);
+            window.setTimeout(() => logoutForm.submit(), 800);
+        } catch (error) {
+            setStatus(usernameStatus, "Could not update your username right now.", "error");
+            console.error("Failed to update username", error);
+        } finally {
+            usernameSubmit.disabled = false;
+        }
+    });
+
+    passwordForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(passwordForm);
+        const currentPassword = formData.get("currentPassword")?.toString();
+        const newPassword = formData.get("newPassword")?.toString();
+
+        if (!currentPassword || !newPassword) {
+            setStatus(passwordStatus, "Both password fields are required.", "error");
+            return;
+        }
+
+        passwordSubmit.disabled = true;
+        setStatus(passwordStatus, "Updating password...", "");
+
+        try {
+            const response = await fetch("/api/v1/users/password", {
+                method: "PUT",
+                headers: secureHeaders({
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify({ currentPassword, newPassword })
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            passwordForm.reset();
+            setStatus(passwordStatus, "Password updated.", "success");
+        } catch (error) {
+            setStatus(passwordStatus, "Could not update your password right now.", "error");
+            console.error("Failed to update password", error);
+        } finally {
+            passwordSubmit.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>

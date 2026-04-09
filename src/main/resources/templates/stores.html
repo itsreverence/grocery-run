@@ -124,6 +124,11 @@
             gap: 0.65rem;
         }
 
+        .gr-aisle-item {
+            display: grid;
+            gap: 0.6rem;
+        }
+
         .gr-aisle-chip {
             display: flex;
             align-items: center;
@@ -522,6 +527,9 @@
             aisleList.append(emptyAisles);
         } else {
             currentAisles.forEach((aisle) => {
+                const aisleItem = document.createElement("div");
+                aisleItem.className = "gr-aisle-item";
+
                 const aisleRow = document.createElement("div");
                 aisleRow.className = "gr-aisle-chip";
 
@@ -531,6 +539,11 @@
 
                 const aisleActions = document.createElement("div");
                 aisleActions.className = "gr-aisle-actions";
+
+                const aisleRenameButton = document.createElement("button");
+                aisleRenameButton.className = "gr-btn gr-btn--ghost";
+                aisleRenameButton.type = "button";
+                aisleRenameButton.textContent = "Rename";
 
                 const aisleManageLink = document.createElement("a");
                 aisleManageLink.className = "gr-btn gr-btn--ghost";
@@ -542,12 +555,106 @@
                 aisleRemoveButton.type = "button";
                 aisleRemoveButton.textContent = "Remove";
 
+                const aisleRenameForm = document.createElement("form");
+                aisleRenameForm.className = "gr-store-rename";
+                aisleRenameForm.hidden = true;
+
+                const aisleRenameField = document.createElement("div");
+                aisleRenameField.className = "gr-field";
+
+                const aisleRenameLabel = document.createElement("label");
+                aisleRenameLabel.htmlFor = "rename-aisle-" + aisle.id;
+                aisleRenameLabel.textContent = "Aisle label";
+
+                const aisleRenameInput = document.createElement("input");
+                aisleRenameInput.className = "gr-input";
+                aisleRenameInput.id = "rename-aisle-" + aisle.id;
+                aisleRenameInput.name = "newLabel";
+                aisleRenameInput.type = "text";
+                aisleRenameInput.required = true;
+                aisleRenameInput.maxLength = 100;
+                aisleRenameInput.value = aisle.label || "";
+
+                aisleRenameField.append(aisleRenameLabel, aisleRenameInput);
+
+                const aisleRenameActions = document.createElement("div");
+                aisleRenameActions.className = "gr-form-row";
+
+                const aisleRenameSaveButton = document.createElement("button");
+                aisleRenameSaveButton.className = "gr-btn gr-btn--primary";
+                aisleRenameSaveButton.type = "submit";
+                aisleRenameSaveButton.textContent = "Save label";
+
+                const aisleRenameCancelButton = document.createElement("button");
+                aisleRenameCancelButton.className = "gr-btn gr-btn--ghost";
+                aisleRenameCancelButton.type = "button";
+                aisleRenameCancelButton.textContent = "Cancel";
+
+                aisleRenameActions.append(aisleRenameSaveButton, aisleRenameCancelButton);
+
+                const aisleRenameStatus = document.createElement("div");
+                aisleRenameStatus.className = "gr-form-status gr-store-inline-status";
+                aisleRenameStatus.hidden = true;
+
+                aisleRenameForm.append(aisleRenameField, aisleRenameActions, aisleRenameStatus);
+
+                aisleRenameButton.addEventListener("click", () => {
+                    aisleRenameForm.hidden = false;
+                    aisleRenameStatus.hidden = true;
+                    aisleRenameInput.focus();
+                    aisleRenameInput.select();
+                });
+
+                aisleRenameCancelButton.addEventListener("click", () => {
+                    aisleRenameForm.hidden = true;
+                    aisleRenameInput.value = aisle.label || "";
+                    aisleRenameStatus.hidden = true;
+                });
+
+                aisleRenameForm.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+
+                    const nextLabel = aisleRenameInput.value.trim();
+                    if (!nextLabel) {
+                        setInlineStatus(aisleRenameStatus, "Aisle label is required.", "error");
+                        return;
+                    }
+
+                    aisleRenameSaveButton.disabled = true;
+                    aisleRenameCancelButton.disabled = true;
+                    setInlineStatus(aisleRenameStatus, "Saving aisle label...", "");
+
+                    try {
+                        const response = await fetch("/api/v1/aisles/" + aisle.id + "/label", {
+                            method: "PUT",
+                            headers: secureHeaders({
+                                "Accept": "application/json",
+                                "Content-Type": "application/json"
+                            }),
+                            body: JSON.stringify({ newLabel: nextLabel })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error("Request failed with status " + response.status);
+                        }
+
+                        setInlineStatus(aisleRenameStatus, "Aisle label updated.", "success");
+                        await loadManagedStores();
+                    } catch (error) {
+                        setInlineStatus(aisleRenameStatus, "Could not update the aisle label right now.", "error");
+                        console.error("Failed to update aisle label", error);
+                    } finally {
+                        aisleRenameSaveButton.disabled = false;
+                        aisleRenameCancelButton.disabled = false;
+                    }
+                });
+
                 aisleRemoveButton.addEventListener("click", async () => {
                     aisleRemoveButton.disabled = true;
                     setInlineStatus(aislesStatus, "Removing aisle...", "");
 
                     try {
-                        const response = await fetch("/api/v1/stores/admin/" + store.id + "/aisles/" + aisle.id, {
+                        const response = await fetch("/api/v1/aisles/admin/" + store.id + "/aisles/" + aisle.id, {
                             method: "DELETE",
                             headers: secureHeaders({
                                 "Accept": "application/json"
@@ -567,9 +674,10 @@
                     }
                 });
 
-                aisleActions.append(aisleManageLink, aisleRemoveButton);
+                aisleActions.append(aisleRenameButton, aisleManageLink, aisleRemoveButton);
                 aisleRow.append(aisleLabel, aisleActions);
-                aisleList.append(aisleRow);
+                aisleItem.append(aisleRow, aisleRenameForm);
+                aisleList.append(aisleItem);
             });
         }
 
@@ -815,7 +923,7 @@
             setInlineStatus(aislesStatus, "Adding aisle...", "");
 
             try {
-                const response = await fetch("/api/v1/stores/admin/" + store.id + "/aisles", {
+                const response = await fetch("/api/v1/aisles/admin/" + store.id + "/aisles", {
                     method: "POST",
                     headers: secureHeaders({
                         "Accept": "application/json",

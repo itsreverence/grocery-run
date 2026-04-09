@@ -17,6 +17,7 @@
             <span class="gr-pill">Admin</span>
             <nav class="gr-nav" aria-label="Account">
                 <a th:href="@{/stores}">Stores</a>
+                <a th:href="@{/users}">Users</a>
                 <form class="gr-inline-form" th:action="@{/logout}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <button class="gr-btn gr-btn--link" type="submit">Sign out</button>
@@ -33,17 +34,31 @@
         </p>
     </section>
 
-    <article class="gr-card gr-panel">
-        <div class="gr-panel-head">
-            <h2>Stores</h2>
-        </div>
-        <p>
-            Open store management to see your list or create a new store. New locations are linked to your admin account automatically.
-        </p>
-        <div class="gr-actions gr-actions--compact">
-            <a class="gr-btn gr-btn--primary" th:href="@{/stores}">Manage stores</a>
-        </div>
-    </article>
+    <section class="gr-section-grid">
+        <article class="gr-card gr-panel">
+            <div class="gr-panel-head">
+                <h2>Stores</h2>
+            </div>
+            <p>
+                Open store management to see your list or create a new store. New locations are linked to your admin account automatically.
+            </p>
+            <div class="gr-actions gr-actions--compact">
+                <a class="gr-btn gr-btn--primary" th:href="@{/stores}">Manage stores</a>
+            </div>
+        </article>
+
+        <article class="gr-card gr-panel">
+            <div class="gr-panel-head">
+                <h2>Users</h2>
+            </div>
+            <p>
+                Review the current user directory and adjust admin access when you need to hand off operational control.
+            </p>
+            <div class="gr-actions gr-actions--compact">
+                <a class="gr-btn gr-btn--primary" th:href="@{/users}">Manage users</a>
+            </div>
+        </article>
+    </section>
 </main>
 </body>
 </html>

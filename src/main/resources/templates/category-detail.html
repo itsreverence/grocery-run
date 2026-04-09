@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>Category Detail · Grocery Run</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
+    <style>
+        .gr-category-layout {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .gr-category-header {
+            display: grid;
+            gap: 0.65rem;
+        }
+
+        .gr-category-meta {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .gr-category-grid {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: 1.35fr 0.95fr;
+        }
+
+        .gr-category-block {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .gr-category-list {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .gr-category-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: center;
+            padding: 0.9rem 1rem;
+            border: 1px solid rgba(31, 28, 23, 0.1);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .gr-category-row strong {
+            display: block;
+            font-size: 0.97rem;
+            color: var(--gr-text);
+        }
+
+        .gr-category-row span {
+            font-size: 0.875rem;
+            color: var(--gr-muted);
+        }
+
+        .gr-category-note {
+            font-size: 0.92rem;
+            color: var(--gr-muted);
+            line-height: 1.55;
+        }
+
+        .gr-category-placeholder {
+            font-size: 0.92rem;
+            color: var(--gr-muted);
+            padding: 1rem;
+            border: 1px dashed rgba(31, 28, 23, 0.14);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.52);
+        }
+
+        .gr-item-editor {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(31, 28, 23, 0.08);
+        }
+
+        .gr-item-editor[hidden] {
+            display: none;
+        }
+
+        .gr-item-editor .gr-form-row {
+            margin-top: 0;
+        }
+
+        .gr-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 900px) {
+            .gr-category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="gr-page">
+    <header class="gr-header">
+        <div class="gr-brand"><a th:href="@{/dashboard}">Grocery Run</a></div>
+        <div class="gr-header-actions">
+            <nav class="gr-nav" aria-label="Workspace">
+                <a th:href="@{/stores}">Stores</a>
+                <a th:href="@{/dashboard}">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="gr-hero-block">
+        <p class="gr-eyebrow">Category detail</p>
+        <h1 id="category-page-title" class="gr-h1">Category workspace</h1>
+        <p class="gr-prose">
+            This page is the focused workspace for one category. It gives us room for item management and later category-specific setup without crowding the aisle screen.
+        </p>
+    </section>
+
+    <section class="gr-category-layout">
+        <article class="gr-card gr-category-header">
+            <div class="gr-category-meta">
+                <span class="gr-tag">Category</span>
+                <span id="category-context-tag" class="gr-tag">Aisle context pending</span>
+            </div>
+            <h2 id="category-heading">Loading category…</h2>
+            <p id="category-summary" class="gr-category-note">
+                Item data for this category will load here.
+            </p>
+        </article>
+
+        <section class="gr-category-grid">
+            <article class="gr-card gr-category-block">
+                <span class="gr-tag">Items</span>
+                <h2>Item structure</h2>
+                <p class="gr-category-note">
+                    This is the future working area for category items. It gives you a clean place to add, rename, and remove items without expanding the aisle page.
+                </p>
+                <form id="create-item-form" class="gr-store-rename">
+                    <div class="gr-field">
+                        <label for="new-item-name">New item name</label>
+                        <input class="gr-input" id="new-item-name" name="name" type="text" maxlength="100" required>
+                    </div>
+                    <div class="gr-form-row">
+                        <button id="create-item-button" class="gr-btn gr-btn--primary" type="submit">Add item</button>
+                        <span class="gr-form-note">New items will be attached to this category.</span>
+                    </div>
+                </form>
+                <div id="create-item-status" class="gr-form-status" hidden></div>
+                <div id="items-status" class="gr-category-placeholder">Loading category items…</div>
+                <div id="items-list" class="gr-category-list" hidden></div>
+            </article>
+
+            <article class="gr-card gr-category-block">
+                <span class="gr-tag">Setup</span>
+                <h2>Category context</h2>
+                <p class="gr-category-note">
+                    This panel keeps the category’s core context visible while item management grows. Category label editing can stay on the aisle page for now and move here later if you want.
+                </p>
+                <div class="gr-form-grid">
+                    <div class="gr-field gr-field--full">
+                        <label for="category-label-preview">Category label</label>
+                        <input class="gr-input" id="category-label-preview" type="text" value="Loading category..." disabled>
+                    </div>
+                    <div class="gr-field gr-field--full">
+                        <label for="category-aisle-preview">Aisle</label>
+                        <input class="gr-input" id="category-aisle-preview" type="text" value="Aisle context not available from this API yet" disabled>
+                    </div>
+                </div>
+                <div class="gr-form-row">
+                    <a class="gr-btn gr-btn--ghost" href="javascript:history.back()">Back</a>
+                </div>
+            </article>
+        </section>
+    </section>
+</main>
+<script>
+    const pageTitle = document.getElementById("category-page-title");
+    const categoryHeading = document.getElementById("category-heading");
+    const categorySummary = document.getElementById("category-summary");
+    const categoryContextTag = document.getElementById("category-context-tag");
+    const categoryLabelPreview = document.getElementById("category-label-preview");
+    const categoryAislePreview = document.getElementById("category-aisle-preview");
+    const itemsStatus = document.getElementById("items-status");
+    const itemsList = document.getElementById("items-list");
+    const createItemForm = document.getElementById("create-item-form");
+    const createItemButton = document.getElementById("create-item-button");
+    const createItemStatus = document.getElementById("create-item-status");
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    const categoryId = window.location.pathname.split("/").filter(Boolean).pop();
+
+    const secureHeaders = (headers = {}) => ({
+        ...headers,
+        ...(csrfToken && csrfHeader ? { [csrfHeader]: csrfToken } : {})
+    });
+
+    const setStatus = (node, message, state) => {
+        node.hidden = false;
+        node.textContent = message;
+        if (state) {
+            node.dataset.state = state;
+        } else {
+            delete node.dataset.state;
+        }
+    };
+
+    const createItemRow = (item) => {
+        const wrapper = document.createElement("div");
+
+        const row = document.createElement("div");
+        row.className = "gr-category-row";
+
+        const details = document.createElement("div");
+
+        const title = document.createElement("strong");
+        title.textContent = item.name || "Untitled item";
+
+        const subtitle = document.createElement("span");
+        subtitle.textContent = "Item detail flow can be added here later.";
+
+        details.append(title, subtitle);
+
+        const actions = document.createElement("div");
+        actions.className = "gr-item-actions";
+
+        const renameButton = document.createElement("button");
+        renameButton.className = "gr-btn gr-btn--ghost";
+        renameButton.type = "button";
+        renameButton.textContent = "Rename";
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "gr-btn gr-btn--ghost";
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+
+        const editor = document.createElement("form");
+        editor.className = "gr-item-editor";
+        editor.hidden = true;
+
+        const field = document.createElement("div");
+        field.className = "gr-field";
+
+        const label = document.createElement("label");
+        label.htmlFor = "item-name-" + item.id;
+        label.textContent = "Item name";
+
+        const input = document.createElement("input");
+        input.className = "gr-input";
+        input.id = "item-name-" + item.id;
+        input.name = "newName";
+        input.type = "text";
+        input.required = true;
+        input.maxLength = 100;
+        input.value = item.name || "";
+
+        field.append(label, input);
+
+        const editorActions = document.createElement("div");
+        editorActions.className = "gr-form-row";
+
+        const saveButton = document.createElement("button");
+        saveButton.className = "gr-btn gr-btn--primary";
+        saveButton.type = "submit";
+        saveButton.textContent = "Save name";
+
+        const cancelButton = document.createElement("button");
+        cancelButton.className = "gr-btn gr-btn--ghost";
+        cancelButton.type = "button";
+        cancelButton.textContent = "Cancel";
+
+        editorActions.append(saveButton, cancelButton);
+
+        const editorStatus = document.createElement("div");
+        editorStatus.className = "gr-form-status";
+        editorStatus.hidden = true;
+
+        editor.append(field, editorActions, editorStatus);
+
+        renameButton.addEventListener("click", () => {
+            editor.hidden = false;
+            editorStatus.hidden = true;
+            input.focus();
+            input.select();
+        });
+
+        cancelButton.addEventListener("click", () => {
+            editor.hidden = true;
+            input.value = item.name || "";
+            editorStatus.hidden = true;
+        });
+
+        editor.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const nextName = input.value.trim();
+            if (!nextName) {
+                setStatus(editorStatus, "Item name is required.", "error");
+                return;
+            }
+
+            saveButton.disabled = true;
+            cancelButton.disabled = true;
+            setStatus(editorStatus, "Saving item name...", "");
+
+            try {
+                const response = await fetch("/api/v1/items/" + item.id + "/name", {
+                    method: "PUT",
+                    headers: secureHeaders({
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }),
+                    body: JSON.stringify({ newName: nextName })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                await loadCategory();
+                setCreateItemStatus("Item renamed.", "success");
+            } catch (error) {
+                setStatus(editorStatus, "Could not update the item name right now.", "error");
+                console.error("Failed to update item name", error);
+            } finally {
+                saveButton.disabled = false;
+                cancelButton.disabled = false;
+            }
+        });
+
+        removeButton.addEventListener("click", async () => {
+            removeButton.disabled = true;
+            setStatus(itemsStatus, "Removing item...", "");
+
+            try {
+                const response = await fetch("/api/v1/items/admin/" + categoryId + "/items/" + item.id, {
+                    method: "DELETE",
+                    headers: secureHeaders({
+                        "Accept": "application/json"
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                await loadCategory();
+                setStatus(createItemStatus, "Item removed.", "success");
+            } catch (error) {
+                removeButton.disabled = false;
+                setStatus(itemsStatus, "Could not remove this item right now.", "error");
+                console.error("Failed to remove item", error);
+            }
+        });
+
+        actions.append(renameButton, removeButton);
+        row.append(details, actions);
+        wrapper.append(row, editor);
+        return wrapper;
+    };
+
+    const renderCategory = (category) => {
+        const items = Array.isArray(category.categoryItems) ? category.categoryItems : [];
+
+        pageTitle.textContent = category.label || "Category workspace";
+        categoryHeading.textContent = category.label || "Category";
+        categoryLabelPreview.value = category.label || "";
+        categoryContextTag.textContent = "Aisle context pending";
+        categoryAislePreview.value = "Aisle context not available from this API yet";
+        categorySummary.textContent = items.length + " item" + (items.length === 1 ? "" : "s") + " currently assigned to this category.";
+
+        if (items.length === 0) {
+            itemsList.innerHTML = "";
+            itemsList.hidden = true;
+            setStatus(itemsStatus, "This category does not have any items yet.", "empty");
+            return;
+        }
+
+        itemsStatus.hidden = true;
+        itemsList.innerHTML = "";
+        items.forEach((item) => {
+            itemsList.appendChild(createItemRow(item));
+        });
+        itemsList.hidden = false;
+    };
+
+    async function loadCategory() {
+        if (!categoryId) {
+            setStatus(itemsStatus, "No category ID was found in the URL.", "error");
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/v1/categories/" + categoryId, {
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            const category = await response.json();
+            renderCategory(category);
+        } catch (error) {
+            itemsList.innerHTML = "";
+            itemsList.hidden = true;
+            setStatus(itemsStatus, "Could not load this category right now.", "error");
+            console.error("Failed to load category", error);
+        }
+    }
+
+    const setCreateItemStatus = (message, state) => {
+        createItemStatus.hidden = false;
+        createItemStatus.textContent = message;
+        if (state) {
+            createItemStatus.dataset.state = state;
+        } else {
+            delete createItemStatus.dataset.state;
+        }
+    };
+
+    createItemForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(createItemForm);
+        const name = formData.get("name")?.toString().trim();
+
+        if (!name) {
+            setCreateItemStatus("Item name is required.", "error");
+            return;
+        }
+
+        createItemButton.disabled = true;
+        setCreateItemStatus("Adding item...", "");
+
+        try {
+            const response = await fetch("/api/v1/items/admin/" + categoryId + "/items", {
+                method: "POST",
+                headers: secureHeaders({
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify({ name })
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            createItemForm.reset();
+            await loadCategory();
+            setCreateItemStatus("Item added.", "success");
+        } catch (error) {
+            setCreateItemStatus("Could not add the item right now.", "error");
+            console.error("Failed to add item", error);
+        } finally {
+            createItemButton.disabled = false;
+        }
+    });
+
+    loadCategory();
+</script>
+</body>
+</html>

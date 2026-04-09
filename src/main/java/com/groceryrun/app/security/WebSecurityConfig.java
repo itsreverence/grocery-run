@@ -26,8 +26,8 @@ class WebSecurityConfig {
                         .requestMatchers("/", "/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         .requestMatchers("/css/**").permitAll()
-                        .requestMatchers("/stores", "/dashboard", "/aisles/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/stores/admin/**", "/api/v1/aisles/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/stores", "/dashboard", "/aisles/**", "/categories/**", "/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/stores/admin/**", "/api/v1/aisles/admin/**", "/api/v1/categories/admin/**", "/api/v1/users/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form

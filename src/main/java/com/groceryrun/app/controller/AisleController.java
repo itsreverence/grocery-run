@@ -3,6 +3,7 @@ package com.groceryrun.app.controller;
 import com.groceryrun.app.dto.aisle.AisleCategoriesChangeDTO;
 import com.groceryrun.app.dto.aisle.AisleDTO;
 import com.groceryrun.app.dto.aisle.AisleStoreChangeDTO;
+import com.groceryrun.app.dto.aisle.NewAisleDTO;
 import com.groceryrun.app.dto.category.NewCategoryDTO;
 import com.groceryrun.app.dto.shared.LabelChangeDTO;
 import com.groceryrun.app.services.AisleService;
@@ -30,18 +31,18 @@ public class AisleController {
         return aisleService.getAisleById(id);
     }
 
-    @PostMapping("admin/{id}/categories")
-    public void addCategoryToAisle(@PathVariable Integer id, @RequestBody NewCategoryDTO newCategoryDTO) {
-        aisleService.addCategoryToAisle(id, newCategoryDTO);
+    @PostMapping("admin/{storeId}/aisles")
+    public void addAisle(@PathVariable Integer storeId, @RequestBody NewAisleDTO newAisleDTO) {
+        aisleService.addAisle(storeId, newAisleDTO);
     }
 
-    @DeleteMapping("admin/{id}/categories/{categoryId}")
-    public void deleteCategoryFromAisle(@PathVariable Integer id, @PathVariable Integer categoryId) {
-        aisleService.deleteCategoryFromAisle(id, categoryId);
+    @DeleteMapping("admin/{storeId}/aisles/{aisleId}")
+    public void deleteAisle(@PathVariable Integer aisleId, @PathVariable Integer storeId) {
+        aisleService.deleteAisle(aisleId, storeId);
     }
 
     @PutMapping("{id}/label")
-    public void updateAisleLabel(@PathVariable Integer id, @ModelAttribute LabelChangeDTO labelChangeDTO) {
+    public void updateAisleLabel(@PathVariable Integer id, @RequestBody LabelChangeDTO labelChangeDTO) {
         aisleService.updateAisleLabel(id, labelChangeDTO);
     }
 

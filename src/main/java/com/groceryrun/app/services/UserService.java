@@ -3,6 +3,7 @@ package com.groceryrun.app.services;
 import com.groceryrun.app.dto.user.*;
 import com.groceryrun.app.dto.shared.GroceryListsChangeDTO;
 import com.groceryrun.app.entities.User;
+import com.groceryrun.app.enums.Role;
 import com.groceryrun.app.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,8 +54,8 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public void updateUserPassword(Integer id, PasswordChangeDTO passwordChangeDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+    public void updateUserPassword(String username, PasswordChangeDTO passwordChangeDTO) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         String storedOldPasswordHash = user.getPasswordHash();
         boolean matches = passwordEncoder.matches(passwordChangeDTO.currentPassword(), storedOldPasswordHash);
         if (!matches) {
@@ -65,8 +66,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateUserName(Integer id, UsernameChangeDTO usernameChangeDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+    public void updateUserName(String username, UsernameChangeDTO usernameChangeDTO) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         boolean exists = userRepository.existsByUsername(usernameChangeDTO.newUsername());
         if (exists) {
             throw new IllegalStateException(usernameChangeDTO.newUsername() + " already exists");
@@ -75,10 +76,14 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateUserRole(Integer id, RoleChangeDTO roleChangeDTO) {
+    public void updateUserRole(String username, Integer id, RoleChangeDTO roleChangeDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        user.setRole(roleChangeDTO.newRole());
-        userRepository.save(user);
+        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
+        if (currentUser.getRole().equals(Role.ADMIN)) {
+            user.setRole(roleChangeDTO.newRole());
+            userRepository.save(user);
+        }
+        
     }
 
     public void updateUserGroceryLists(Integer id, GroceryListsChangeDTO groceryListsChangeDTO) {

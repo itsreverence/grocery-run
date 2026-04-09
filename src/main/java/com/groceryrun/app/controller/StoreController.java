@@ -8,7 +8,6 @@ import com.groceryrun.app.dto.store.StoreLocationChangeDTO;
 import com.groceryrun.app.dto.aisle.NewAisleDTO;
 import com.groceryrun.app.dto.shared.NameChangeDTO;
 import com.groceryrun.app.services.StoreService;
-import com.groceryrun.app.services.UserService;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +19,9 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
-    private final UserService userService;
 
-    public StoreController(StoreService storeService, UserService userService) {
+    public StoreController(StoreService storeService) {
         this.storeService = storeService;
-        this.userService = userService;
     }
 
     @GetMapping
@@ -47,19 +44,9 @@ public class StoreController {
         storeService.addStore(principal.getName(), newStoreDTO);
     }
 
-    @PostMapping("admin/{id}/aisles")
-    public void addAislesToStore(@PathVariable Integer id, @RequestBody NewAisleDTO newAisleDTO) {
-        storeService.addAislesToStore(id, newAisleDTO);
-    }
-
     @DeleteMapping("admin/{id}")
     public void deleteStore(@PathVariable Integer id) {
         storeService.deleteStore(id);
-    }
-
-    @DeleteMapping("admin/{id}/aisles/{aisleId}")
-    public void deleteAisleFromStore(@PathVariable Integer id, @PathVariable Integer aisleId) {
-        storeService.deleteAisleFromStore(id, aisleId);
     }
 
     @PutMapping("admin/{id}/name")
