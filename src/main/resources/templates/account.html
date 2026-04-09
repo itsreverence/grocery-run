@@ -8,7 +8,7 @@
     <title>Account · Grocery Run</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
     <style>
         .gr-account-grid {
@@ -56,9 +56,9 @@
 
     <section class="gr-hero-block">
         <p class="gr-eyebrow">Account</p>
-        <h1 class="gr-h1">Keep your login details current.</h1>
+        <h1 class="gr-h1">Manage your login details.</h1>
         <p class="gr-prose">
-            Update the username and password tied to your account. Username changes will sign you out so your next session uses the new login name.
+            Update your username or password at any time. Note that changing your username will end your current session.
         </p>
     </section>
 
@@ -67,8 +67,11 @@
             <span class="gr-tag">Username</span>
             <h2>Change username</h2>
             <p class="gr-account-note">
-                After a successful username change, this page will sign you out and send you back to the login screen.
+                Choose a new username for your account.
             </p>
+            <aside class="gr-aside-warn">
+                Saving a new username will sign you out immediately. Use it to log back in.
+            </aside>
             <form id="username-form">
                 <div class="gr-form-grid">
                     <div class="gr-field gr-field--full">

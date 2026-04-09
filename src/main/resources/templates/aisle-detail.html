@@ -8,7 +8,7 @@
     <title>Aisle Detail · Grocery Run</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
     <style>
         .gr-aisle-layout {
@@ -28,12 +28,6 @@
             align-items: center;
         }
 
-        .gr-aisle-grid {
-            display: grid;
-            gap: 1.25rem;
-            grid-template-columns: 1.35fr 0.95fr;
-        }
-
         .gr-aisle-block {
             display: grid;
             gap: 1rem;
@@ -50,9 +44,9 @@
             gap: 1rem;
             align-items: center;
             padding: 0.9rem 1rem;
-            border: 1px solid rgba(31, 28, 23, 0.1);
+            border: 1px solid var(--gr-border);
             border-radius: var(--gr-radius-sm);
-            background: rgba(255, 255, 255, 0.72);
+            background: var(--gr-surface-2);
         }
 
         .gr-aisle-row strong {
@@ -76,9 +70,9 @@
             font-size: 0.92rem;
             color: var(--gr-muted);
             padding: 1rem;
-            border: 1px dashed rgba(31, 28, 23, 0.14);
+            border: 1px dashed var(--gr-border);
             border-radius: var(--gr-radius-sm);
-            background: rgba(255, 255, 255, 0.52);
+            background: var(--gr-surface);
         }
 
         .gr-category-editor {
@@ -86,7 +80,7 @@
             gap: 0.75rem;
             margin-top: 0.75rem;
             padding-top: 0.75rem;
-            border-top: 1px solid rgba(31, 28, 23, 0.08);
+            border-top: 1px solid var(--gr-line-subtle);
         }
 
         .gr-category-editor[hidden] {
@@ -107,12 +101,6 @@
             gap: 0.5rem;
             flex-wrap: wrap;
         }
-
-        @media (max-width: 900px) {
-            .gr-aisle-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 <body>
@@ -131,66 +119,28 @@
         <p class="gr-eyebrow">Aisle detail</p>
         <h1 id="aisle-page-title" class="gr-h1">Aisle workspace</h1>
         <p class="gr-prose">
-            This page is the focused editor for a single aisle. It gives us room for category management and later aisle-specific setup without crowding the store screen.
+            Manage the categories in this aisle. Add new ones, rename existing ones, or remove what's no longer needed.
         </p>
     </section>
 
-    <section class="gr-aisle-layout">
-        <article class="gr-card gr-aisle-header">
-            <div class="gr-aisle-meta">
-                <span class="gr-tag">Aisle</span>
-                <span id="aisle-store-tag" class="gr-tag">Store context pending</span>
+    <article class="gr-card gr-aisle-block">
+        <span class="gr-tag">Categories</span>
+        <h2 id="aisle-heading">Loading aisle…</h2>
+        <p id="aisle-summary" class="gr-aisle-note">Category data for this aisle will load here.</p>
+        <form id="create-category-form" class="gr-store-rename">
+            <div class="gr-field">
+                <label for="new-category-label">New category label</label>
+                <input class="gr-input" id="new-category-label" name="label" type="text" maxlength="100" required>
             </div>
-            <h2 id="aisle-heading">Loading aisle…</h2>
-            <p id="aisle-summary" class="gr-aisle-note">
-                Category data for this aisle will load here.
-            </p>
-        </article>
-
-        <section class="gr-aisle-grid">
-            <article class="gr-card gr-aisle-block">
-                <span class="gr-tag">Categories</span>
-                <h2>Category structure</h2>
-                <p class="gr-aisle-note">
-                    Rename the categories already assigned to this aisle. Create and remove can slot into the same structure later.
-                </p>
-                <form id="create-category-form" class="gr-store-rename">
-                    <div class="gr-field">
-                        <label for="new-category-label">New category label</label>
-                        <input class="gr-input" id="new-category-label" name="label" type="text" maxlength="100" required>
-                    </div>
-                    <div class="gr-form-row">
-                        <button id="create-category-button" class="gr-btn gr-btn--primary" type="submit">Add category</button>
-                        <span class="gr-form-note">New categories will be attached to this aisle.</span>
-                    </div>
-                </form>
-                <div id="create-category-status" class="gr-form-status" hidden></div>
-                <div id="categories-status" class="gr-aisle-placeholder">Loading aisle categories…</div>
-                <div id="categories-list" class="gr-aisle-list" hidden></div>
-            </article>
-
-            <article class="gr-card gr-aisle-block">
-                <span class="gr-tag">Setup</span>
-                <h2>Aisle context</h2>
-                <p class="gr-aisle-note">
-                    This side panel shows the aisle information available from the current API. When you’re ready, aisle label editing and category creation can be added here.
-                </p>
-                <div class="gr-form-grid">
-                    <div class="gr-field gr-field--full">
-                        <label for="aisle-label-preview">Aisle label</label>
-                        <input class="gr-input" id="aisle-label-preview" type="text" value="Loading aisle..." disabled>
-                    </div>
-                    <div class="gr-field gr-field--full">
-                        <label for="aisle-store-preview">Store</label>
-                        <input class="gr-input" id="aisle-store-preview" type="text" value="Store context not available from this API yet" disabled>
-                    </div>
-                </div>
-                <div class="gr-form-row">
-                    <a class="gr-btn gr-btn--ghost" th:href="@{/stores}">Back to stores</a>
-                </div>
-            </article>
-        </section>
-    </section>
+            <div class="gr-form-row">
+                <button id="create-category-button" class="gr-btn gr-btn--primary" type="submit">Add category</button>
+                <span class="gr-form-note">New categories will be attached to this aisle.</span>
+            </div>
+        </form>
+        <div id="create-category-status" class="gr-form-status" hidden></div>
+        <div id="categories-status" class="gr-aisle-placeholder">Loading aisle categories…</div>
+        <div id="categories-list" class="gr-aisle-list" hidden></div>
+    </article>
 </main>
 <script>
     const pageTitle = document.getElementById("aisle-page-title");
