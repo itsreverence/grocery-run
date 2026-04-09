@@ -6,6 +6,7 @@ import com.groceryrun.app.dto.aisle.AisleDTOMapper;
 import com.groceryrun.app.dto.aisle.AisleStoreChangeDTO;
 import com.groceryrun.app.dto.aisle.NewAisleDTO;
 import com.groceryrun.app.dto.shared.LabelChangeDTO;
+import com.groceryrun.app.dto.category.NewCategoryDTO;
 import com.groceryrun.app.entities.Aisle;
 import com.groceryrun.app.entities.Store;
 import com.groceryrun.app.repositories.AisleRepository;
@@ -26,10 +27,19 @@ public class AisleService {
         this.aisleRepository = aisleRepository;
         this.storeRepository = storeRepository;
         this.aisleDTOMapper = aisleDTOMapper;
+        this.categoryRepository = categoryRepository;
     }
 
     public List<AisleDTO> getAllAisles() {
         return aisleRepository.findAll().stream().map(aisleDTOMapper).collect(Collectors.toList());
+    }
+
+    public void addCategoryToAisle(Integer id, NewCategoryDTO newCategoryDTO) {
+        Aisle aisle = aisleRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        Category category = new Category(newCategoryDTO.label(), aisle);
+        categoryRepository.save(category);
+        aisle.getCategories().add(category);
+        aisleRepository.save(aisle);
     }
 
     public AisleDTO getAisleById(Integer id) {
