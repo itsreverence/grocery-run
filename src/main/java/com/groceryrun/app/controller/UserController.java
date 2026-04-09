@@ -6,6 +6,7 @@ import com.groceryrun.app.dto.shared.GroceryListsChangeDTO;
 import com.groceryrun.app.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -43,19 +44,19 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    @PutMapping("{id}/username")
-    public void updateUserName(@PathVariable Integer id, @RequestBody UsernameChangeDTO usernameChangeDTO) {
-        userService.updateUserName(id, usernameChangeDTO);
+    @PutMapping("username")
+    public void updateUserName(Principal principal, @RequestBody UsernameChangeDTO usernameChangeDTO) {
+        userService.updateUserName(principal.getName(), usernameChangeDTO);
     }
 
-    @PutMapping("{id}/password")
-    public void updatePassword(@PathVariable Integer id, @RequestBody PasswordChangeDTO passwordChangeDTO) {
-        userService.updateUserPassword(id, passwordChangeDTO);
+    @PutMapping("password")
+    public void updatePassword(Principal principal, @RequestBody PasswordChangeDTO passwordChangeDTO) {
+        userService.updateUserPassword(principal.getName(), passwordChangeDTO);
     }
 
-    @PutMapping("{id}/role")
-    public void updateRole(@PathVariable Integer id, @RequestBody RoleChangeDTO roleChangeDTO) {
-        userService.updateUserRole(id, roleChangeDTO);
+    @PutMapping("admin/{id}/role")
+    public void updateRole(Principal principal, @PathVariable Integer id, @RequestBody RoleChangeDTO roleChangeDTO) {
+        userService.updateUserRole(principal.getName(), id, roleChangeDTO);
     }
 
     @PutMapping("{id}/grocery-lists")
