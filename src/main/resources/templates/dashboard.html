@@ -6,7 +6,7 @@
     <title>Dashboard · Grocery Run</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
 </head>
 <body>
@@ -28,9 +28,9 @@
 
     <section class="gr-hero-block">
         <p class="gr-eyebrow">Welcome back</p>
-        <h1 class="gr-h1">Your workspace.</h1>
+        <h1 class="gr-h1">Your admin workspace.</h1>
         <p class="gr-prose">
-            Review stores you manage, add new locations, and keep addresses accurate in one place.
+            Manage the stores, aisles, and users that power Grocery Run. Everything you need to keep the app running is a click away.
         </p>
     </section>
 
@@ -40,7 +40,7 @@
                 <h2>Stores</h2>
             </div>
             <p>
-                Open store management to see your list or create a new store. New locations are linked to your admin account automatically.
+                Add locations, update addresses, assign aisles, and manage which admins own each store. Your full store setup lives here.
             </p>
             <div class="gr-actions gr-actions--compact">
                 <a class="gr-btn gr-btn--primary" th:href="@{/stores}">Manage stores</a>
@@ -52,7 +52,7 @@
                 <h2>Users</h2>
             </div>
             <p>
-                Review the current user directory and adjust admin access when you need to hand off operational control.
+                View every account in the system and adjust role access. Promote users to admin or step them back to standard shopper access.
             </p>
             <div class="gr-actions gr-actions--compact">
                 <a class="gr-btn gr-btn--primary" th:href="@{/users}">Manage users</a>

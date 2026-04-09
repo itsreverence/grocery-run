@@ -8,7 +8,7 @@
     <title>Users · Grocery Run</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
     <style>
         .gr-users-layout {
@@ -31,9 +31,9 @@
             display: grid;
             gap: 0.85rem;
             padding: 1rem 1.05rem;
-            border: 1px solid rgba(31, 28, 23, 0.1);
+            border: 1px solid var(--gr-border);
             border-radius: var(--gr-radius-sm);
-            background: rgba(255, 255, 255, 0.72);
+            background: var(--gr-surface-2);
         }
 
         .gr-user-row {
@@ -72,9 +72,9 @@
             font-size: 0.92rem;
             color: var(--gr-muted);
             padding: 1rem;
-            border: 1px dashed rgba(31, 28, 23, 0.14);
+            border: 1px dashed var(--gr-border);
             border-radius: var(--gr-radius-sm);
-            background: rgba(255, 255, 255, 0.52);
+            background: var(--gr-surface);
         }
 
         @media (max-width: 900px) {
@@ -103,9 +103,9 @@
 
     <section class="gr-hero-block">
         <p class="gr-eyebrow">Admin users</p>
-        <h1 class="gr-h1">Manage who can run the app.</h1>
+        <h1 class="gr-h1">Control who can manage the app.</h1>
         <p class="gr-prose">
-            Review the current user list and adjust roles where needed. Self-service account settings stay on the account page; this screen is only for admin-side access management.
+            Every account is listed here. Promote users to admin when they need full workspace access, or bring them back to standard shopper access when it's no longer needed.
         </p>
     </section>
 
@@ -123,20 +123,20 @@
 
             <article class="gr-card">
                 <span class="gr-tag">Roles</span>
-                <h2>Admin guidance</h2>
+                <h2>Role reference</h2>
                 <p class="gr-users-note">
-                    Keep admin access limited to users who need to manage stores, aisle structure, categories, and items. Standard shoppers should stay on the `USER` role.
+                    Keep admin access limited to users who need to manage stores, aisles, and categories. Standard shoppers should stay on the USER role.
                 </p>
-                <div class="gr-form-grid">
-                    <div class="gr-field gr-field--full">
-                        <label for="role-admin-preview">ADMIN</label>
-                        <input class="gr-input" id="role-admin-preview" type="text" value="Full admin workspace access" disabled>
+                <dl class="gr-dl">
+                    <div class="gr-dl-item">
+                        <dt class="gr-dl-term">Admin</dt>
+                        <dd class="gr-dl-desc">Full workspace access — stores, aisles, items, and user management.</dd>
                     </div>
-                    <div class="gr-field gr-field--full">
-                        <label for="role-user-preview">USER</label>
-                        <input class="gr-input" id="role-user-preview" type="text" value="Signed-in shopper experience" disabled>
+                    <div class="gr-dl-item">
+                        <dt class="gr-dl-term">User</dt>
+                        <dd class="gr-dl-desc">Standard signed-in shopper experience with no admin capabilities.</dd>
                     </div>
-                </div>
+                </dl>
             </article>
         </section>
     </section>

@@ -1,12 +1,13 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home · Grocery Run</title>
+    <title>Home &middot; Grocery Run</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
     <style>
         .gr-home-grid {
@@ -32,9 +33,9 @@
 
     <section class="gr-hero-block">
         <p class="gr-eyebrow">Welcome back</p>
-        <h1 class="gr-h1">Your home base.</h1>
+        <h1 class="gr-h1">Ready to plan your next run?</h1>
         <p class="gr-prose">
-            Your lists and planning tools will live on this page. Check back as we roll out grocery list management and other helpers.
+            Your grocery lists and store tools are right here. Build a list before you head out and never loop back for forgotten items.
         </p>
     </section>
 
@@ -45,7 +46,7 @@
                 <span class="gr-pill">Admin</span>
             </div>
             <p>
-                Open the admin workspace to manage stores, aisle structure, and the rest of the operational setup for the app.
+                Manage stores and aisle structure, assign owners, and control user access from the admin workspace.
             </p>
             <div class="gr-actions gr-actions--compact">
                 <a class="gr-btn gr-btn--primary" th:href="@{/dashboard}">Open dashboard</a>
@@ -57,11 +58,16 @@
         <article class="gr-card gr-panel">
             <div class="gr-panel-head">
                 <h2>Grocery lists</h2>
-                <span class="gr-pill">Soon</span>
+                <span class="gr-soon-badge">Coming soon</span>
             </div>
             <p>
-                Soon you’ll be able to build lists, tick items off, and keep your usual shop in one place. Nothing to do here yet—we’re working on it.
+                Build a list, tick items off as you shop, and keep your usual run saved. We're working on it.
             </p>
+            <div class="gr-soon-preview" aria-hidden="true">
+                <div class="gr-soon-row"></div>
+                <div class="gr-soon-row"></div>
+                <div class="gr-soon-row"></div>
+            </div>
         </article>
     </section>
 </main>

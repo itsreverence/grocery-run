@@ -8,7 +8,7 @@
     <title>Category Detail · Grocery Run</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/groceryrun.css}">
     <style>
         .gr-category-layout {
@@ -28,12 +28,6 @@
             align-items: center;
         }
 
-        .gr-category-grid {
-            display: grid;
-            gap: 1.25rem;
-            grid-template-columns: 1.35fr 0.95fr;
-        }
-
         .gr-category-block {
             display: grid;
             gap: 1rem;
@@ -50,9 +44,9 @@
             gap: 1rem;
             align-items: center;
             padding: 0.9rem 1rem;
-            border: 1px solid rgba(31, 28, 23, 0.1);
+            border: 1px solid var(--gr-border);
             border-radius: var(--gr-radius-sm);
-            background: rgba(255, 255, 255, 0.72);
+            background: var(--gr-surface-2);
         }
 
         .gr-category-row strong {
@@ -76,9 +70,9 @@
             font-size: 0.92rem;
             color: var(--gr-muted);
             padding: 1rem;
-            border: 1px dashed rgba(31, 28, 23, 0.14);
+            border: 1px dashed var(--gr-border);
             border-radius: var(--gr-radius-sm);
-            background: rgba(255, 255, 255, 0.52);
+            background: var(--gr-surface);
         }
 
         .gr-item-editor {
@@ -86,7 +80,7 @@
             gap: 0.75rem;
             margin-top: 0.75rem;
             padding-top: 0.75rem;
-            border-top: 1px solid rgba(31, 28, 23, 0.08);
+            border-top: 1px solid var(--gr-line-subtle);
         }
 
         .gr-item-editor[hidden] {
@@ -102,12 +96,6 @@
             align-items: center;
             gap: 0.5rem;
             flex-wrap: wrap;
-        }
-
-        @media (max-width: 900px) {
-            .gr-category-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -127,66 +115,28 @@
         <p class="gr-eyebrow">Category detail</p>
         <h1 id="category-page-title" class="gr-h1">Category workspace</h1>
         <p class="gr-prose">
-            This page is the focused workspace for one category. It gives us room for item management and later category-specific setup without crowding the aisle screen.
+            Manage the items in this category. Add new ones, rename existing ones, or remove what no longer belongs here.
         </p>
     </section>
 
-    <section class="gr-category-layout">
-        <article class="gr-card gr-category-header">
-            <div class="gr-category-meta">
-                <span class="gr-tag">Category</span>
-                <span id="category-context-tag" class="gr-tag">Aisle context pending</span>
+    <article class="gr-card gr-category-block">
+        <span class="gr-tag">Items</span>
+        <h2 id="category-heading">Loading category…</h2>
+        <p id="category-summary" class="gr-category-note">Item data for this category will load here.</p>
+        <form id="create-item-form" class="gr-store-rename">
+            <div class="gr-field">
+                <label for="new-item-name">New item name</label>
+                <input class="gr-input" id="new-item-name" name="name" type="text" maxlength="100" required>
             </div>
-            <h2 id="category-heading">Loading category…</h2>
-            <p id="category-summary" class="gr-category-note">
-                Item data for this category will load here.
-            </p>
-        </article>
-
-        <section class="gr-category-grid">
-            <article class="gr-card gr-category-block">
-                <span class="gr-tag">Items</span>
-                <h2>Item structure</h2>
-                <p class="gr-category-note">
-                    This is the future working area for category items. It gives you a clean place to add, rename, and remove items without expanding the aisle page.
-                </p>
-                <form id="create-item-form" class="gr-store-rename">
-                    <div class="gr-field">
-                        <label for="new-item-name">New item name</label>
-                        <input class="gr-input" id="new-item-name" name="name" type="text" maxlength="100" required>
-                    </div>
-                    <div class="gr-form-row">
-                        <button id="create-item-button" class="gr-btn gr-btn--primary" type="submit">Add item</button>
-                        <span class="gr-form-note">New items will be attached to this category.</span>
-                    </div>
-                </form>
-                <div id="create-item-status" class="gr-form-status" hidden></div>
-                <div id="items-status" class="gr-category-placeholder">Loading category items…</div>
-                <div id="items-list" class="gr-category-list" hidden></div>
-            </article>
-
-            <article class="gr-card gr-category-block">
-                <span class="gr-tag">Setup</span>
-                <h2>Category context</h2>
-                <p class="gr-category-note">
-                    This panel keeps the category’s core context visible while item management grows. Category label editing can stay on the aisle page for now and move here later if you want.
-                </p>
-                <div class="gr-form-grid">
-                    <div class="gr-field gr-field--full">
-                        <label for="category-label-preview">Category label</label>
-                        <input class="gr-input" id="category-label-preview" type="text" value="Loading category..." disabled>
-                    </div>
-                    <div class="gr-field gr-field--full">
-                        <label for="category-aisle-preview">Aisle</label>
-                        <input class="gr-input" id="category-aisle-preview" type="text" value="Aisle context not available from this API yet" disabled>
-                    </div>
-                </div>
-                <div class="gr-form-row">
-                    <a class="gr-btn gr-btn--ghost" href="javascript:history.back()">Back</a>
-                </div>
-            </article>
-        </section>
-    </section>
+            <div class="gr-form-row">
+                <button id="create-item-button" class="gr-btn gr-btn--primary" type="submit">Add item</button>
+                <span class="gr-form-note">New items will be attached to this category.</span>
+            </div>
+        </form>
+        <div id="create-item-status" class="gr-form-status" hidden></div>
+        <div id="items-status" class="gr-category-placeholder">Loading category items…</div>
+        <div id="items-list" class="gr-category-list" hidden></div>
+    </article>
 </main>
 <script>
     const pageTitle = document.getElementById("category-page-title");
