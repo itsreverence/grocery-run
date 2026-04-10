@@ -158,12 +158,13 @@
         }
     </style>
 </head>
-<body>
-<main class="gr-page">
+<body style="min-height:100vh;display:flex;flex-direction:column;">
+<main class="gr-page" style="flex:1;display:flex;flex-direction:column;">
     <header class="gr-header">
         <div class="gr-brand"><a th:href="@{/dashboard}">Grocery Run</a></div>
         <div class="gr-header-actions">
             <nav class="gr-nav" aria-label="Workspace">
+                <a th:href="@{/home}">Home</a>
                 <a th:href="@{/dashboard}">Dashboard</a>
                 <form class="gr-inline-form" th:action="@{/logout}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
@@ -175,9 +176,9 @@
 
     <section class="gr-hero-block gr-stores-intro">
         <p class="gr-eyebrow">Store management</p>
-        <h1 class="gr-h1">Your stores, all in one place.</h1>
+        <h1 class="gr-h1">Your stores,<br>all in one place.</h1>
         <p class="gr-prose">
-            Add locations, update addresses, and manage aisle structure. Your store list and the create form run side by side so you can do both without switching screens.
+            Add locations, update addresses, and manage aisle structure. Your list and create form are always side by side.
         </p>
     </section>
 
