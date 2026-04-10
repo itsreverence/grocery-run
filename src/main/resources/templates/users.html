@@ -84,13 +84,14 @@
         }
     </style>
 </head>
-<body>
-<main class="gr-page">
+<body style="min-height:100vh;display:flex;flex-direction:column;">
+<main class="gr-page" style="flex:1;display:flex;flex-direction:column;">
     <header class="gr-header">
         <div class="gr-brand"><a th:href="@{/dashboard}">Grocery Run</a></div>
         <div class="gr-header-actions">
             <span class="gr-pill">Admin</span>
             <nav class="gr-nav" aria-label="Workspace">
+                <a th:href="@{/home}">Home</a>
                 <a th:href="@{/dashboard}">Dashboard</a>
                 <a th:href="@{/stores}">Stores</a>
                 <form class="gr-inline-form" th:action="@{/logout}" method="post">
@@ -103,7 +104,7 @@
 
     <section class="gr-hero-block">
         <p class="gr-eyebrow">Admin users</p>
-        <h1 class="gr-h1">Control who can manage the app.</h1>
+        <h1 class="gr-h1">Control who can<br>manage the app.</h1>
         <p class="gr-prose">
             Every account is listed here. Promote users to admin when they need full workspace access, or bring them back to standard shopper access when it's no longer needed.
         </p>

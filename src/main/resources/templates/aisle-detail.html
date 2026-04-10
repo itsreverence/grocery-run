@@ -103,12 +103,13 @@
         }
     </style>
 </head>
-<body>
-<main class="gr-page">
+<body style="min-height:100vh;display:flex;flex-direction:column;">
+<main class="gr-page" style="flex:1;display:flex;flex-direction:column;">
     <header class="gr-header">
         <div class="gr-brand"><a th:href="@{/dashboard}">Grocery Run</a></div>
         <div class="gr-header-actions">
             <nav class="gr-nav" aria-label="Workspace">
+                <a th:href="@{/home}">Home</a>
                 <a th:href="@{/stores}">Stores</a>
                 <a th:href="@{/dashboard}">Dashboard</a>
             </nav>
@@ -146,9 +147,6 @@
     const pageTitle = document.getElementById("aisle-page-title");
     const aisleHeading = document.getElementById("aisle-heading");
     const aisleSummary = document.getElementById("aisle-summary");
-    const aisleStoreTag = document.getElementById("aisle-store-tag");
-    const aisleLabelPreview = document.getElementById("aisle-label-preview");
-    const aisleStorePreview = document.getElementById("aisle-store-preview");
     const categoriesStatus = document.getElementById("categories-status");
     const categoriesList = document.getElementById("categories-list");
     const createCategoryForm = document.getElementById("create-category-form");
@@ -341,9 +339,6 @@
 
         pageTitle.textContent = aisle.label || "Aisle workspace";
         aisleHeading.textContent = aisle.label || "Aisle";
-        aisleLabelPreview.value = aisle.label || "";
-        aisleStoreTag.textContent = "Store context pending";
-        aisleStorePreview.value = "Store context not available from this API yet";
         aisleSummary.textContent = categories.length + " categor" + (categories.length === 1 ? "y" : "ies") + " currently assigned to this aisle.";
 
         if (categories.length === 0) {
