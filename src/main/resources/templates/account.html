@@ -32,6 +32,84 @@
             margin-top: 0;
         }
 
+        .gr-account-danger {
+            margin-top: 1.25rem;
+        }
+
+        .gr-account-danger-card {
+            position: relative;
+            overflow: hidden;
+            border-color: rgba(244, 103, 72, 0.28);
+            background:
+                linear-gradient(145deg, rgba(120, 24, 24, 0.22), rgba(18, 14, 20, 0.92)),
+                var(--gr-surface);
+        }
+
+        .gr-account-danger-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(115deg, rgba(255, 255, 255, 0.04), transparent 36%),
+                radial-gradient(circle at top right, rgba(244, 103, 72, 0.16), transparent 45%);
+            pointer-events: none;
+        }
+
+        .gr-account-danger-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .gr-account-danger-note {
+            color: rgba(255, 225, 217, 0.82);
+        }
+
+        .gr-danger-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            width: fit-content;
+            padding: 0.45rem 0.8rem;
+            border: 1px solid rgba(244, 103, 72, 0.28);
+            border-radius: 999px;
+            background: rgba(244, 103, 72, 0.09);
+            color: #ffd8cd;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .gr-danger-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.9rem;
+        }
+
+        .gr-danger-actions .gr-btn {
+            min-width: 11rem;
+        }
+
+        .gr-danger-text {
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 225, 217, 0.68);
+        }
+
+        .gr-btn--danger {
+            background: linear-gradient(135deg, #e85d48, #b6332f);
+            color: #fff9f6;
+            border-color: rgba(255, 149, 120, 0.28);
+            box-shadow: 0 18px 32px rgba(154, 38, 31, 0.25);
+        }
+
+        .gr-btn--danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 22px 38px rgba(154, 38, 31, 0.32);
+        }
+
         @media (max-width: 900px) {
             .gr-account-grid {
                 grid-template-columns: 1fr;
@@ -122,6 +200,30 @@
             <div id="password-status" class="gr-form-status gr-account-status" hidden></div>
         </article>
     </section>
+
+    <section class="gr-account-danger">
+        <article class="gr-card gr-account-card gr-account-danger-card">
+            <span class="gr-tag">Account removal</span>
+            <h2>Delete account</h2>
+            <p class="gr-account-note gr-account-danger-note">
+                This permanently removes your account, your grocery lists, and your store ownership access. This action cannot be undone.
+            </p>
+            <div class="gr-danger-chip">Permanent action</div>
+            <form id="delete-account-form">
+                <div class="gr-form-grid">
+                    <div class="gr-field gr-field--full">
+                        <label for="delete-confirmation">Type DELETE to confirm</label>
+                        <input class="gr-input" id="delete-confirmation" name="deleteConfirmation" type="text" autocomplete="off" required>
+                    </div>
+                </div>
+                <div class="gr-danger-actions">
+                    <button id="delete-account-submit" class="gr-btn gr-btn--danger" type="submit">Delete account</button>
+                    <span class="gr-danger-text">You will be signed out immediately.</span>
+                </div>
+            </form>
+            <div id="delete-account-status" class="gr-form-status gr-account-status" hidden></div>
+        </article>
+    </section>
 </main>
 <script>
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
@@ -132,6 +234,10 @@
     const passwordForm = document.getElementById("password-form");
     const passwordSubmit = document.getElementById("password-submit");
     const passwordStatus = document.getElementById("password-status");
+    const deleteAccountForm = document.getElementById("delete-account-form");
+    const deleteAccountSubmit = document.getElementById("delete-account-submit");
+    const deleteAccountStatus = document.getElementById("delete-account-status");
+    const headerLogoutForm = document.querySelector('.gr-header-actions form[action="/logout"]');
 
     const secureHeaders = (headers = {}) => ({
         ...headers,
@@ -236,6 +342,46 @@
             console.error("Failed to update password", error);
         } finally {
             passwordSubmit.disabled = false;
+        }
+    });
+
+    deleteAccountForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(deleteAccountForm);
+        const confirmation = formData.get("deleteConfirmation")?.toString().trim();
+
+        if (confirmation !== "DELETE") {
+            setStatus(deleteAccountStatus, 'Type DELETE exactly to remove this account.', "error");
+            return;
+        }
+
+        deleteAccountSubmit.disabled = true;
+        setStatus(deleteAccountStatus, "Deleting your account...", "");
+
+        try {
+            const response = await fetch("/api/v1/users", {
+                method: "DELETE",
+                headers: secureHeaders({
+                    "Accept": "application/json"
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            setStatus(deleteAccountStatus, "Account deleted. Signing you out...", "success");
+
+            if (headerLogoutForm) {
+                window.setTimeout(() => headerLogoutForm.submit(), 800);
+            } else {
+                window.setTimeout(() => window.location.replace("/"), 800);
+            }
+        } catch (error) {
+            setStatus(deleteAccountStatus, "Could not delete your account right now.", "error");
+            console.error("Failed to delete account", error);
+            deleteAccountSubmit.disabled = false;
         }
     });
 </script>

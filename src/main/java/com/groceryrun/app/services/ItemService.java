@@ -1,9 +1,7 @@
 package com.groceryrun.app.services;
 
-import com.groceryrun.app.dto.item.ItemCategoryChangeDTO;
 import com.groceryrun.app.dto.item.ItemDTO;
 import com.groceryrun.app.dto.item.ItemDTOMapper;
-import com.groceryrun.app.dto.shared.GroceryListsChangeDTO;
 import com.groceryrun.app.dto.shared.NameChangeDTO;
 import com.groceryrun.app.dto.item.NewItemDTO;
 import com.groceryrun.app.entities.Category;
@@ -31,9 +29,11 @@ public class ItemService {
         return itemRepository.findAll().stream().map(itemDTOMapper).collect(Collectors.toList());
     }
 
-    public void addItem(Integer categoryId, NewItemDTO newItemDTO) {
-
+    public void addItem(String username, Integer categoryId, NewItemDTO newItemDTO) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new IllegalStateException(categoryId + " not found"));
+        if (!category.getAisle().getStore().getOwners().stream().anyMatch(owner -> owner.getUsername().equals(username))) {
+            throw new IllegalStateException("User " + username + " is not an owner of category " + categoryId);
+        }
         Item item = new Item(newItemDTO.name(), category);
         itemRepository.save(item);
         category.getItems().add(item);
@@ -44,9 +44,12 @@ public class ItemService {
         return itemRepository.findById(id).map(itemDTOMapper).orElseThrow(() -> new IllegalStateException(id + " not found"));
     }
 
-    public void deleteItem(Integer id, Integer categoryId) {
+    public void deleteItem(String username, Integer id, Integer categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new IllegalStateException(categoryId + " not found"));
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        if (!category.getAisle().getStore().getOwners().stream().anyMatch(owner -> owner.getUsername().equals(username))) {
+            throw new IllegalStateException("User " + username + " is not an owner of category " + categoryId);
+        }
         if (category.getItems().contains(item)) {
             category.getItems().remove(item);
             categoryRepository.save(category);
@@ -54,21 +57,12 @@ public class ItemService {
         }
     }
 
-    public void updateItemName(Integer id, NameChangeDTO nameChangeDTO) {
+    public void updateItemName(String username, Integer id, NameChangeDTO nameChangeDTO) {
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        if (!item.getCategory().getAisle().getStore().getOwners().stream().anyMatch(owner -> owner.getUsername().equals(username))) {
+            throw new IllegalStateException("User " + username + " is not an owner of item " + id);
+        }
         item.setName(nameChangeDTO.newName());
-        itemRepository.save(item);
-    }
-
-    public void updateItemGroceryLists(Integer id, GroceryListsChangeDTO groceryListsChangeDTO) {
-        Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        item.setGroceryLists(groceryListsChangeDTO.newGroceryLists());
-        itemRepository.save(item);
-    }
-
-    public void updateItemCategory(Integer id, ItemCategoryChangeDTO itemCategoryChangeDTO) {
-        Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        item.setCategory(itemCategoryChangeDTO.newItemCategory());
         itemRepository.save(item);
     }
 }

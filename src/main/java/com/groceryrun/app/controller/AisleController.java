@@ -1,14 +1,12 @@
 package com.groceryrun.app.controller;
 
-import com.groceryrun.app.dto.aisle.AisleCategoriesChangeDTO;
 import com.groceryrun.app.dto.aisle.AisleDTO;
-import com.groceryrun.app.dto.aisle.AisleStoreChangeDTO;
 import com.groceryrun.app.dto.aisle.NewAisleDTO;
-import com.groceryrun.app.dto.category.NewCategoryDTO;
 import com.groceryrun.app.dto.shared.LabelChangeDTO;
 import com.groceryrun.app.services.AisleService;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -32,27 +30,17 @@ public class AisleController {
     }
 
     @PostMapping("admin/{storeId}/aisles")
-    public void addAisle(@PathVariable Integer storeId, @RequestBody NewAisleDTO newAisleDTO) {
-        aisleService.addAisle(storeId, newAisleDTO);
+    public void addAisle(Principal principal, @PathVariable Integer storeId, @RequestBody NewAisleDTO newAisleDTO) {
+        aisleService.addAisle(principal.getName(), storeId, newAisleDTO);
     }
 
     @DeleteMapping("admin/{storeId}/aisles/{aisleId}")
-    public void deleteAisle(@PathVariable Integer aisleId, @PathVariable Integer storeId) {
-        aisleService.deleteAisle(aisleId, storeId);
+    public void deleteAisle(Principal principal, @PathVariable Integer aisleId, @PathVariable Integer storeId) {
+        aisleService.deleteAisle(principal.getName(), aisleId, storeId);
     }
 
-    @PutMapping("{id}/label")
-    public void updateAisleLabel(@PathVariable Integer id, @RequestBody LabelChangeDTO labelChangeDTO) {
-        aisleService.updateAisleLabel(id, labelChangeDTO);
-    }
-
-    @PutMapping("{id}/store")
-    public void updateAisleStore(@PathVariable Integer id, @ModelAttribute AisleStoreChangeDTO aisleStoreChangeDTO) {
-        aisleService.updateAisleStore(id, aisleStoreChangeDTO);
-    }
-
-    @PutMapping("{id}/categories")
-    public void updateAisleCategories(@PathVariable Integer id, @ModelAttribute AisleCategoriesChangeDTO aisleCategoriesChangeDTO) {
-        aisleService.updateAisleCategories(id, aisleCategoriesChangeDTO);
+    @PutMapping("admin/{id}/label")
+    public void updateAisleLabel(Principal principal, @PathVariable Integer id, @RequestBody LabelChangeDTO labelChangeDTO) {
+        aisleService.updateAisleLabel(principal.getName(), id, labelChangeDTO);
     }
 }
