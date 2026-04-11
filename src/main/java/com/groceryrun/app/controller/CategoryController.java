@@ -1,15 +1,13 @@
 package com.groceryrun.app.controller;
 
 import com.groceryrun.app.dto.category.NewCategoryDTO;
-import com.groceryrun.app.dto.item.NewItemDTO;
 import com.groceryrun.app.services.CategoryService;
-import com.groceryrun.app.dto.category.CategoryAisleChangeDTO;
 import com.groceryrun.app.dto.category.CategoryDTO;
-import com.groceryrun.app.dto.category.CategoryItemsChangeDTO;
 import com.groceryrun.app.dto.shared.LabelChangeDTO;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -33,27 +31,17 @@ public class CategoryController {
     }
 
     @PostMapping("admin/{aisleId}/categories")
-    public void addCategory(@PathVariable Integer aisleId, @RequestBody NewCategoryDTO newCategoryDTO) {
-        categoryService.addCategory(aisleId, newCategoryDTO);
+    public void addCategory(Principal principal, @PathVariable Integer aisleId, @RequestBody NewCategoryDTO newCategoryDTO) {
+        categoryService.addCategory(principal.getName(), aisleId, newCategoryDTO);
     }
 
     @DeleteMapping("admin/{aisleId}/categories/{categoryId}")
-    public void deleteCategory(@PathVariable Integer aisleId, @PathVariable Integer categoryId) {
-        categoryService.deleteCategory(categoryId, aisleId);
+    public void deleteCategory(Principal principal, @PathVariable Integer aisleId, @PathVariable Integer categoryId) {
+        categoryService.deleteCategory(principal.getName(), categoryId, aisleId);
     }
 
-    @PutMapping("{id}/label")
-    public void updateCategoryLabel(@PathVariable Integer id, @RequestBody LabelChangeDTO labelChangeDTO) {
-        categoryService.updateCategoryLabel(id, labelChangeDTO);
-    }
-
-    @PutMapping("{id}/aisle")
-    public void updateCategoryAisle(@PathVariable Integer id, @ModelAttribute CategoryAisleChangeDTO categoryAisleChangeDTO) {
-        categoryService.updateCategoryAisle(id, categoryAisleChangeDTO);
-    }
-
-    @PutMapping("{id}/items")
-    public void updateCategoryItems(@PathVariable Integer id, @ModelAttribute CategoryItemsChangeDTO categoryItemsChangeDTO) {
-        categoryService.updateCategoryItems(id, categoryItemsChangeDTO);
+    @PutMapping("admin/{id}/label")
+    public void updateCategoryLabel(Principal principal, @PathVariable Integer id, @RequestBody LabelChangeDTO labelChangeDTO) {
+        categoryService.updateCategoryLabel(principal.getName(), id, labelChangeDTO);
     }
 }

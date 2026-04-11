@@ -27,8 +27,9 @@
         <div th:if="${param.success}" class="gr-alert gr-alert--success" role="status">
             Account created. You can sign in now.
         </div>
+        <div id="signup-error" class="gr-alert gr-alert--error" role="alert" hidden></div>
 
-        <form th:action="@{/api/v1/users}" method="post">
+        <form id="signup-form" th:action="@{/api/v1/users}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             <div class="gr-field">
                 <label for="username">Username</label>
@@ -45,7 +46,7 @@
                 </div>
             </div>
             <div class="gr-form-actions">
-                <button class="gr-btn gr-btn--primary gr-btn--block" type="submit">Sign up</button>
+                <button id="signup-button" class="gr-btn gr-btn--primary gr-btn--block" type="submit">Sign up</button>
             </div>
         </form>
 
@@ -56,6 +57,41 @@
     </div>
 </main>
 <script>
+    const signupForm = document.getElementById('signup-form');
+    const signupButton = document.getElementById('signup-button');
+    const signupError = document.getElementById('signup-error');
+
+    signupForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        signupError.hidden = true;
+        signupError.textContent = '';
+        signupButton.disabled = true;
+
+        try {
+            const formData = new FormData(signupForm);
+            const response = await fetch(signupForm.action, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*'
+                },
+                body: new URLSearchParams(formData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Request failed with status ' + response.status);
+            }
+
+            window.location.href = '/login?success';
+        } catch (error) {
+            signupError.hidden = false;
+            signupError.textContent = 'Could not create the account. Try a different username.';
+            console.error('Failed to create account', error);
+        } finally {
+            signupButton.disabled = false;
+        }
+    });
+
     document.querySelectorAll('.gr-pw-toggle').forEach(btn => {
         const input = document.getElementById(btn.dataset.target);
         btn.addEventListener('click', () => {

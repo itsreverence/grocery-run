@@ -1,13 +1,12 @@
 package com.groceryrun.app.controller;
 
-import com.groceryrun.app.dto.item.ItemCategoryChangeDTO;
 import com.groceryrun.app.dto.item.ItemDTO;
 import com.groceryrun.app.dto.item.NewItemDTO;
-import com.groceryrun.app.dto.shared.GroceryListsChangeDTO;
 import com.groceryrun.app.dto.shared.NameChangeDTO;
 import com.groceryrun.app.services.ItemService;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -31,27 +30,17 @@ public class ItemController {
     }
 
     @PostMapping("admin/{categoryId}/items")
-    public void addItem(@PathVariable Integer categoryId, @RequestBody NewItemDTO newItemDTO) {
-        itemService.addItem(categoryId, newItemDTO);
+    public void addItem(Principal principal, @PathVariable Integer categoryId, @RequestBody NewItemDTO newItemDTO) {
+        itemService.addItem(principal.getName(), categoryId, newItemDTO);
     }
 
     @DeleteMapping("admin/{categoryId}/items/{itemId}")
-    public void deleteItem(@PathVariable Integer categoryId, @PathVariable Integer itemId) {
-        itemService.deleteItem(itemId, categoryId);
+    public void deleteItem(Principal principal, @PathVariable Integer categoryId, @PathVariable Integer itemId) {
+        itemService.deleteItem(principal.getName(), itemId, categoryId);
     }
 
-    @PutMapping("{id}/name")
-    public void updateItemName(@PathVariable Integer id, @RequestBody NameChangeDTO nameChangeDTO) {
-        itemService.updateItemName(id, nameChangeDTO);
-    }
-
-    @PutMapping("{id}/grocery-lists")
-    public void updateItemGroceryLists(@PathVariable Integer id, @ModelAttribute GroceryListsChangeDTO groceryListsChangeDTO) {
-        itemService.updateItemGroceryLists(id, groceryListsChangeDTO);
-    }
-
-    @PutMapping("{id}/category")
-    public void updateItemCategory(@PathVariable Integer id, @ModelAttribute ItemCategoryChangeDTO itemCategoryChangeDTO) {
-        itemService.updateItemCategory(id, itemCategoryChangeDTO);
+    @PutMapping("admin/{id}/name")
+    public void updateItemName(Principal principal, @PathVariable Integer id, @RequestBody NameChangeDTO nameChangeDTO) {
+        itemService.updateItemName(principal.getName(), id, nameChangeDTO);
     }
 }

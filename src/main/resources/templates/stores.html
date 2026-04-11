@@ -97,6 +97,82 @@
             display: none;
         }
 
+        .gr-store-layout-editor {
+            display: grid;
+            gap: 0.85rem;
+            margin-top: 0.4rem;
+            padding: 0.95rem;
+            border: 1px solid var(--gr-border);
+            border-radius: var(--gr-radius-sm);
+            background: var(--gr-surface-2);
+        }
+
+        .gr-store-layout-editor[hidden] {
+            display: none;
+        }
+
+        .gr-layout-card {
+            display: grid;
+            gap: 0.75rem;
+            padding: 0.9rem;
+            border: 1px dashed rgba(197, 103, 74, 0.34);
+            border-radius: var(--gr-radius-sm);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(197, 103, 74, 0.05));
+        }
+
+        .gr-layout-card h4 {
+            margin: 0;
+            font-family: var(--gr-display);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gr-text);
+        }
+
+        .gr-layout-copy {
+            font-size: 0.875rem;
+            color: var(--gr-muted);
+            line-height: 1.5;
+        }
+
+        .gr-layout-file {
+            padding: 0.8rem 0.9rem;
+            border: 1px solid var(--gr-border);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.035);
+            color: var(--gr-text);
+        }
+
+        .gr-layout-file::file-selector-button {
+            margin-right: 0.8rem;
+            padding: 0.55rem 0.8rem;
+            border: 1px solid var(--gr-border);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.045);
+            color: var(--gr-text);
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .gr-store-danger {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 0.4rem;
+            padding: 0.95rem;
+            border: 1px solid rgba(244, 103, 72, 0.26);
+            border-radius: var(--gr-radius-sm);
+            background: linear-gradient(145deg, rgba(120, 24, 24, 0.18), rgba(18, 14, 20, 0.92));
+        }
+
+        .gr-store-danger[hidden] {
+            display: none;
+        }
+
+        .gr-store-danger-copy {
+            font-size: 0.875rem;
+            color: rgba(255, 226, 220, 0.86);
+            line-height: 1.5;
+        }
+
         .gr-owner-list {
             display: grid;
             gap: 0.55rem;
@@ -352,6 +428,16 @@
         aislesButton.type = "button";
         aislesButton.textContent = "Aisles";
 
+        const layoutButton = document.createElement("button");
+        layoutButton.className = "gr-btn gr-btn--ghost";
+        layoutButton.type = "button";
+        layoutButton.textContent = "Layout";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "gr-btn gr-btn--ghost";
+        deleteButton.type = "button";
+        deleteButton.textContent = "Delete";
+
         const renameForm = document.createElement("form");
         renameForm.className = "gr-store-rename";
         renameForm.hidden = true;
@@ -406,6 +492,14 @@
         const aislesEditor = document.createElement("section");
         aislesEditor.className = "gr-store-aisle-editor";
         aislesEditor.hidden = true;
+
+        const layoutEditor = document.createElement("section");
+        layoutEditor.className = "gr-store-layout-editor";
+        layoutEditor.hidden = true;
+
+        const deleteEditor = document.createElement("section");
+        deleteEditor.className = "gr-store-danger";
+        deleteEditor.hidden = true;
 
         const ownersHelp = document.createElement("div");
         ownersHelp.className = "gr-owner-help";
@@ -725,11 +819,133 @@
         aisleCreateForm.append(aisleField, aisleCreateActions);
         aislesEditor.append(aisleHelp, aisleList, aisleCreateForm, aislesStatus);
 
+        const layoutHelp = document.createElement("div");
+        layoutHelp.className = "gr-owner-help";
+        layoutHelp.textContent = "Export this store's aisle structure as JSON or import a saved layout into this store.";
+
+        const exportCard = document.createElement("section");
+        exportCard.className = "gr-layout-card";
+
+        const exportHeading = document.createElement("h4");
+        exportHeading.textContent = "Export layout";
+
+        const exportCopy = document.createElement("p");
+        exportCopy.className = "gr-layout-copy";
+        exportCopy.textContent = "Download this store's aisle, category, and item structure so you can reuse it elsewhere.";
+
+        const exportActions = document.createElement("div");
+        exportActions.className = "gr-form-row";
+
+        const exportButton = document.createElement("button");
+        exportButton.className = "gr-btn gr-btn--primary";
+        exportButton.type = "button";
+        exportButton.textContent = "Export JSON";
+
+        exportActions.append(exportButton);
+        exportCard.append(exportHeading, exportCopy, exportActions);
+
+        const importCard = document.createElement("section");
+        importCard.className = "gr-layout-card";
+
+        const importHeading = document.createElement("h4");
+        importHeading.textContent = "Import layout";
+
+        const importCopy = document.createElement("p");
+        importCopy.className = "gr-layout-copy";
+        importCopy.textContent = "Upload a Grocery Run store layout export to replace the current aisle structure for this store.";
+
+        const importForm = document.createElement("form");
+        importForm.className = "gr-store-rename";
+
+        const importField = document.createElement("div");
+        importField.className = "gr-field";
+
+        const importLabel = document.createElement("label");
+        importLabel.htmlFor = "import-layout-" + store.id;
+        importLabel.textContent = "Layout file";
+
+        const importInput = document.createElement("input");
+        importInput.className = "gr-layout-file";
+        importInput.id = "import-layout-" + store.id;
+        importInput.name = "layoutFile";
+        importInput.type = "file";
+        importInput.accept = ".json,application/json";
+        importInput.required = true;
+
+        importField.append(importLabel, importInput);
+
+        const importActions = document.createElement("div");
+        importActions.className = "gr-form-row";
+
+        const importButton = document.createElement("button");
+        importButton.className = "gr-btn gr-btn--primary";
+        importButton.type = "submit";
+        importButton.textContent = "Import layout";
+
+        const importCancelButton = document.createElement("button");
+        importCancelButton.className = "gr-btn gr-btn--ghost";
+        importCancelButton.type = "button";
+        importCancelButton.textContent = "Close";
+
+        importActions.append(importButton, importCancelButton);
+
+        const layoutStatus = document.createElement("div");
+        layoutStatus.className = "gr-form-status gr-store-inline-status";
+        layoutStatus.hidden = true;
+
+        importForm.append(importField, importActions);
+        importCard.append(importHeading, importCopy, importForm);
+        layoutEditor.append(layoutHelp, exportCard, importCard, layoutStatus);
+
+        const deleteCopy = document.createElement("p");
+        deleteCopy.className = "gr-store-danger-copy";
+        deleteCopy.textContent = "Delete this store and remove its location, aisle structure, and availability from the app. This action cannot be undone.";
+
+        const deleteField = document.createElement("div");
+        deleteField.className = "gr-field";
+
+        const deleteLabel = document.createElement("label");
+        deleteLabel.htmlFor = "delete-store-" + store.id;
+        deleteLabel.textContent = "Type DELETE to confirm";
+
+        const deleteInput = document.createElement("input");
+        deleteInput.className = "gr-input";
+        deleteInput.id = "delete-store-" + store.id;
+        deleteInput.name = "deleteConfirmation";
+        deleteInput.type = "text";
+        deleteInput.autocomplete = "off";
+        deleteInput.required = true;
+
+        deleteField.append(deleteLabel, deleteInput);
+
+        const deleteActions = document.createElement("div");
+        deleteActions.className = "gr-form-row";
+
+        const deleteConfirmButton = document.createElement("button");
+        deleteConfirmButton.className = "gr-btn gr-btn--primary";
+        deleteConfirmButton.type = "button";
+        deleteConfirmButton.textContent = "Delete store";
+
+        const deleteCancelButton = document.createElement("button");
+        deleteCancelButton.className = "gr-btn gr-btn--ghost";
+        deleteCancelButton.type = "button";
+        deleteCancelButton.textContent = "Cancel";
+
+        deleteActions.append(deleteConfirmButton, deleteCancelButton);
+
+        const deleteStatus = document.createElement("div");
+        deleteStatus.className = "gr-form-status gr-store-inline-status";
+        deleteStatus.hidden = true;
+
+        deleteEditor.append(deleteCopy, deleteField, deleteActions, deleteStatus);
+
         editButton.addEventListener("click", () => {
             renameForm.hidden = false;
             ownersForm.hidden = true;
             locationForm.hidden = true;
             aislesEditor.hidden = true;
+            layoutEditor.hidden = true;
+            deleteEditor.hidden = true;
             renameInput.focus();
             renameInput.select();
             renameStatus.hidden = true;
@@ -746,6 +962,8 @@
             renameForm.hidden = true;
             locationForm.hidden = true;
             aislesEditor.hidden = true;
+            layoutEditor.hidden = true;
+            deleteEditor.hidden = true;
             ownersStatus.hidden = true;
         });
 
@@ -759,6 +977,8 @@
             renameForm.hidden = true;
             ownersForm.hidden = true;
             aislesEditor.hidden = true;
+            layoutEditor.hidden = true;
+            deleteEditor.hidden = true;
             locationStatus.hidden = true;
             streetField.input.focus();
         });
@@ -777,6 +997,8 @@
             renameForm.hidden = true;
             ownersForm.hidden = true;
             locationForm.hidden = true;
+            layoutEditor.hidden = true;
+            deleteEditor.hidden = true;
             aislesStatus.hidden = true;
             aisleInput.focus();
         });
@@ -785,6 +1007,40 @@
             aislesEditor.hidden = true;
             aislesStatus.hidden = true;
             aisleInput.value = "";
+        });
+
+        layoutButton.addEventListener("click", () => {
+            layoutEditor.hidden = false;
+            renameForm.hidden = true;
+            ownersForm.hidden = true;
+            locationForm.hidden = true;
+            aislesEditor.hidden = true;
+            deleteEditor.hidden = true;
+            layoutStatus.hidden = true;
+            importInput.focus();
+        });
+
+        importCancelButton.addEventListener("click", () => {
+            layoutEditor.hidden = true;
+            layoutStatus.hidden = true;
+            importForm.reset();
+        });
+
+        deleteButton.addEventListener("click", () => {
+            deleteEditor.hidden = false;
+            renameForm.hidden = true;
+            ownersForm.hidden = true;
+            locationForm.hidden = true;
+            aislesEditor.hidden = true;
+            layoutEditor.hidden = true;
+            deleteStatus.hidden = true;
+            deleteInput.focus();
+        });
+
+        deleteCancelButton.addEventListener("click", () => {
+            deleteEditor.hidden = true;
+            deleteStatus.hidden = true;
+            deleteInput.value = "";
         });
 
         renameForm.addEventListener("submit", async (event) => {
@@ -949,8 +1205,131 @@
             }
         });
 
-        actions.append(editButton, ownersButton, locationButton, aislesButton);
-        item.append(header, meta, ownerSummary, stats, actions, renameForm, ownersForm, locationForm, aislesEditor);
+        exportButton.addEventListener("click", async () => {
+            exportButton.disabled = true;
+            setInlineStatus(layoutStatus, "Preparing store layout export...", "");
+
+            try {
+                const response = await fetch("/api/v1/stores/admin/" + store.id + "/export", {
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                const payload = await response.json();
+                const filenameBase = (store.name || "store-layout")
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/^-+|-+$/g, "") || "store-layout";
+                const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = filenameBase + "-layout.json";
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                window.URL.revokeObjectURL(url);
+                setInlineStatus(layoutStatus, "Store layout exported.", "success");
+            } catch (error) {
+                setInlineStatus(layoutStatus, "Could not export the store layout right now.", "error");
+                console.error("Failed to export store layout", error);
+            } finally {
+                exportButton.disabled = false;
+            }
+        });
+
+        importForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const file = importInput.files?.[0];
+            if (!file) {
+                setInlineStatus(layoutStatus, "Choose a JSON file to import.", "error");
+                return;
+            }
+
+            importButton.disabled = true;
+            importCancelButton.disabled = true;
+            setInlineStatus(layoutStatus, "Reading layout file...", "");
+
+            try {
+                const raw = await file.text();
+                const payload = JSON.parse(raw);
+
+                setInlineStatus(layoutStatus, "Importing layout...", "");
+
+                const response = await fetch("/api/v1/stores/admin/" + store.id + "/import", {
+                    method: "POST",
+                    headers: secureHeaders({
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }),
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                importForm.reset();
+                setInlineStatus(layoutStatus, "Store layout imported.", "success");
+                await loadManagedStores();
+            } catch (error) {
+                if (error instanceof SyntaxError) {
+                    setInlineStatus(layoutStatus, "That file is not valid Grocery Run layout JSON.", "error");
+                } else {
+                    setInlineStatus(layoutStatus, "Could not import the store layout right now.", "error");
+                }
+                console.error("Failed to import store layout", error);
+            } finally {
+                importButton.disabled = false;
+                importCancelButton.disabled = false;
+            }
+        });
+
+        deleteConfirmButton.addEventListener("click", async () => {
+            const confirmation = deleteInput.value.trim();
+            if (confirmation !== "DELETE") {
+                setInlineStatus(deleteStatus, 'Type DELETE exactly to remove this store.', "error");
+                return;
+            }
+
+            deleteConfirmButton.disabled = true;
+            deleteCancelButton.disabled = true;
+            setInlineStatus(deleteStatus, "Deleting store...", "");
+
+            try {
+                const response = await fetch("/api/v1/stores/admin/" + store.id, {
+                    method: "DELETE",
+                    headers: secureHeaders({
+                        "Accept": "application/json"
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                createStoreStatus.hidden = false;
+                createStoreStatus.textContent = "Store deleted successfully.";
+                createStoreStatus.dataset.state = "success";
+                await loadManagedStores();
+            } catch (error) {
+                setInlineStatus(deleteStatus, "Could not delete the store right now.", "error");
+                console.error("Failed to delete store", error);
+            } finally {
+                deleteConfirmButton.disabled = false;
+                deleteCancelButton.disabled = false;
+            }
+        });
+
+        actions.append(editButton, ownersButton, locationButton, aislesButton, layoutButton, deleteButton);
+        item.append(header, meta, ownerSummary, stats, actions, renameForm, ownersForm, locationForm, aislesEditor, layoutEditor, deleteEditor);
         return item;
     };
 

@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Home &middot; Grocery Run</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,6 +50,159 @@
 
         .gr-home-panel .gr-actions { margin-top: auto; }
         .gr-home-panel .gr-soon-preview { margin-top: auto; }
+
+        .gr-list-manager {
+            display: grid;
+            gap: 1.1rem;
+            margin-top: 1.2rem;
+        }
+
+        .gr-list-create {
+            display: grid;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 1px solid var(--gr-border);
+            border-radius: var(--gr-radius-sm);
+            background: var(--gr-surface-2);
+        }
+
+        .gr-list-create .gr-field {
+            margin-bottom: 0;
+        }
+
+        .gr-list-create .gr-form-row {
+            margin-top: 0;
+        }
+
+        .gr-list-import {
+            display: grid;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 1px dashed rgba(197, 103, 74, 0.34);
+            border-radius: var(--gr-radius-sm);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.025), rgba(197, 103, 74, 0.06));
+        }
+
+        .gr-list-import-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .gr-list-import-head h3 {
+            margin: 0;
+            font-family: var(--gr-display);
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .gr-list-import-copy {
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        .gr-list-import-copy p {
+            margin: 0;
+            color: var(--gr-muted);
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
+        .gr-list-import .gr-field {
+            margin-bottom: 0;
+        }
+
+        .gr-list-import input[type="file"] {
+            padding: 0.8rem 0.9rem;
+            border: 1px solid var(--gr-border);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.035);
+            color: var(--gr-text);
+        }
+
+        .gr-list-import input[type="file"]::file-selector-button {
+            margin-right: 0.8rem;
+            padding: 0.55rem 0.8rem;
+            border: 1px solid var(--gr-border);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.045);
+            color: var(--gr-text);
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .gr-grocery-lists {
+            display: grid;
+            gap: 0.75rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .gr-grocery-list-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.95rem 1rem;
+            border: 1px solid var(--gr-line-subtle);
+            border-radius: var(--gr-radius-sm);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .gr-grocery-list-details {
+            min-width: 0;
+        }
+
+        .gr-grocery-list-name {
+            display: block;
+            font-family: var(--gr-display);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gr-text);
+            overflow-wrap: anywhere;
+        }
+
+        .gr-grocery-list-meta {
+            display: block;
+            margin-top: 0.2rem;
+            font-size: 0.82rem;
+            color: var(--gr-muted);
+        }
+
+        .gr-grocery-list-actions {
+            display: flex;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .gr-grocery-list-edit {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto auto;
+            gap: 0.55rem;
+            width: 100%;
+        }
+
+        .gr-list-status {
+            margin-top: 0;
+        }
+
+        @media (max-width: 640px) {
+            .gr-grocery-list-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .gr-grocery-list-actions {
+                justify-content: flex-start;
+            }
+
+            .gr-grocery-list-edit {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -96,18 +251,351 @@
             <span class="gr-home-panel-accent" aria-hidden="true">G</span>
             <div class="gr-panel-head">
                 <h2>Grocery lists</h2>
-                <span class="gr-soon-badge">Coming soon</span>
+                <span class="gr-pill">Lists</span>
             </div>
             <p>
-                Build a list, tick items off as you shop, and keep your usual run saved. We're working on it.
+                Create lists before you head out. Item management comes next, but your list library starts here.
             </p>
-            <div class="gr-soon-preview" aria-hidden="true">
-                <div class="gr-soon-row"></div>
-                <div class="gr-soon-row"></div>
-                <div class="gr-soon-row"></div>
+            <div class="gr-list-manager">
+                <form id="create-grocery-list-form" class="gr-list-create">
+                    <div class="gr-field">
+                        <label for="grocery-list-name">List name</label>
+                        <input class="gr-input" id="grocery-list-name" name="groceryListName" type="text" maxlength="100" placeholder="Weekend run" required>
+                    </div>
+                    <div class="gr-form-row">
+                        <button id="create-grocery-list-button" class="gr-btn gr-btn--primary" type="submit">Create list</button>
+                        <span class="gr-form-note">New lists are attached to your account automatically.</span>
+                    </div>
+                </form>
+                <div id="grocery-list-create-status" class="gr-form-status gr-list-status" hidden></div>
+                <form id="import-grocery-list-form" class="gr-list-import">
+                    <div class="gr-list-import-head">
+                        <div class="gr-list-import-copy">
+                            <h3>Import saved list</h3>
+                            <p>Upload a Grocery Run JSON export and add it to your library.</p>
+                        </div>
+                        <span class="gr-pill">JSON</span>
+                    </div>
+                    <div class="gr-field">
+                        <label for="grocery-list-import-file">Choose export file</label>
+                        <input id="grocery-list-import-file" name="groceryListImportFile" type="file" accept=".json,application/json" required>
+                    </div>
+                    <div class="gr-form-row">
+                        <button id="import-grocery-list-button" class="gr-btn gr-btn--ghost" type="submit">Import list</button>
+                        <span class="gr-form-note">Imports use existing catalog item names from the app.</span>
+                    </div>
+                </form>
+                <div id="grocery-list-import-status" class="gr-form-status gr-list-status" hidden></div>
+                <div id="grocery-lists-status" class="gr-status gr-list-status">Loading your lists...</div>
+                <ul id="grocery-lists" class="gr-grocery-lists" hidden></ul>
             </div>
         </article>
     </section>
 </main>
+<script>
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    const createGroceryListForm = document.getElementById("create-grocery-list-form");
+    const createGroceryListButton = document.getElementById("create-grocery-list-button");
+    const groceryListCreateStatus = document.getElementById("grocery-list-create-status");
+    const importGroceryListForm = document.getElementById("import-grocery-list-form");
+    const importGroceryListButton = document.getElementById("import-grocery-list-button");
+    const groceryListImportFile = document.getElementById("grocery-list-import-file");
+    const groceryListImportStatus = document.getElementById("grocery-list-import-status");
+    const groceryListsStatus = document.getElementById("grocery-lists-status");
+    const groceryLists = document.getElementById("grocery-lists");
+
+    const secureHeaders = (headers = {}) => ({
+        ...headers,
+        ...(csrfToken && csrfHeader ? { [csrfHeader]: csrfToken } : {})
+    });
+
+    const setStatus = (node, message, state) => {
+        node.hidden = false;
+        node.textContent = message;
+        if (state) {
+            node.dataset.state = state;
+        } else {
+            delete node.dataset.state;
+        }
+    };
+
+    const setCreateStatus = (message, state) => {
+        setStatus(groceryListCreateStatus, message, state);
+    };
+
+    const setImportStatus = (message, state) => {
+        setStatus(groceryListImportStatus, message, state);
+    };
+
+    const itemCountFor = (list) => Array.isArray(list.groceryListItems) ? list.groceryListItems.length : 0;
+
+    const updateGroceryListName = async (listId, newName) => {
+        const response = await fetch("/api/v1/grocery-lists/" + listId + "/name", {
+            method: "PUT",
+            headers: secureHeaders({
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }),
+            body: JSON.stringify({ newName })
+        });
+
+        if (!response.ok) {
+            throw new Error("Request failed with status " + response.status);
+        }
+    };
+
+    const createGroceryListCard = (list) => {
+        const item = document.createElement("li");
+        item.className = "gr-grocery-list-card";
+
+        const details = document.createElement("div");
+        details.className = "gr-grocery-list-details";
+
+        const name = document.createElement("strong");
+        name.className = "gr-grocery-list-name";
+        name.textContent = list.name || "Untitled list";
+
+        const meta = document.createElement("span");
+        meta.className = "gr-grocery-list-meta";
+        const count = itemCountFor(list);
+        meta.textContent = count + " item" + (count === 1 ? "" : "s") + " saved";
+
+        details.append(name, meta);
+
+        const actions = document.createElement("div");
+        actions.className = "gr-grocery-list-actions";
+
+        const editButton = document.createElement("button");
+        editButton.className = "gr-btn gr-btn--ghost";
+        editButton.type = "button";
+        editButton.textContent = "Edit";
+
+        const openLink = document.createElement("a");
+        openLink.className = "gr-btn gr-btn--primary";
+        openLink.href = "/grocery-lists/" + list.id;
+        openLink.textContent = "Open list";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "gr-btn gr-btn--ghost";
+        deleteButton.type = "button";
+        deleteButton.textContent = "Delete";
+
+        const showEditForm = () => {
+            const editForm = document.createElement("form");
+            editForm.className = "gr-grocery-list-edit";
+
+            const editInput = document.createElement("input");
+            editInput.className = "gr-input";
+            editInput.type = "text";
+            editInput.maxLength = 100;
+            editInput.required = true;
+            editInput.value = list.name || "";
+            editInput.setAttribute("aria-label", "Updated grocery list name");
+
+            const saveButton = document.createElement("button");
+            saveButton.className = "gr-btn gr-btn--primary";
+            saveButton.type = "submit";
+            saveButton.textContent = "Save";
+
+            const cancelButton = document.createElement("button");
+            cancelButton.className = "gr-btn gr-btn--ghost";
+            cancelButton.type = "button";
+            cancelButton.textContent = "Cancel";
+
+            cancelButton.addEventListener("click", () => {
+                item.replaceChildren(details, actions);
+            });
+
+            editForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const newName = editInput.value.trim();
+
+                if (!newName) {
+                    setStatus(groceryListsStatus, "List name is required.", "error");
+                    editInput.focus();
+                    return;
+                }
+
+                saveButton.disabled = true;
+                cancelButton.disabled = true;
+                setStatus(groceryListsStatus, "Updating list name...", "");
+
+                try {
+                    await updateGroceryListName(list.id, newName);
+                    setCreateStatus("List name updated.", "success");
+                    await loadGroceryLists();
+                } catch (error) {
+                    saveButton.disabled = false;
+                    cancelButton.disabled = false;
+                    setStatus(groceryListsStatus, "Could not update that list name right now.", "error");
+                    console.error("Failed to update grocery list name", error);
+                }
+            });
+
+            editForm.append(editInput, saveButton, cancelButton);
+            item.replaceChildren(editForm);
+            editInput.focus();
+            editInput.select();
+        };
+
+        editButton.addEventListener("click", showEditForm);
+
+        deleteButton.addEventListener("click", async () => {
+            deleteButton.disabled = true;
+            editButton.disabled = true;
+            openLink.setAttribute("aria-disabled", "true");
+            setStatus(groceryListsStatus, "Deleting list...", "");
+
+            try {
+                const response = await fetch("/api/v1/grocery-lists/" + list.id, {
+                    method: "DELETE",
+                    headers: secureHeaders({
+                        "Accept": "application/json"
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                setCreateStatus("List deleted.", "success");
+                await loadGroceryLists();
+            } catch (error) {
+                deleteButton.disabled = false;
+                editButton.disabled = false;
+                openLink.removeAttribute("aria-disabled");
+                setStatus(groceryListsStatus, "Could not delete that list right now.", "error");
+                console.error("Failed to delete grocery list", error);
+            }
+        });
+
+        actions.append(openLink, editButton, deleteButton);
+        item.append(details, actions);
+        return item;
+    };
+
+    const loadGroceryLists = async () => {
+        try {
+            const response = await fetch("/api/v1/grocery-lists", {
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            const lists = await response.json();
+
+            if (!Array.isArray(lists) || lists.length === 0) {
+                groceryLists.innerHTML = "";
+                groceryLists.hidden = true;
+                setStatus(groceryListsStatus, "No grocery lists yet. Create your first one above.", "empty");
+                return;
+            }
+
+            groceryListsStatus.hidden = true;
+            groceryLists.innerHTML = "";
+            lists.forEach((list) => {
+                groceryLists.appendChild(createGroceryListCard(list));
+            });
+            groceryLists.hidden = false;
+        } catch (error) {
+            groceryLists.innerHTML = "";
+            groceryLists.hidden = true;
+            setStatus(groceryListsStatus, "Could not load your grocery lists right now.", "error");
+            console.error("Failed to load grocery lists", error);
+        }
+    };
+
+    createGroceryListForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(createGroceryListForm);
+        const groceryListName = formData.get("groceryListName")?.toString().trim();
+
+        if (!groceryListName) {
+            setCreateStatus("List name is required.", "error");
+            return;
+        }
+
+        createGroceryListButton.disabled = true;
+        setCreateStatus("Creating list...", "");
+
+        try {
+            const response = await fetch("/api/v1/grocery-lists", {
+                method: "POST",
+                headers: secureHeaders({
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify({ groceryListName })
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            createGroceryListForm.reset();
+            setCreateStatus("List created.", "success");
+            await loadGroceryLists();
+        } catch (error) {
+            setCreateStatus("Could not create your list right now.", "error");
+            console.error("Failed to create grocery list", error);
+        } finally {
+            createGroceryListButton.disabled = false;
+        }
+    });
+
+    importGroceryListForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const file = groceryListImportFile.files?.[0];
+        if (!file) {
+            setImportStatus("Choose a JSON file to import.", "error");
+            return;
+        }
+
+        importGroceryListButton.disabled = true;
+        setImportStatus("Reading import file...", "");
+
+        try {
+            const raw = await file.text();
+            const payload = JSON.parse(raw);
+
+            setImportStatus("Importing list...", "");
+
+            const response = await fetch("/api/v1/grocery-lists/import", {
+                method: "POST",
+                headers: secureHeaders({
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status " + response.status);
+            }
+
+            importGroceryListForm.reset();
+            setImportStatus("List imported.", "success");
+            await loadGroceryLists();
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                setImportStatus("That file is not valid Grocery Run JSON.", "error");
+            } else {
+                setImportStatus("Could not import that grocery list right now.", "error");
+            }
+            console.error("Failed to import grocery list", error);
+        } finally {
+            importGroceryListButton.disabled = false;
+        }
+    });
+
+    loadGroceryLists();
+</script>
 </body>
 </html>

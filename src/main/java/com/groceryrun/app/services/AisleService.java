@@ -1,12 +1,9 @@
 package com.groceryrun.app.services;
 
-import com.groceryrun.app.dto.aisle.AisleCategoriesChangeDTO;
 import com.groceryrun.app.dto.aisle.AisleDTO;
 import com.groceryrun.app.dto.aisle.AisleDTOMapper;
-import com.groceryrun.app.dto.aisle.AisleStoreChangeDTO;
 import com.groceryrun.app.dto.aisle.NewAisleDTO;
 import com.groceryrun.app.dto.shared.LabelChangeDTO;
-import com.groceryrun.app.dto.category.NewCategoryDTO;
 import com.groceryrun.app.entities.Aisle;
 import com.groceryrun.app.entities.Store;
 import com.groceryrun.app.repositories.AisleRepository;
@@ -37,17 +34,23 @@ public class AisleService {
         return aisleRepository.findById(id).map(aisleDTOMapper).orElseThrow(() -> new IllegalStateException(id + " not found"));
     }
 
-    public void addAisle(Integer storeId, NewAisleDTO newAisleDTO) {
+    public void addAisle(String username, Integer storeId, NewAisleDTO newAisleDTO) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new IllegalStateException(storeId + " not found"));
+        if (!store.getOwners().stream().anyMatch(owner -> owner.getUsername().equals(username))) {
+            throw new IllegalStateException("User " + username + " is not an owner of store " + storeId);
+        }
         Aisle aisle = new Aisle(newAisleDTO.label(), store);
         aisleRepository.save(aisle);
         store.getAisles().add(aisle);
         storeRepository.save(store);
     }
 
-    public void deleteAisle(Integer aisleId, Integer storeId) {
+    public void deleteAisle(String username, Integer aisleId, Integer storeId) {
         Aisle aisle = aisleRepository.findById(aisleId).orElseThrow(() -> new IllegalStateException(aisleId + " not found"));
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new IllegalStateException(storeId + " not found"));
+        if (!store.getOwners().stream().anyMatch(owner -> owner.getUsername().equals(username))) {
+            throw new IllegalStateException("User " + username + " is not an owner of store " + storeId);
+        }
         if (store.getAisles().contains(aisle)) {
             store.getAisles().remove(aisle);
             storeRepository.save(store);
@@ -55,21 +58,12 @@ public class AisleService {
         }
     }
 
-    public void updateAisleLabel(Integer id, LabelChangeDTO labelChangeDTO) {
+    public void updateAisleLabel(String username, Integer id, LabelChangeDTO labelChangeDTO) {
         Aisle aisle = aisleRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        if (!aisle.getStore().getOwners().stream().anyMatch(owner -> owner.getUsername().equals(username))) {
+            throw new IllegalStateException("User " + username + " is not an owner of aisle " + id);
+        }
         aisle.setLabel(labelChangeDTO.newLabel());
-        aisleRepository.save(aisle);
-    }
-
-    public void updateAisleStore(Integer id, AisleStoreChangeDTO aisleStoreChangeDTO) {
-        Aisle aisle = aisleRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        aisle.setStore(aisleStoreChangeDTO.newAisleStore());
-        aisleRepository.save(aisle);
-    }
-
-    public void updateAisleCategories(Integer id, AisleCategoriesChangeDTO aisleCategoriesChangeDTO) {
-        Aisle aisle = aisleRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        aisle.setCategories(aisleCategoriesChangeDTO.newAisleCategories());
         aisleRepository.save(aisle);
     }
 }

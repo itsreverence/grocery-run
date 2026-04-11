@@ -1,13 +1,17 @@
 package com.groceryrun.app.services;
 
 import com.groceryrun.app.dto.user.*;
-import com.groceryrun.app.dto.shared.GroceryListsChangeDTO;
+import com.groceryrun.app.entities.GroceryList;
+import com.groceryrun.app.entities.Store;
 import com.groceryrun.app.entities.User;
 import com.groceryrun.app.enums.Role;
+import com.groceryrun.app.repositories.GroceryListRepository;
+import com.groceryrun.app.repositories.StoreRepository;
 import com.groceryrun.app.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,11 +21,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserDTOMapper userDTOMapper;
     private final PasswordEncoder passwordEncoder;
+    private final GroceryListRepository groceryListRepository;
+    private final StoreRepository storeRepository;
 
-    public UserService(UserRepository userRepository, UserDTOMapper userDTOMapper,  PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserDTOMapper userDTOMapper,  PasswordEncoder passwordEncoder, GroceryListRepository groceryListRepository, StoreRepository storeRepository) {
         this.userRepository = userRepository;
         this.userDTOMapper = userDTOMapper;
         this.passwordEncoder = passwordEncoder;
+        this.groceryListRepository = groceryListRepository;
+        this.storeRepository = storeRepository;
     }
 
     public List<UserDTO> getAllUsers() {
@@ -46,12 +54,36 @@ public class UserService {
         return userRepository.findByUsername(username).map(userDTOMapper).orElseThrow(() -> new IllegalStateException(username + " not found"));
     }
 
-    public void deleteUser(Integer id) {
-        boolean exists = userRepository.existsById(id);
-        if (!exists) {
-            throw new IllegalStateException(id + " not found");
+
+    public void deleteUser(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
+        
+        for (GroceryList groceryList : new ArrayList<>(user.getGroceryLists())) {
+            groceryListRepository.delete(groceryList);
         }
-        userRepository.deleteById(id);
+
+        for (Store store : new ArrayList<>(user.getStores())) {
+            if (store.getOwners().contains(user)) {
+                store.getOwners().remove(user);
+                storeRepository.save(store);
+            }
+        }
+
+        userRepository.delete(user);
+    }
+
+    public void deleteUser(Integer id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
+        for (GroceryList groceryList : new ArrayList<>(user.getGroceryLists())) {
+            groceryListRepository.delete(groceryList);
+        }
+        for (Store store : new ArrayList<>(user.getStores())) {
+            if (store.getOwners().contains(user)) {
+                store.getOwners().remove(user);
+                storeRepository.save(store);
+            }
+        }
+        userRepository.delete(user);
     }
 
     public void updateUserPassword(String username, PasswordChangeDTO passwordChangeDTO) {
@@ -84,17 +116,5 @@ public class UserService {
             userRepository.save(user);
         }
         
-    }
-
-    public void updateUserGroceryLists(Integer id, GroceryListsChangeDTO groceryListsChangeDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        user.setGroceryLists(groceryListsChangeDTO.newGroceryLists());
-        userRepository.save(user);
-    }
-
-    public void updateUserStores(Integer id, UserStoresChangeDTO userStoresChangeDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
-        user.setStores(userStoresChangeDTO.newStores());
-        userRepository.save(user);
     }
 }

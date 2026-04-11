@@ -4,6 +4,7 @@ import com.groceryrun.app.dto.location.*;
 import com.groceryrun.app.services.LocationService;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -25,38 +26,38 @@ public class LocationController {
         return locationService.getLocationById(id);
     }
 
-    @PostMapping
-    public void addNewLocation(@ModelAttribute NewLocationDTO newLocationDTO) {
-        locationService.addLocation(newLocationDTO);
+    @PostMapping("admin")
+    public void addNewLocation(Principal principal, @ModelAttribute NewLocationDTO newLocationDTO) {
+        locationService.addLocation(principal.getName(), newLocationDTO);
     }
 
-    @DeleteMapping("{id}")
-    public void deleteLocation(@PathVariable Integer id) {
-        locationService.deleteLocation(id);
+    @DeleteMapping("admin/{id}")
+    public void deleteLocation(Principal principal, @PathVariable Integer id) {
+        locationService.deleteLocation(principal.getName(), id);
     }
 
-    @PutMapping("{id}/street")
-    public void updateLocationStreet(@PathVariable Integer id, @ModelAttribute LocationStreetChangeDTO locationStreetChangeDTO) {
-        locationService.updateLocationStreet(id, locationStreetChangeDTO);
+    @PutMapping("admin/{id}/street")
+    public void updateLocationStreet(Principal principal, @PathVariable Integer id, @ModelAttribute LocationStreetChangeDTO locationStreetChangeDTO) {
+        locationService.updateLocationStreet(principal.getName(), id, locationStreetChangeDTO);
     }
 
-    @PutMapping("{id}/city")
-    public void updateLocationCity(@PathVariable Integer id, @ModelAttribute LocationCityChangeDTO locationCityChangeDTO) {
-        locationService.updateLocationCity(id, locationCityChangeDTO);
+    @PutMapping("admin/{id}/city")
+    public void updateLocationCity(Principal principal, @PathVariable Integer id, @ModelAttribute LocationCityChangeDTO locationCityChangeDTO) {
+        locationService.updateLocationCity(principal.getName(), id, locationCityChangeDTO);
     }
 
-    @PutMapping("{id}/state")
-    public void updateLocationState(@PathVariable Integer id, @ModelAttribute LocationStateChangeDTO locationStateChangeDTO) {
-        locationService.updateLocationState(id, locationStateChangeDTO);
+    @PutMapping("admin/{id}/state")
+    public void updateLocationState(Principal principal, @PathVariable Integer id, @ModelAttribute LocationStateChangeDTO locationStateChangeDTO) {
+        locationService.updateLocationState(principal.getName(), id, locationStateChangeDTO);
     }
 
-    @PutMapping("{id}/zip")
-    public void updateLocationZip(@PathVariable Integer id, @ModelAttribute LocationZipChangeDTO locationZipChangeDTO) {
-        locationService.updateLocationZip(id, locationZipChangeDTO);
+    @PutMapping("admin/{id}/zip")
+    public void updateLocationZip(Principal principal, @PathVariable Integer id, @ModelAttribute LocationZipChangeDTO locationZipChangeDTO) {
+        locationService.updateLocationZip(principal.getName(), id, locationZipChangeDTO);
     }
 
-    @PutMapping("{id}/store")
-    public void updateLocationStore(@PathVariable Integer id, @ModelAttribute LocationStoreChangeDTO locationStoreChangeDTO) {
-        locationService.updateLocationStore(id, locationStoreChangeDTO);
+    @PutMapping("admin/{id}/store")
+    public void updateLocationStore(Principal principal, @PathVariable Integer id, @ModelAttribute LocationStoreChangeDTO locationStoreChangeDTO) {
+        locationService.updateLocationStore(principal.getName(), id, locationStoreChangeDTO);
     }
 }

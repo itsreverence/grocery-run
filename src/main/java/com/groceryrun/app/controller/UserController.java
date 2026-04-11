@@ -2,7 +2,6 @@ package com.groceryrun.app.controller;
 
 
 import com.groceryrun.app.dto.user.*;
-import com.groceryrun.app.dto.shared.GroceryListsChangeDTO;
 import com.groceryrun.app.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,17 +18,17 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("admin")
     public List<UserDTO> getUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping("id/{id}")
+    @GetMapping("admin/{id}")
     public UserDTO getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
     }
 
-    @GetMapping("username/{username}")
+    @GetMapping("admin/username/{username}")
     public UserDTO getUserByUsername(@PathVariable String username) {
         return userService.getUserByUsername(username);
     }
@@ -39,7 +38,12 @@ public class UserController {
         userService.addUser(registerDTO);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping
+    public void deleteUser(Principal principal) {
+        userService.deleteUser(principal.getName());
+    }
+
+    @DeleteMapping("admin/{id}")
     public void deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
     }
@@ -57,15 +61,5 @@ public class UserController {
     @PutMapping("admin/{id}/role")
     public void updateRole(Principal principal, @PathVariable Integer id, @RequestBody RoleChangeDTO roleChangeDTO) {
         userService.updateUserRole(principal.getName(), id, roleChangeDTO);
-    }
-
-    @PutMapping("{id}/grocery-lists")
-    public void updateGroceryLists(@PathVariable Integer id, @RequestBody GroceryListsChangeDTO groceryListsChangeDTO) {
-        userService.updateUserGroceryLists(id, groceryListsChangeDTO);
-    }
-
-    @PutMapping("{id}/stores")
-    public void updateStores(@PathVariable Integer id, @RequestBody UserStoresChangeDTO userStoresChangeDTO) {
-        userService.updateUserStores(id, userStoresChangeDTO);
     }
 }
