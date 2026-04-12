@@ -232,10 +232,27 @@
             font-size: 0.875rem;
             color: var(--gr-muted);
         }
+
+        @media (max-width: 640px) {
+            .gr-store-actions {
+                gap: 0.5rem;
+            }
+
+            .gr-aisle-chip {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+
+            .gr-aisle-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
     </style>
 </head>
-<body style="min-height:100vh;display:flex;flex-direction:column;">
-<main class="gr-page" style="flex:1;display:flex;flex-direction:column;">
+<body class="gr-body-page">
+<main class="gr-page">
     <header class="gr-header">
         <div class="gr-brand"><a th:href="@{/dashboard}">Grocery Run</a></div>
         <div class="gr-header-actions">
