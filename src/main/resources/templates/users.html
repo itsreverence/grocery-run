@@ -82,10 +82,17 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (max-width: 640px) {
+            .gr-user-row {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+        }
     </style>
 </head>
-<body style="min-height:100vh;display:flex;flex-direction:column;">
-<main class="gr-page" style="flex:1;display:flex;flex-direction:column;">
+<body class="gr-body-page">
+<main class="gr-page">
     <header class="gr-header">
         <div class="gr-brand"><a th:href="@{/dashboard}">Grocery Run</a></div>
         <div class="gr-header-actions">

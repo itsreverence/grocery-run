@@ -58,6 +58,18 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* Utility: body as flex column for pages needing full-height layout */
+.gr-body-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.gr-body-page > .gr-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 a {
     color: inherit;
 }
@@ -88,7 +100,7 @@ code {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem 1rem;
     flex-wrap: wrap;
     padding-bottom: 1.75rem;
     margin-bottom: 2.5rem;
@@ -140,13 +152,13 @@ code {
 .gr-header-actions {
     display: flex;
     align-items: center;
-    gap: 0.75rem 1.5rem;
+    gap: 0.5rem 1rem;
     flex-wrap: wrap;
 }
 
 .gr-nav {
     display: flex;
-    gap: 1.25rem;
+    gap: 0.75rem 1.25rem;
     flex-wrap: wrap;
     align-items: center;
 }
@@ -241,6 +253,7 @@ h1.gr-h1 {
     align-items: center;
     justify-content: center;
     padding: 0.55rem 1.1rem;
+    min-height: 2.25rem;
     font-family: var(--gr-body);
     font-size: 0.875rem;
     font-weight: 500;
@@ -251,6 +264,7 @@ h1.gr-h1 {
     cursor: pointer;
     text-decoration: none;
     background: none;
+    white-space: nowrap;
     transition:
         background-color 0.2s var(--gr-ease),
         border-color 0.2s var(--gr-ease),
@@ -408,7 +422,7 @@ h1.gr-h1 {
 
 /* ——— Dashboard ——— */
 .gr-hero-block {
-    padding: 2rem 2rem;
+    padding: clamp(1.25rem, 4vw, 2rem);
     margin-bottom: 1.5rem;
     background: var(--gr-surface);
     border: 1px solid var(--gr-border);
@@ -546,6 +560,7 @@ h1.gr-h1 {
 .gr-input {
     width: 100%;
     padding: 0.65rem 0.85rem;
+    min-height: 2.5rem;
     font: inherit;
     font-size: 0.9375rem;
     color: var(--gr-text);
@@ -1069,29 +1084,48 @@ select.gr-input {
     .gr-panel--wide {
         grid-column: 1;
     }
+
+    /* Landing hero stacks earlier on mid screens */
+    .gr-landing-hero {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 640px) {
     .gr-page {
-        width: calc(100% - 1.5rem);
-        padding-top: 1.5rem;
+        width: calc(100% - 1.25rem);
+        padding: 1.25rem 0 3rem;
     }
 
     .gr-page--auth {
-        width: calc(100% - 1.5rem);
+        width: calc(100% - 1.25rem);
     }
 
     .gr-auth-main {
-        width: calc(100% - 1.5rem);
+        width: calc(100% - 1.25rem);
     }
 
     .gr-auth {
-        padding: 1.5rem 0.75rem;
+        padding: 1.25rem 0.625rem;
+        align-items: stretch;
     }
 
+    .gr-auth-card {
+        padding: 1.75rem 1.25rem 1.5rem;
+    }
+
+    /* Header: keep brand + nav on separate lines, nav wraps tightly */
     .gr-header:not(.gr-header--auth) {
         flex-direction: column;
         align-items: flex-start;
+        gap: 0.75rem;
+        padding-bottom: 1.25rem;
+        margin-bottom: 1.75rem;
+    }
+
+    .gr-header-actions {
+        width: 100%;
+        justify-content: space-between;
     }
 
     .gr-header.gr-header--auth {
@@ -1100,6 +1134,55 @@ select.gr-input {
 
     .gr-form-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Hero block tighter on mobile */
+    .gr-hero-block {
+        margin-bottom: 1rem;
+    }
+
+    /* Cards less padded on small screens */
+    .gr-card {
+        padding: 1.1rem;
+    }
+
+    /* Actions stack on mobile */
+    .gr-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .gr-actions .gr-btn {
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* Form row wraps nicely */
+    .gr-form-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Store rename input fills container */
+    .gr-store-rename .gr-input {
+        min-width: 0;
+        width: 100%;
+    }
+
+    /* List/catalog rows stack on small screens */
+    .gr-store-row {
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+
+    /* Panel head wraps */
+    .gr-panel-head {
+        flex-wrap: wrap;
+    }
+
+    /* Nav wraps more tightly */
+    .gr-nav {
+        gap: 0.5rem 0.9rem;
     }
 }
 
