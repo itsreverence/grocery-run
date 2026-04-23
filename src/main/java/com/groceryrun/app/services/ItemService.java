@@ -50,11 +50,12 @@ public class ItemService {
         if (!category.getAisle().getStore().getOwners().stream().anyMatch(owner -> owner.getUsername().equals(username))) {
             throw new IllegalStateException("User " + username + " is not an owner of category " + categoryId);
         }
-        if (category.getItems().contains(item)) {
-            category.getItems().remove(item);
-            categoryRepository.save(category);
-            itemRepository.delete(item);
+        if (!category.getItems().contains(item)) {
+            throw new IllegalStateException("Item " + id + " is not in category " + categoryId);
         }
+        category.getItems().remove(item);
+        categoryRepository.save(category);
+        itemRepository.delete(item);
     }
 
     public void updateItemName(String username, Integer id, NameChangeDTO nameChangeDTO) {
