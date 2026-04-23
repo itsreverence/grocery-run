@@ -11,8 +11,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.groceryrun.app.dto.item.ItemDTOMapper;
 import com.groceryrun.app.entities.Aisle;
@@ -24,6 +25,7 @@ import com.groceryrun.app.entities.User;
 import com.groceryrun.app.repositories.CategoryRepository;
 import com.groceryrun.app.repositories.ItemRepository;
 
+@ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
 
     @Mock
@@ -44,7 +46,6 @@ public class ItemServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
         itemService = new ItemService(itemRepository, itemDTOMapper, categoryRepository);
         user = new User("owner", "password");
         store = new Store("Store", null, new ArrayList<>(List.of(user)));
