@@ -25,7 +25,6 @@ jobs:
         run: chmod +x ./mvnw
 
       - name: Run unit tests
-      - name: Run unit tests
         run: ./mvnw -Dtest='!AppApplicationTests' test
 
       - name: Package application
