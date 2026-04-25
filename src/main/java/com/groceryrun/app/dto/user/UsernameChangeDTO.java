@@ -1,3 +1,9 @@
 package com.groceryrun.app.dto.user;
 
-public record UsernameChangeDTO(String newUsername) {}
+/**
+ * DTO for a username change
+ * @param newUsername new username
+ */
+public record UsernameChangeDTO(String newUsername) {
+    
+}

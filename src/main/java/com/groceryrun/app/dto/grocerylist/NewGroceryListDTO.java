@@ -1,6 +1,8 @@
 package com.groceryrun.app.dto.grocerylist;
 
-import com.groceryrun.app.entities.User;
-
+/**
+ * DTO for a new grocery list
+ * @param groceryListName name of the new grocery list
+ */
 public record NewGroceryListDTO(String groceryListName) {
 }

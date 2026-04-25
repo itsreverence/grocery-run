@@ -1,3 +1,10 @@
 package com.groceryrun.app.dto.user;
 
-public record RegisterDTO(String username, String password) {}
+/**
+ * DTO for a user registration
+ * @param username username of the user
+ * @param password password of the user
+ */
+public record RegisterDTO(String username, String password) {
+    
+}
