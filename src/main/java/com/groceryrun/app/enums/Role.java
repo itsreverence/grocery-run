@@ -5,5 +5,5 @@ package com.groceryrun.app.enums;
  */
 public enum Role {
     USER, // User role for standard signed-in users
-    ADMIN // Admin role for users who need to manage stores, aisles, and categories
+    ADMIN // Admin role for users who can access management routes and admin APIs
 }
