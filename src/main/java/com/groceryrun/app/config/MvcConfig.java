@@ -4,9 +4,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Configuration for the MVC layer of the application
+ */
 @Configuration
 class MvcConfig implements WebMvcConfigurer {
 
+    /**
+     * Adds view controllers for the application
+     * @param registry ViewControllerRegistry object
+     */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/dashboard").setViewName("dashboard");
