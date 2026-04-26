@@ -1,3 +1,10 @@
 package com.groceryrun.app.dto.user;
 
-public record PasswordChangeDTO(String currentPassword, String newPassword) {}
+/**
+ * DTO for a password change
+ * @param currentPassword current password
+ * @param newPassword new password
+ */
+public record PasswordChangeDTO(String currentPassword, String newPassword) {
+    
+}

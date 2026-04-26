@@ -14,10 +14,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Security configuration for the Grocery Run application
+ */
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig {
 
+    /**
+     * Configures the security filter chain
+     * @param http HttpSecurity object
+     * @return SecurityFilterChain object
+     */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) {
         // @formatter:off
@@ -41,11 +49,20 @@ class WebSecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configures the password encoder
+     * @return PasswordEncoder object
+     */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures the user details service
+     * @param userRepository repository for user data
+     * @return UserDetailsService object
+     */
     @Bean
     UserDetailsService userDetailsService(UserRepository userRepository) {
         return username -> {

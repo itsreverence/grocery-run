@@ -18,13 +18,22 @@ import com.groceryrun.app.repositories.UserRepository;
 import com.groceryrun.app.repositories.GroceryListRepository;
 import com.groceryrun.app.repositories.StoreRepository;
 
+/**
+ * Route service which contains the business logic for generating routes for grocery lists
+ */
 @Service
 public class RouteService {
 
-    private final UserRepository userRepository;
-    private final StoreRepository storeRepository;
-    private final GroceryListRepository groceryListRepository;
+    private final UserRepository userRepository; // Repository for user data
+    private final StoreRepository storeRepository; // Repository for store data
+    private final GroceryListRepository groceryListRepository; // Repository for grocery list data
 
+    /**
+     * Constructor for route service
+     * @param userRepository repository for user data
+     * @param storeRepository repository for store data
+     * @param groceryListRepository repository for grocery list data
+     */
     public RouteService(UserRepository userRepository, StoreRepository storeRepository,
             GroceryListRepository groceryListRepository) {
         this.userRepository = userRepository;
@@ -32,6 +41,13 @@ public class RouteService {
         this.groceryListRepository = groceryListRepository;
     }
 
+    /**
+     * Generates routes for all grocery lists owned by the user against a store
+     * @param username username of the user
+     * @param storeId id of the store
+     * @return list of route DTOs
+     * @throws IllegalStateException if the user is not found or the store is not found
+     */
     public List<RouteDTO> generateRoutesForStore(String username, Integer storeId) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
 
@@ -45,6 +61,14 @@ public class RouteService {
         return routes;
     }
 
+    /**
+     * Generates a route for a grocery list
+     * @param username username of the user
+     * @param storeId id of the store
+     * @param groceryListId id of the grocery list
+     * @return route DTO
+     * @throws IllegalStateException if the user, store, or grocery list is not found, or if the user is not the owner of the grocery list
+     */
     public RouteDTO generateRouteForGroceryList(String username, Integer storeId, Integer groceryListId) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
 

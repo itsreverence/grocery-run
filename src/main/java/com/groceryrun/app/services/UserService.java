@@ -15,15 +15,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * User service which contains the business logic for retrieving, adding, deleting, and updating users
+ */
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final UserDTOMapper userDTOMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final GroceryListRepository groceryListRepository;
-    private final StoreRepository storeRepository;
+    private final UserRepository userRepository; // Repository for user data
+    private final UserDTOMapper userDTOMapper; // Mapper for user data
+    private final PasswordEncoder passwordEncoder; // Password encoder for passwords
+    private final GroceryListRepository groceryListRepository; // Repository for grocery list data
+    private final StoreRepository storeRepository; // Repository for store data
 
+    /**
+     * Constructor for user service
+     * @param userRepository repository for user data
+     * @param userDTOMapper mapper for user data
+     * @param passwordEncoder password encoder for passwords
+     * @param groceryListRepository repository for grocery list data
+     * @param storeRepository repository for store data
+     */
     public UserService(UserRepository userRepository, UserDTOMapper userDTOMapper,  PasswordEncoder passwordEncoder, GroceryListRepository groceryListRepository, StoreRepository storeRepository) {
         this.userRepository = userRepository;
         this.userDTOMapper = userDTOMapper;
@@ -32,10 +43,19 @@ public class UserService {
         this.storeRepository = storeRepository;
     }
 
+    /**
+     * Retrieves all users from the database
+     * @return list of user DTOs
+     */
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream().map(userDTOMapper).collect(Collectors.toList());
     }
 
+    /**
+     * Adds a user to the database
+     * @param registerDTO register data
+     * @throws IllegalStateException if the user already exists
+     */
     public void addUser(RegisterDTO registerDTO) {
         boolean exists = userRepository.existsByUsername(registerDTO.username());
         if (exists) {
@@ -46,15 +66,31 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Retrieves a user by its id
+     * @param id id of the user
+     * @return user DTO
+     * @throws IllegalStateException if the user is not found
+     */
     public UserDTO getUserById(Integer id) {
         return userRepository.findById(id).map(userDTOMapper).orElseThrow(() -> new IllegalStateException(id + " not found"));
     }
 
+    /**
+     * Retrieves a user by its username
+     * @param username username of the user
+     * @return user DTO
+     * @throws IllegalStateException if the user is not found
+     */
     public UserDTO getUserByUsername(String username) {
         return userRepository.findByUsername(username).map(userDTOMapper).orElseThrow(() -> new IllegalStateException(username + " not found"));
     }
 
-
+    /**
+     * Deletes a user from the database
+     * @param username username of the user
+     * @throws IllegalStateException if the user is not found
+     */
     public void deleteUser(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         
@@ -72,6 +108,11 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    /**
+     * Deletes a user from the database by its id
+     * @param id id of the user
+     * @throws IllegalStateException if the user is not found
+     */
     public void deleteUser(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         for (GroceryList groceryList : new ArrayList<>(user.getGroceryLists())) {
@@ -86,6 +127,12 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    /**
+     * Updates the password of a user
+     * @param username username of the user
+     * @param passwordChangeDTO password change data
+     * @throws IllegalStateException if the user is not found or the password does not match
+     */
     public void updateUserPassword(String username, PasswordChangeDTO passwordChangeDTO) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         String storedOldPasswordHash = user.getPasswordHash();
@@ -98,6 +145,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Updates the username of a user
+     * @param username username of the user
+     * @param usernameChangeDTO username change data
+     * @throws IllegalStateException if the user is not found or the new username already exists
+     */
     public void updateUserName(String username, UsernameChangeDTO usernameChangeDTO) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         boolean exists = userRepository.existsByUsername(usernameChangeDTO.newUsername());
@@ -108,6 +161,13 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Updates the role of a user
+     * @param username username of the user
+     * @param id id of the user
+     * @param roleChangeDTO role change data
+     * @throws IllegalStateException if the user is not found
+     */
     public void updateUserRole(String username, Integer id, RoleChangeDTO roleChangeDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
         User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));

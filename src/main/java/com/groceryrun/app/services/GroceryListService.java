@@ -19,13 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Grocery list service which contains the business logic for retrieving, adding, deleting, and updating grocery lists
+ */
 @Service
 public class GroceryListService {
-    private final GroceryListRepository groceryListRepository;
-    private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
-    private final GroceryListDTOMapper groceryListDTOMapper;
+    private final GroceryListRepository groceryListRepository; // Repository for grocery list data
+    private final UserRepository userRepository; // Repository for user data
+    private final ItemRepository itemRepository; // Repository for item data
+    private final GroceryListDTOMapper groceryListDTOMapper; // Mapper for grocery list data
 
+    /**
+     * Constructor for grocery list service
+     * @param groceryListRepository repository for grocery list data
+     * @param userRepository repository for user data
+     * @param itemRepository repository for item data
+     * @param groceryListDTOMapper mapper for grocery list data
+     */
     public GroceryListService(GroceryListRepository groceryListRepository, UserRepository userRepository, ItemRepository itemRepository, GroceryListDTOMapper groceryListDTOMapper) {
         this.groceryListRepository = groceryListRepository;
         this.userRepository = userRepository;
@@ -33,11 +43,24 @@ public class GroceryListService {
         this.groceryListDTOMapper = groceryListDTOMapper;
     }
 
+    /**
+     * Retrieves all grocery lists from the database
+     * @param username username of the user
+     * @return list of grocery list DTOs
+     * @throws IllegalStateException if the user is not found
+     */
     public List<GroceryListDTO> getAllGroceryLists(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         return user.getGroceryLists().stream().map(groceryListDTOMapper).collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a grocery list by its id
+     * @param username username of the user
+     * @param id id of the grocery list
+     * @return grocery list DTO
+     * @throws IllegalStateException if the grocery list is not found or the user is not the owner of the grocery list
+     */
     public GroceryListDTO getGroceryListById(String username, Integer id) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
@@ -47,6 +70,13 @@ public class GroceryListService {
         return groceryListDTOMapper.apply(groceryList);
     }
 
+    /**
+     * Exports a grocery list as a transfer object
+     * @param username username of the user
+     * @param id id of the grocery list
+     * @return grocery list transfer DTO
+     * @throws IllegalStateException if the grocery list is not found or the user is not the owner of the grocery list
+     */
     public GroceryListTransferDTO exportGroceryList(String username, Integer id) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
@@ -56,6 +86,12 @@ public class GroceryListService {
         return new GroceryListTransferDTO(groceryList.getName(), groceryList.getItems().stream().map(item -> new GroceryListTransferItemDTO(item.getName())).collect(Collectors.toList()));
     }
 
+    /**
+     * Adds a grocery list to a user
+     * @param username username of the user
+     * @param newGroceryListDTO new grocery list data
+     * @throws IllegalStateException if the user is not found
+     */
     public void addGroceryList(String username, NewGroceryListDTO newGroceryListDTO) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         GroceryList groceryList = new GroceryList(newGroceryListDTO.groceryListName(), user);
@@ -64,6 +100,13 @@ public class GroceryListService {
         userRepository.save(user);
     }
 
+    /**
+     * Adds an item to a grocery list
+     * @param username username of the user
+     * @param id id of the grocery list
+     * @param itemId id of the item
+     * @throws IllegalStateException if the grocery list is not found or the user is not the owner of the grocery list
+     */
     public void addItemToGroceryList(String username, Integer id, Integer itemId) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
@@ -75,6 +118,12 @@ public class GroceryListService {
         groceryListRepository.save(groceryList);
     }
 
+    /**
+     * Imports a grocery list from a transfer object
+     * @param username username of the user
+     * @param groceryListTransferDTO grocery list transfer data
+     * @throws IllegalStateException if the user is not found
+     */
     public void importGroceryList(String username, GroceryListTransferDTO groceryListTransferDTO) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         List<Item> importedItems = new ArrayList<>();
@@ -89,6 +138,12 @@ public class GroceryListService {
         userRepository.save(user);
     }
 
+    /**
+     * Deletes a grocery list
+     * @param username username of the user
+     * @param id id of the grocery list
+     * @throws IllegalStateException if the grocery list is not found or the user is not the owner of the grocery list
+     */
     public void deleteGroceryList(String username, Integer id) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
@@ -104,6 +159,13 @@ public class GroceryListService {
         userRepository.save(user);
     }
 
+    /**
+     * Updates the name of a grocery list
+     * @param username username of the user
+     * @param id id of the grocery list
+     * @param nameChangeDTO new name
+     * @throws IllegalStateException if the grocery list is not found or the user is not the owner of the grocery list
+     */
     public void updateGroceryListName(String username, Integer id, NameChangeDTO nameChangeDTO) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
@@ -114,6 +176,13 @@ public class GroceryListService {
         groceryListRepository.save(groceryList);
     }
 
+    /**
+     * Removes an item from a grocery list
+     * @param username username of the user
+     * @param id id of the grocery list
+     * @param itemId id of the item
+     * @throws IllegalStateException if the grocery list is not found or the user is not the owner of the grocery list
+     */
     public void removeItemFromGroceryList(String username, Integer id, Integer itemId) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         GroceryList groceryList = groceryListRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + " not found"));
