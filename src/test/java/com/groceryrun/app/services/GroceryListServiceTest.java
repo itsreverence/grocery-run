@@ -171,4 +171,82 @@ public class GroceryListServiceTest {
             verify(groceryListRepository).save(groceryList);
         }
     }
+
+    /**
+     * Use case: remove grocery list item — basis paths for {@link GroceryListService#removeItemFromGroceryList}.
+     */
+    @Nested
+    class RemoveItemFromGroceryList {
+
+        private static final int LIST_ID = 1;
+        private static final int ITEM_ID = 1;
+
+        /**
+         * Remove grocery list item — failure when the user does not exist.
+         */
+        @Test
+        public void testThrowsExceptionWhenUserNotFound() {
+            when(userRepository.findByUsername("missingUser")).thenReturn(Optional.empty());
+
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> groceryListService.removeItemFromGroceryList("missingUser", LIST_ID, ITEM_ID));
+        }
+
+        /**
+         * Remove grocery list item — failure when the grocery list does not exist.
+         */
+        @Test
+        public void testThrowsExceptionWhenGroceryListNotFound() {
+            when(userRepository.findByUsername("owner")).thenReturn(Optional.of(user));
+            when(groceryListRepository.findById(LIST_ID)).thenReturn(Optional.empty());
+
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> groceryListService.removeItemFromGroceryList("owner", LIST_ID, ITEM_ID));
+        }
+
+        /**
+         * Remove grocery list item — failure when the user is not the list owner.
+         */
+        @Test
+        public void testThrowsExceptionWhenUserIsNotOwner() {
+            when(userRepository.findByUsername("otherOwner")).thenReturn(Optional.of(otherUser));
+            when(groceryListRepository.findById(LIST_ID)).thenReturn(Optional.of(groceryList));
+
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> groceryListService.removeItemFromGroceryList("otherOwner", LIST_ID, ITEM_ID));
+        }
+
+        /**
+         * Remove grocery list item — failure when the item to remove does not exist.
+         */
+        @Test
+        public void testThrowsExceptionWhenItemNotFound() {
+            when(userRepository.findByUsername("owner")).thenReturn(Optional.of(user));
+            when(groceryListRepository.findById(LIST_ID)).thenReturn(Optional.of(groceryList));
+            when(itemRepository.findById(ITEM_ID)).thenReturn(Optional.empty());
+
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> groceryListService.removeItemFromGroceryList("owner", LIST_ID, ITEM_ID));
+        }
+
+        /**
+         * Remove grocery list item — success path (item removed and list saved).
+         */
+        @Test
+        public void testRemovesItemSuccessfully() {
+            groceryList.getItems().add(item);
+            when(userRepository.findByUsername("owner")).thenReturn(Optional.of(user));
+            when(groceryListRepository.findById(LIST_ID)).thenReturn(Optional.of(groceryList));
+            when(itemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+
+            groceryListService.removeItemFromGroceryList("owner", LIST_ID, ITEM_ID);
+
+            assertFalse(groceryList.getItems().contains(item));
+            verify(groceryListRepository).save(groceryList);
+        }
+    }
 }
