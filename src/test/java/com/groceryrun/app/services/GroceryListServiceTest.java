@@ -94,4 +94,81 @@ public class GroceryListServiceTest {
         assertTrue(user.getGroceryLists().contains(saved));
         verify(userRepository).save(user);
     }
+
+    /**
+     * Use case: add grocery list item — basis paths for {@link GroceryListService#addItemToGroceryList}.
+     */
+    @Nested
+    class AddItemToGroceryList {
+
+        private static final int LIST_ID = 1;
+        private static final int ITEM_ID = 1;
+
+        /**
+         * Add grocery list item — failure when the user does not exist.
+         */
+        @Test
+        public void testThrowsExceptionWhenUserNotFound() {
+            when(userRepository.findByUsername("missingUser")).thenReturn(Optional.empty());
+
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> groceryListService.addItemToGroceryList("missingUser", LIST_ID, ITEM_ID));
+        }
+
+        /**
+         * Add grocery list item — failure when the grocery list does not exist.
+         */
+        @Test
+        public void testThrowsExceptionWhenGroceryListNotFound() {
+            when(userRepository.findByUsername("owner")).thenReturn(Optional.of(user));
+            when(groceryListRepository.findById(LIST_ID)).thenReturn(Optional.empty());
+
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> groceryListService.addItemToGroceryList("owner", LIST_ID, ITEM_ID));
+        }
+
+        /**
+         * Add grocery list item — failure when the user is not the list owner.
+         */
+        @Test
+        public void testThrowsExceptionWhenUserIsNotOwner() {
+            when(userRepository.findByUsername("otherOwner")).thenReturn(Optional.of(otherUser));
+            when(groceryListRepository.findById(LIST_ID)).thenReturn(Optional.of(groceryList));
+
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> groceryListService.addItemToGroceryList("otherOwner", LIST_ID, ITEM_ID));
+        }
+
+        /**
+         * Add grocery list item — failure when the item to add does not exist.
+         */
+        @Test
+        public void testThrowsExceptionWhenItemNotFound() {
+            when(userRepository.findByUsername("owner")).thenReturn(Optional.of(user));
+            when(groceryListRepository.findById(LIST_ID)).thenReturn(Optional.of(groceryList));
+            when(itemRepository.findById(ITEM_ID)).thenReturn(Optional.empty());
+
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> groceryListService.addItemToGroceryList("owner", LIST_ID, ITEM_ID));
+        }
+
+        /**
+         * Add grocery list item — success path (item added and list saved).
+         */
+        @Test
+        public void testAddsItemSuccessfully() {
+            when(userRepository.findByUsername("owner")).thenReturn(Optional.of(user));
+            when(groceryListRepository.findById(LIST_ID)).thenReturn(Optional.of(groceryList));
+            when(itemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+
+            groceryListService.addItemToGroceryList("owner", LIST_ID, ITEM_ID);
+
+            assertTrue(groceryList.getItems().contains(item));
+            verify(groceryListRepository).save(groceryList);
+        }
+    }
 }
