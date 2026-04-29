@@ -27,7 +27,7 @@ import com.groceryrun.app.repositories.ItemRepository;
 import com.groceryrun.app.repositories.UserRepository;
 
 /**
- * Unit tests for create grocery list, add grocery list item, and remove grocery list item.
+ * Unit tests for the create grocery list use case
  */
 @ExtendWith(MockitoExtension.class)
 public class GroceryListServiceTest {
@@ -64,7 +64,7 @@ public class GroceryListServiceTest {
     }
 
     /**
-     * Use case: create grocery list — failure when the authenticated user does not exist.
+     * Adds a grocery list when the user is not found
      */
     @Test
     public void testAddGroceryListThrowsExceptionWhenUserNotFound() {
@@ -76,7 +76,7 @@ public class GroceryListServiceTest {
     }
 
     /**
-     * Use case: create grocery list — success path (list saved and linked to the user).
+     * Adds a grocery list successfully
      */
     @Test
     public void testAddGroceryListSuccessfully() {
@@ -96,7 +96,7 @@ public class GroceryListServiceTest {
     }
 
     /**
-     * Use case: add grocery list item — basis paths for {@link GroceryListService#addItemToGroceryList}.
+     * Unit tests for the add grocery item use case
      */
     @Nested
     class AddItemToGroceryList {
@@ -105,7 +105,7 @@ public class GroceryListServiceTest {
         private static final int ITEM_ID = 1;
 
         /**
-         * Add grocery list item — failure when the user does not exist.
+         * Adds an item when the user is not found
          */
         @Test
         public void testThrowsExceptionWhenUserNotFound() {
@@ -117,7 +117,7 @@ public class GroceryListServiceTest {
         }
 
         /**
-         * Add grocery list item — failure when the grocery list does not exist.
+         * Adds an item when the grocery list is not found
          */
         @Test
         public void testThrowsExceptionWhenGroceryListNotFound() {
@@ -130,7 +130,7 @@ public class GroceryListServiceTest {
         }
 
         /**
-         * Add grocery list item — failure when the user is not the list owner.
+         * Adds an item when the user is not the list owner
          */
         @Test
         public void testThrowsExceptionWhenUserIsNotOwner() {
@@ -143,7 +143,7 @@ public class GroceryListServiceTest {
         }
 
         /**
-         * Add grocery list item — failure when the item to add does not exist.
+         * Adds an item when the item is not found
          */
         @Test
         public void testThrowsExceptionWhenItemNotFound() {
@@ -157,7 +157,7 @@ public class GroceryListServiceTest {
         }
 
         /**
-         * Add grocery list item — success path (item added and list saved).
+         * Adds an item successfully
          */
         @Test
         public void testAddsItemSuccessfully() {
@@ -173,7 +173,7 @@ public class GroceryListServiceTest {
     }
 
     /**
-     * Use case: remove grocery list item — basis paths for {@link GroceryListService#removeItemFromGroceryList}.
+     * Unit tests for the remove grocery item use case
      */
     @Nested
     class RemoveItemFromGroceryList {
@@ -182,7 +182,7 @@ public class GroceryListServiceTest {
         private static final int ITEM_ID = 1;
 
         /**
-         * Remove grocery list item — failure when the user does not exist.
+         * Removes an item when the user is not found
          */
         @Test
         public void testThrowsExceptionWhenUserNotFound() {
@@ -194,7 +194,7 @@ public class GroceryListServiceTest {
         }
 
         /**
-         * Remove grocery list item — failure when the grocery list does not exist.
+         * Removes an item when the grocery list is not found
          */
         @Test
         public void testThrowsExceptionWhenGroceryListNotFound() {
@@ -207,7 +207,7 @@ public class GroceryListServiceTest {
         }
 
         /**
-         * Remove grocery list item — failure when the user is not the list owner.
+         * Removes an item when the user is not the list owner
          */
         @Test
         public void testThrowsExceptionWhenUserIsNotOwner() {
@@ -220,7 +220,7 @@ public class GroceryListServiceTest {
         }
 
         /**
-         * Remove grocery list item — failure when the item to remove does not exist.
+         * Removes an item when the item is not found
          */
         @Test
         public void testThrowsExceptionWhenItemNotFound() {
@@ -234,7 +234,7 @@ public class GroceryListServiceTest {
         }
 
         /**
-         * Remove grocery list item — success path (item removed and list saved).
+         * Removes an item successfully
          */
         @Test
         public void testRemovesItemSuccessfully() {

@@ -26,25 +26,25 @@ import com.groceryrun.app.repositories.StoreRepository;
 import com.groceryrun.app.repositories.UserRepository;
 
 /**
- * Unit tests for the delete account use case.
+ * Unit tests for the delete account use case
  */
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserRepository userRepository; // Repository for user data
 
     @Mock
-    private UserDTOMapper userDTOMapper;
+    private UserDTOMapper userDTOMapper; // Mapper for user data
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder; // Password encoder for passwords
 
     @Mock
-    private GroceryListRepository groceryListRepository;
+    private GroceryListRepository groceryListRepository; // Repository for grocery list data
 
     @Mock
-    private StoreRepository storeRepository;
+    private StoreRepository storeRepository; // Repository for store data
 
     private UserService userService;
     private User user;
@@ -61,7 +61,7 @@ public class UserServiceTest {
     }
 
     /**
-     * Delete account — failure when no user exists for the given username.
+     * Deletes a user when the user is not found
      */
     @Test
     public void testDeleteUserThrowsExceptionWhenUserNotFound() {
@@ -73,7 +73,7 @@ public class UserServiceTest {
     }
 
     /**
-     * Delete account — success when the user has no grocery lists or stores.
+     * Deletes a user with no grocery lists or stores
      */
     @Test
     public void testDeleteUserSuccessfullyWithoutAssociations() {
@@ -88,7 +88,7 @@ public class UserServiceTest {
     }
 
     /**
-     * Delete account — success when grocery lists are deleted and the user is removed from owned stores.
+     * Deletes a user with grocery lists and owned stores
      */
     @Test
     public void testDeleteUserDeletesGroceryListsAndRemovesStoreOwnership() {
@@ -114,7 +114,7 @@ public class UserServiceTest {
     }
 
     /**
-     * Delete account — skips saving a store when the store list contains an entry that does not own the user.
+     * Deletes a user without saving stores the user does not own
      */
     @Test
     public void testDeleteUserSkipsStoreSaveWhenStoreDoesNotContainUser() {

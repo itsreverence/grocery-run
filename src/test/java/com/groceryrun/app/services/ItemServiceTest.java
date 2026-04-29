@@ -25,17 +25,20 @@ import com.groceryrun.app.entities.User;
 import com.groceryrun.app.repositories.CategoryRepository;
 import com.groceryrun.app.repositories.ItemRepository;
 
+/**
+ * Unit tests for the remove aisle item use case
+ */
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
 
     @Mock
-    private ItemRepository itemRepository;
+    private ItemRepository itemRepository; // Repository for item data
 
     @Mock
-    private CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository; // Repository for category data
 
     @Mock
-    private ItemDTOMapper itemDTOMapper;
+    private ItemDTOMapper itemDTOMapper; // Mapper for item data
 
     private ItemService itemService;
     private User user;
@@ -55,6 +58,9 @@ public class ItemServiceTest {
         item = new Item("Item", category);
     }
 
+    /**
+     * Deletes an item from a missing category
+     */
     @Test
     public void testDeleteItemFromMissingCategoryThrowsException() {
         String username = "owner";
@@ -64,6 +70,9 @@ public class ItemServiceTest {
         assertThrows(IllegalStateException.class, () -> itemService.deleteItem(username, itemId, categoryId));
     }
 
+    /**
+     * Deletes a missing item
+     */
     @Test
     public void testDeleteMissingItemThrowsException() {
         String username = "owner";
@@ -74,6 +83,9 @@ public class ItemServiceTest {
         assertThrows(IllegalStateException.class, () -> itemService.deleteItem(username, itemId, categoryId));
     }
 
+    /**
+     * Deletes an item from a store the user does not own
+     */
     @Test
     public void testDeleteItemFromUnownedStoreThrowsException() {
         String username = "otherOwner";
@@ -84,6 +96,9 @@ public class ItemServiceTest {
         assertThrows(IllegalStateException.class, () -> itemService.deleteItem(username, itemId, categoryId));
     }
 
+    /**
+     * Deletes an item that is not in the category
+     */
     @Test
     public void testDeleteItemNotInCategoryThrowsException() {
         String username = "owner";
@@ -94,6 +109,9 @@ public class ItemServiceTest {
         assertThrows(IllegalStateException.class, () -> itemService.deleteItem(username, itemId, categoryId));
     }
 
+    /**
+     * Deletes an item successfully
+     */
     @Test
     public void testDeleteItemSuccessfully() {
         String username = "owner";
