@@ -1,7 +1,9 @@
 package com.groceryrun.app.services;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -83,16 +85,18 @@ public class RouteService {
 
         List<Item> groceryListItems = groceryList.getItems();
         List<RouteStopDTO> stops = new ArrayList<>();
-        List<Integer> matchedItemIds = new ArrayList<>();
+        Set<String> matchedItemNames = new HashSet<>();
 
         for (Aisle aisle : store.getAisles()) {
             List<ItemDTO> itemsInAisle = new ArrayList<>();
 
             for (Category category : aisle.getCategories()) {
                 for (Item item : category.getItems()) {
-                    if (groceryListItems.contains(item)) {
+                    if (item.getName() != null
+                            && groceryListItems.stream().anyMatch(listItem -> listItem.getName() != null
+                                    && listItem.getName().trim().equalsIgnoreCase(item.getName().trim()))
+                            && matchedItemNames.add(item.getName().trim().toLowerCase())) {
                         itemsInAisle.add(new ItemDTO(item.getId(), item.getName()));
-                        matchedItemIds.add(item.getId());
                     }
                 }
             }
@@ -104,7 +108,7 @@ public class RouteService {
 
         List<ItemDTO> unmatchedItems = new ArrayList<>();
         for (Item item : groceryListItems) {
-            if (!matchedItemIds.contains(item.getId())) {
+            if (item.getName() == null || !matchedItemNames.contains(item.getName().trim().toLowerCase())) {
                 unmatchedItems.add(new ItemDTO(item.getId(), item.getName()));
             }
         }

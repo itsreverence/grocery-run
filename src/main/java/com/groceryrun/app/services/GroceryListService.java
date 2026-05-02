@@ -16,6 +16,7 @@ import com.groceryrun.app.repositories.ItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,6 +115,11 @@ public class GroceryListService {
             throw new IllegalStateException("You are not the owner of this grocery list");
         }
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new IllegalStateException(itemId + " not found"));
+        if (item.getName() != null && groceryList.getItems().stream()
+                .anyMatch(existingItem -> existingItem.getName() != null
+                        && existingItem.getName().trim().equalsIgnoreCase(item.getName().trim()))) {
+            return;
+        }
         groceryList.getItems().add(item);
         groceryListRepository.save(groceryList);
     }
@@ -127,9 +133,18 @@ public class GroceryListService {
     public void importGroceryList(String username, GroceryListTransferDTO groceryListTransferDTO) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         List<Item> importedItems = new ArrayList<>();
+        List<Item> allItems = itemRepository.findAll();
         for (GroceryListTransferItemDTO item : groceryListTransferDTO.items()) {
-            Item importedItem = itemRepository.findByName(item.name()).orElseThrow(() -> new IllegalStateException(item.name() + " not found"));
-            importedItems.add(importedItem);
+            Item importedItem = allItems.stream()
+                    .filter(existingItem -> existingItem.getName() != null
+                            && existingItem.getName().trim().equalsIgnoreCase(item.name().trim()))
+                    .min(Comparator.comparing(Item::getId))
+                    .orElseThrow(() -> new IllegalStateException(item.name() + " not found"));
+            if (importedItem.getName() != null && importedItems.stream()
+                    .noneMatch(existingItem -> existingItem.getName() != null
+                            && existingItem.getName().trim().equalsIgnoreCase(importedItem.getName().trim()))) {
+                importedItems.add(importedItem);
+            }
         }
         GroceryList groceryList = new GroceryList(groceryListTransferDTO.groceryListName(), user);
         groceryList.setItems(importedItems);

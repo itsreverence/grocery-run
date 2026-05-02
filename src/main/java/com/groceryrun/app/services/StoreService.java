@@ -125,6 +125,12 @@ public class StoreService {
             throw new IllegalStateException("User " + username + " is not an owner of store " + id);
         }
         for (Aisle aisle : new ArrayList<>(store.getAisles())) {
+            for (Category category : new ArrayList<>(aisle.getCategories())) {
+                for (Item item : new ArrayList<>(category.getItems())) {
+                    itemRepository.delete(item);
+                }
+                categoryRepository.delete(category);
+            }
             aisleRepository.delete(aisle);
         }
         store.getAisles().clear();
