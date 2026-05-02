@@ -133,8 +133,9 @@ public class GroceryListService {
     public void importGroceryList(String username, GroceryListTransferDTO groceryListTransferDTO) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException(username + " not found"));
         List<Item> importedItems = new ArrayList<>();
+        List<Item> allItems = itemRepository.findAll();
         for (GroceryListTransferItemDTO item : groceryListTransferDTO.items()) {
-            Item importedItem = itemRepository.findAll().stream()
+            Item importedItem = allItems.stream()
                     .filter(existingItem -> existingItem.getName() != null
                             && existingItem.getName().trim().equalsIgnoreCase(item.name().trim()))
                     .min(Comparator.comparing(Item::getId))

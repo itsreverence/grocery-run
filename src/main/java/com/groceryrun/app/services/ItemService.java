@@ -10,6 +10,7 @@ import com.groceryrun.app.repositories.ItemRepository;
 import com.groceryrun.app.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,7 @@ public class ItemService {
         Map<String, Item> itemsByName = new LinkedHashMap<>();
         itemRepository.findAll().stream()
                 .filter(item -> item.getName() != null)
+                .sorted(Comparator.comparing(Item::getId))
                 .forEach(item -> itemsByName.putIfAbsent(item.getName().trim().toLowerCase(), item));
         return itemsByName.values().stream().map(itemDTOMapper).collect(Collectors.toList());
     }
