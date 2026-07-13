@@ -1,88 +1,106 @@
-# GroceryRun App
+# Grocery Run
 
-## Recommended IDE
+> **Archived collaborative project (2026).** Grocery Run is preserved as a historical portfolio artifact and is not actively maintained. The hosted Railway deployment has been retired.
 
-Use **IntelliJ IDEA** for this project. The repository already follows a Maven + Spring Boot layout that IntelliJ handles very well:
-- Maven import and dependency sync are automatic.
-- Spring Boot run/debug setup is easier.
+Grocery Run is a full-stack grocery planning application built with Spring Boot. It combines personal grocery lists with structured store layouts, allowing a list to be translated into aisle-by-aisle stops for a selected store.
 
-## Prerequisites
+![Grocery Run landing page](docs/images/grocery-run-landing.png)
 
-Install these before running locally:
-- JDK 21
-- Docker Desktop (or Docker Engine + Docker Compose)
-- IntelliJ IDEA (Community or Ultimate)
+## What it demonstrates
 
-## Environment Variables
+- A layered Spring application using controllers, services, repositories, entities, and DTOs
+- Server-rendered Thymeleaf pages backed by JSON endpoints
+- PostgreSQL persistence through Spring Data JPA and Hibernate
+- Form login, BCrypt password hashing, CSRF protection, and role-based authorization
+- User-owned grocery lists with item management and JSON import/export
+- Administrative modeling of stores, locations, aisles, categories, and products
+- Route generation that matches list items to a store's aisle/category layout
+- Service-level unit tests using JUnit 5 and Mockito
+- Docker Compose for local PostgreSQL development
 
-The app reads its datasource configuration from environment variables:
+## System shape
 
-- `SPRING_DATASOURCE_URL`
-- `SPRING_DATASOURCE_USERNAME`
-- `SPRING_DATASOURCE_PASSWORD`
-
-For local IntelliJ runs, configure them directly in the run configuration:
-
-1. Open the run configuration for `AppApplication`
-2. Find `Environment variables`
-3. Add:
-   - `SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5332/groceryrun`
-   - `SPRING_DATASOURCE_USERNAME=groceryrun`
-   - `SPRING_DATASOURCE_PASSWORD=it326admin`
-
-If you run from the terminal instead, export them before starting the app:
-
-```bash
-export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5332/groceryrun
-export SPRING_DATASOURCE_USERNAME=groceryrun
-export SPRING_DATASOURCE_PASSWORD=it326admin
+```text
+Browser
+  │
+  ├── Thymeleaf pages and browser-side JavaScript
+  │
+  ▼
+Spring MVC controllers and REST endpoints
+  │
+  ▼
+Services → DTO mappers → JPA repositories
+  │
+  ▼
+PostgreSQL
 ```
 
-## Quick Start (IntelliJ + Docker)
+## Product areas
 
-1. Clone the repo and open it in IntelliJ as a Maven project.
-2. Set project SDK to **Java 21**:
-   - `File` -> `Project Structure` -> `Project SDK` -> select JDK 21.
-3. Start PostgreSQL:
+- **Accounts:** Register, sign in, update account details, and delete an account.
+- **Grocery lists:** Create lists, add or remove products, rename lists, and import/export list data.
+- **Store layouts:** Model store locations, owners, aisles, categories, and item placement.
+- **Shopping routes:** Match a grocery list against a store layout and return ordered aisle stops plus unmatched items.
+- **Administration:** Restrict store-layout and user-management operations to administrators.
+
+## Historical reproduction
+
+There is no live demo. The former Railway deployment is unavailable.
+
+### Requirements
+
+- JDK 21
+- Docker with Docker Compose
+
+### Local setup
+
+1. Create a local environment file and replace the placeholder password:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Start PostgreSQL:
+
    ```bash
    docker compose up -d
    ```
-4. Wait until container `postgres-spring-boot` is healthy/running.
-5. Make sure the datasource environment variables above are configured in your IntelliJ run configuration.
-6. Run the app from IntelliJ:
-   - Open `src/main/java/com/groceryrun/app/AppApplication.java`
-   - Click Run on `AppApplication`.
 
-The app is available at: `http://localhost:8080`
+3. Export the same datasource settings for Spring Boot and start the application:
 
-## Running from Terminal
+   ```bash
+   set -a
+   . ./.env
+   set +a
+   ./mvnw spring-boot:run
+   ```
 
-Start database:
+4. Open <http://localhost:8080>.
+
+Stop the database with `docker compose down`. Use `docker compose down -v` if you also want to remove its local data volume.
+
+### Tests
+
+The service-level unit suite does not require PostgreSQL:
+
 ```bash
-docker compose up -d
+./mvnw -Dtest='!AppApplicationTests' test
 ```
 
-Run app:
-```bash
-export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5332/groceryrun
-export SPRING_DATASOURCE_USERNAME=groceryrun
-export SPRING_DATASOURCE_PASSWORD=it326admin
-./mvnw spring-boot:run
-```
+`AppApplicationTests` loads the complete Spring context and therefore requires a separately configured PostgreSQL test database.
 
-Run tests:
-```bash
-./mvnw test
-```
+## Historical limitations
 
-## Stopping Services
+- The original hosted deployment is retired.
+- The dependency snapshot is frozen and should be audited before any new deployment.
+- Hibernate uses `ddl-auto=update`; the repository does not contain production database migrations.
+- Most automated coverage is concentrated in service-layer unit tests rather than browser or full integration tests.
+- This repository should be treated as a learning and portfolio snapshot—not maintained production software.
 
-Stop the app in IntelliJ/terminal, then stop database:
-```bash
-docker compose down
-```
+## Project context and attribution
 
-To also remove persisted DB volume:
-```bash
-docker compose down -v
-```
+Grocery Run was developed collaboratively by [@itsreverence](https://github.com/itsreverence), [@Marcos-818](https://github.com/Marcos-818), [@EricWade13](https://github.com/EricWade13), and [@Janielh-Ocasla](https://github.com/Janielh-Ocasla). The repository history preserves the implementation and collaboration record.
+
+## License
+
+Grocery Run is available under the [MIT License](LICENSE). The repository owner confirmed that the copyright contributors authorized this repository-wide license.
