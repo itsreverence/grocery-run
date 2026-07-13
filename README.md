@@ -62,6 +62,14 @@ There is no live demo. The former Railway deployment is unavailable.
 
    The `DB_NAME` and `DB_PORT` values must match the database name and port in `SPRING_DATASOURCE_URL` if you customize them.
 
+   If you ran Grocery Run before this archive cleanup, the old Compose file used the mutable `postgres:latest` image. Remove that old local volume before starting the pinned PostgreSQL 17.9 image:
+
+   ```bash
+   docker compose down -v
+   ```
+
+   This permanently deletes the old local development database; export anything you want to keep first.
+
 2. Start PostgreSQL:
 
    ```bash
