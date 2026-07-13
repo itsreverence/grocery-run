@@ -60,6 +60,8 @@ There is no live demo. The former Railway deployment is unavailable.
    cp .env.example .env
    ```
 
+   The `DB_NAME` and `DB_PORT` values must match the database name and port in `SPRING_DATASOURCE_URL` if you customize them.
+
 2. Start PostgreSQL:
 
    ```bash
