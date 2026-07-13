@@ -11,20 +11,21 @@
     <groupId>com.groceryrun</groupId>
     <artifactId>app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>app</name>
-    <description>app</description>
-    <url/>
+    <name>Grocery Run</name>
+    <description>Grocery planning and aisle route application</description>
+    <url>https://github.com/itsreverence/grocery-run</url>
     <licenses>
-        <license/>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
     </licenses>
-    <developers>
-        <developer/>
-    </developers>
     <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
+        <connection>scm:git:https://github.com/itsreverence/grocery-run.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/itsreverence/grocery-run.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/itsreverence/grocery-run</url>
     </scm>
     <properties>
         <java.version>21</java.version>
